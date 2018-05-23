@@ -3,6 +3,7 @@ import Can from "./Can";
 
 interface IProps {
     contents: any;
+    onSocketClick: any;
 }
 
 const style = {
@@ -12,7 +13,7 @@ const style = {
 class Program extends React.Component<IProps, {}> {
     public render() {
         return <div style={style}>
-            <Can contents={this.props.contents}/>
+            <Can contents={this.props.contents} onSocketClick={this.props.onSocketClick}/>
         </div>;
     }
 };

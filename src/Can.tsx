@@ -6,6 +6,7 @@ import Socket from "./Socket";
 
 interface IProps {
     contents: any;
+    onSocketClick: any;
 }
 
 const style = {
@@ -41,7 +42,7 @@ class Can extends React.Component<IProps, {}> {
         return <div>
             {this.props.contents.args.map((item: any, i: number) => {
                 return <span key={i} className="Can-arg" style={styleArg}>
-                    <Can contents={item}/>
+                    <Can contents={item} onSocketClick={this.props.onSocketClick}/>
                 </span>;
             })}
             <div className="Can-name">
@@ -51,7 +52,8 @@ class Can extends React.Component<IProps, {}> {
     }
 
     public renderSocket() {
-        return <div className="Can-socket"/>;
+        const onClickedMe = () => this.props.onSocketClick(this.props.contents);
+        return <div className="Can-socket" onClick={onClickedMe}/>;
     }
 
     public renderConst() {
