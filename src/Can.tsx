@@ -1,17 +1,19 @@
 import * as React from "react";
+import "./Can.css";
+
+import Arg from "./Arg";
+import Socket from "./Socket";
 
 interface IProps {
     contents: any;
 }
 
-const log = console.log;
-
 const style = {
     border: "1px solid black",
-    "border-radius": "5px 5px 0 0",
-    "border-top": "10px solid black",
+    "borderRadius": "5px 5px 0 0",
+    "borderTop": "10px solid black",
     display: "inline-block",
-    "font-family": "monospace",
+    "fontFamily": "monospace",
     margin: "10px",
     padding: "10px"
 };
@@ -24,6 +26,9 @@ class Can extends React.Component<IProps, {}> {
     public contents: any;
 
     public render() {
+        if (this.props.contents instanceof Socket) {
+            return this.renderSocket();
+        }
         return <div className="Can" style={style}>
             {this.props.contents.isInvocation
                 ? this.renderInvocation()
@@ -45,8 +50,14 @@ class Can extends React.Component<IProps, {}> {
         </div>;
     }
 
+    public renderSocket() {
+        return <div className="Can-socket"/>;
+    }
+
     public renderConst() {
-        log("Rendering const:", this.props.contents.name, this.props.contents);
+        if (this.props.contents instanceof Arg) {
+            return "ARG";
+        }
         return this.props.contents.implementation === undefined
             ? '"' + String(this.props.contents) + '"'
             : this.props.contents.name;
