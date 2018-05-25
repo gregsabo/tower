@@ -2,6 +2,7 @@ import * as React from "react";
 import "./App.css";
 import Arg from "./Arg";
 import CanSearch from "./CanSearch";
+import Constant from "./Constant";
 import Invocation from "./Invocation";
 import Library from "./Library";
 import Program from "./Program";
@@ -13,9 +14,9 @@ const PROGRAMS = [
             new Invocation(Library.split, [
                 new Arg()
             ]),
-            Library.capitalize
+            new Constant(Library.capitalize)
         ]),
-        " "
+        new Constant(" ")
     ]),
     new Socket()
 ];
@@ -38,6 +39,7 @@ class App extends React.Component<{}, IState> {
     public render() {
         const highlight = this.highlightLibraryItem.bind(this);
         const appendProgram = this.appendProgram.bind(this);
+        const onCanClick = this.onCanClick.bind(this);
         if (this.state === null) {
             return null;
         }
@@ -47,7 +49,7 @@ class App extends React.Component<{}, IState> {
             <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
             <div>
             {this.state.programs.map((program: any, i: number) => {
-                return <Program contents={program} key={i} onSocketClick={onSocketClick}/>;
+                return <Program contents={program} key={i} onSocketClick={onSocketClick} onCanClick={onCanClick}/>;
             })}
             <button onClick={appendProgram}>+ Add program</button>
             </div>
@@ -80,30 +82,47 @@ class App extends React.Component<{}, IState> {
     public onSocketClick(clickedSocket: any) {
         const programs = this.state.programs;
         const invocation = this.invocationForHighlightedItem();
-        for (let i = 0; i < programs.length; i++) {
-            if (programs[i].uniqueId === clickedSocket.uniqueId) {
-                programs[i] = invocation;
-                break;
-            }
-            log("finding in", programs, i);
-            const found = this.findAndReplace(
-                programs[i],
-                clickedSocket,
-                this.state.highlightedLibraryItem
-            );
-            if (found) {
-                break;
-            }
-        }
+        this.listFindAndReplace(programs, clickedSocket, invocation);
         this.setState({programs});
     }
 
-    public findAndReplace(program: any, socket: any, invocation: Invocation) {
+    public onCanClick(clickedInvocation: any) {
+        log("Clicked a can", clickedInvocation);
+        const programs = this.state.programs;
+        this.listFindAndReplace(programs, clickedInvocation, new Socket());
+        this.setState({programs});
+    }
+
+    public listFindAndReplace(programs: any, needle: any, invocation: any) {
+        for (let i = 0; i < programs.length; i++) {
+            if (programs[i].uniqueId === needle.uniqueId) {
+                programs[i] = invocation;
+                return;
+            }
+            log("finding in", programs, i, needle.uniqueId);
+            const found = this.recurseFindAndReplace(
+                programs[i],
+                needle,
+                invocation
+            );
+            if (found) {
+                return;
+            }
+        }
+    }
+
+    public recurseFindAndReplace(program: any, needle: any, invocation: Invocation) {
+        if (program.args === undefined)  {
+            return false;
+        }
+        log("Checking", program.args.map((i: any) => i.uniqueId), needle.uniqueId);
         for (let i = 0; i < program.args.length; i++) {
-            if (program.args[i].uniqueId === socket.uniqueId) {
+            if (program.args[i].uniqueId === needle.uniqueId) {
+                log("Replacing", program, i, invocation);
                 program.args[i] = invocation;
                 return true;
             }
+            this.recurseFindAndReplace(program.args[i], needle, invocation);
         }
         return false;
     }

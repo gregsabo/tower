@@ -7,6 +7,7 @@ import Socket from "./Socket";
 interface IProps {
     contents: any;
     onSocketClick: any;
+    onCanClick: any;
 }
 
 const style = {
@@ -23,6 +24,8 @@ const styleArg = {
     display: "inline"
 };
 
+const log = console.log;
+
 class Can extends React.Component<IProps, {}> {
     public contents: any;
 
@@ -30,7 +33,12 @@ class Can extends React.Component<IProps, {}> {
         if (this.props.contents instanceof Socket) {
             return this.renderSocket();
         }
-        return <div className="Can" style={style}>
+        const onCanClick = (e: any) => {
+            log(e.target);
+            e.stopPropagation();
+            this.props.onCanClick(this.props.contents);
+        };
+        return <div className="Can" style={style} onClick={onCanClick}>
             {this.props.contents.isInvocation
                 ? this.renderInvocation()
                 : this.renderConst()
@@ -42,7 +50,7 @@ class Can extends React.Component<IProps, {}> {
         return <div>
             {this.props.contents.args.map((item: any, i: number) => {
                 return <span key={i} className="Can-arg" style={styleArg}>
-                    <Can contents={item} onSocketClick={this.props.onSocketClick}/>
+                    <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
                 </span>;
             })}
             <div className="Can-name">
@@ -60,9 +68,10 @@ class Can extends React.Component<IProps, {}> {
         if (this.props.contents instanceof Arg) {
             return "ARG";
         }
-        return this.props.contents.implementation === undefined
-            ? '"' + String(this.props.contents) + '"'
-            : this.props.contents.name;
+        const contents = this.props.contents.value;
+        return contents.implementation === undefined
+            ? '"' + String(contents) + '"'
+            : contents.name;
     }
 }
 

@@ -8,6 +8,7 @@ class Invocation {
     public libraryFunction: ILibraryFunction;
     public args: any;
     public isInvocation: boolean;
+    public uniqueId = String(Math.random());
 
     constructor(libraryFunction: ILibraryFunction, args: any) {
         this.libraryFunction = libraryFunction;
