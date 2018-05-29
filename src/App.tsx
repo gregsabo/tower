@@ -3,6 +3,7 @@ import "./App.css";
 import Arg from "./Arg";
 import CanSearch from "./CanSearch";
 import Constant from "./Constant";
+import Executor from "./Executor";
 import Invocation from "./Invocation";
 import Library from "./Library";
 import Program from "./Program";
@@ -46,13 +47,14 @@ class App extends React.Component<{}, IState> {
         const onSocketClick = this.onSocketClick.bind(this);
         return (
             <div style={{display: "flex"}}>
-            <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
-            <div>
-            {this.state.programs.map((program: any, i: number) => {
-                return <Program contents={program} key={i} onSocketClick={onSocketClick} onCanClick={onCanClick}/>;
-            })}
-            <button onClick={appendProgram}>+ Add program</button>
-            </div>
+                <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
+                <Executor program={this.state.programs}/>
+                <div>
+                    {this.state.programs.map((program: any, i: number) => {
+                        return <Program contents={program} key={i} onSocketClick={onSocketClick} onCanClick={onCanClick}/>;
+                    })}
+                    <button onClick={appendProgram}>+ Add program</button>
+                </div>
             </div>
         );
     }

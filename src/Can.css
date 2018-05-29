@@ -11,3 +11,7 @@
 .Can-socket:hover {
     background-color: grey;
 }
+
+.Can-argList {
+    display: flex;
+}

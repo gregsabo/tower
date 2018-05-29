@@ -48,11 +48,13 @@ class Can extends React.Component<IProps, {}> {
 
     public renderInvocation() {
         return <div>
-            {this.props.contents.args.map((item: any, i: number) => {
-                return <span key={i} className="Can-arg" style={styleArg}>
-                    <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
-                </span>;
-            })}
+            <div className="Can-argList">
+                {this.props.contents.args.map((item: any, i: number) => {
+                    return <span key={i} className="Can-arg" style={styleArg}>
+                        <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
+                    </span>;
+                })}
+            </div>
             <div className="Can-name">
                 {this.props.contents.libraryFunction.name}
             </div>
@@ -60,7 +62,11 @@ class Can extends React.Component<IProps, {}> {
     }
 
     public renderSocket() {
-        const onClickedMe = () => this.props.onSocketClick(this.props.contents);
+        const onClickedMe = (e: any) => {
+            log("Clicked a socket");
+            e.stopPropagation();
+            this.props.onSocketClick(this.props.contents);
+        }
         return <div className="Can-socket" onClick={onClickedMe}/>;
     }
 
