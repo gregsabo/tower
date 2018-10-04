@@ -1,6 +1,12 @@
 const Library = {
     capitalize: {
-        implementation: (a: string) => a[0].toUpperCase + a.slice(1),
+        implementation: (a: string) => {
+            if (a.length === 0) {
+                return a;
+            } else {
+                return a[0].toUpperCase() + a.slice(1);
+            }
+        },
         name: "capitalize",
         numArgs: 1
     },
@@ -15,12 +21,12 @@ const Library = {
         numArgs: 2
     },
     map: {
-        implementation: (a: [any], func: any) => a.map(func),
+        implementation: (a: [any], func: any) => a.map(func.implementation),
         name: "map",
         numArgs: 2
     },
     split: {
-        implementation: (a: string) => a.split,
+        implementation: (a: string) => a.split(" "),
         name: "split",
         numArgs: 1
     }

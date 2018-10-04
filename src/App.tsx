@@ -48,8 +48,8 @@ class App extends React.Component<{}, IState> {
         return (
             <div style={{display: "flex"}}>
                 <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
-                <Executor program={this.state.programs}/>
                 <div>
+                    <Executor program={this.state.programs}/>
                     {this.state.programs.map((program: any, i: number) => {
                         return <Program contents={program} key={i} onSocketClick={onSocketClick} onCanClick={onCanClick}/>;
                     })}

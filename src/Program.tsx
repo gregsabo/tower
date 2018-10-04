@@ -17,6 +17,6 @@ class Program extends React.Component<IProps, {}> {
             <Can contents={this.props.contents} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
         </div>;
     }
-};
+}
 
 export default Program;
