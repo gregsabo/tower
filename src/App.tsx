@@ -73,9 +73,8 @@ class App extends React.Component<{}, IState> {
 
     public invocationForHighlightedItem() {
         const item = this.state.highlightedLibraryItem;
-        const numArgs = item.args;
         const args = [];
-        for (let i = 0; i < numArgs; i++) {
+        for (let i = 0; i < item.numArgs; i++) {
             args.push(new Socket());
         }
         return new Invocation(item, args);

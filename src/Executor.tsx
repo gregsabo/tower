@@ -1,6 +1,7 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import * as Runtime from "./Runtime";
+import Socket from "./Socket";
 
 interface IProps {
     program: any;
@@ -11,6 +12,14 @@ interface IState {
     lastInput: any;
 }
 
+function renderResult(result: any) {
+    if (result instanceof Socket) {
+        return "<unfilled socket>";
+    } else {
+        return result;
+    }
+}
+
 export default class Executor extends React.Component<IProps, IState> {
     public contents: any;
     public state: IState = {
@@ -19,12 +28,13 @@ export default class Executor extends React.Component<IProps, IState> {
     };
 
     public render() {
+        const result = Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""]);
         return <div>
             Execute:
             <input type="text" placeholder="Input" onChange={this.setValue}/>
             <button onClick={this.execute}>Run</button>
             Result:
-            <div>{Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""])}</div>
+            <div>{renderResult(result)}</div>
         </div>;
     }
 
