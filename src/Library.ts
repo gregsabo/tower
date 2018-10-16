@@ -1,3 +1,5 @@
+import CORK from "./Cork";
+
 const Library = {
     capitalize: {
         implementation: (a: string) => {
@@ -15,13 +17,14 @@ const Library = {
         name: "concat",
         numArgs: 2
     },
+    cork: CORK,
     join: {
         implementation: (a: [string], b: string) => a.join(b),
         name: "join",
         numArgs: 2
     },
     map: {
-        implementation: (a: [any], func: any) => a.map(func.implementation),
+        implementation: (a: [any], func: any) => a.map(func),
         name: "map",
         numArgs: 2
     },

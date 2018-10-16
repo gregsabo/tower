@@ -15,6 +15,8 @@ interface IState {
 function renderResult(result: any) {
     if (result instanceof Socket) {
         return "<unfilled socket>";
+    } else if (result instanceof Error) {
+        return `Error: ${result.message}`;
     } else {
         return result;
     }
@@ -28,10 +30,10 @@ export default class Executor extends React.Component<IProps, IState> {
     };
 
     public render() {
-        const result = Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""]);
+        const result = Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""], {});
         return <div>
             Execute:
-            <input type="text" placeholder="Input" onChange={this.setValue}/>
+            <input type="text" placeholder="Input" onInput={this.setValue}/>
             <button onClick={this.execute}>Run</button>
             Result:
             <div>{renderResult(result)}</div>

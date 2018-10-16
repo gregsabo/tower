@@ -3,6 +3,7 @@ import "./App.css";
 import Arg from "./Arg";
 import CanSearch from "./CanSearch";
 import Constant from "./Constant";
+import CORK from "./Cork";
 import Executor from "./Executor";
 import Invocation from "./Invocation";
 import Library from "./Library";
@@ -15,7 +16,9 @@ const PROGRAMS = [
             new Invocation(Library.split, [
                 new Arg()
             ]),
-            new Constant(Library.capitalize)
+            new Invocation(Library.capitalize, [
+                CORK
+            ])
         ]),
         new Constant(" ")
     ]),
@@ -73,6 +76,9 @@ class App extends React.Component<{}, IState> {
 
     public invocationForHighlightedItem() {
         const item = this.state.highlightedLibraryItem;
+        if (item === CORK) {
+            return CORK;
+        }
         const args = [];
         for (let i = 0; i < item.numArgs; i++) {
             args.push(new Socket());
