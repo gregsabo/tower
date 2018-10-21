@@ -41,7 +41,7 @@
 }
 
 .Can-socket {
-    border: 2px dashed black;
+    border: 1px dashed black;
     border-radius: 3px;
     cursor: pointer;
     margin: 10px;
@@ -51,7 +51,8 @@
 }
 
 .Can-socket:hover {
-    background-color: grey;
+    border: 1px solid black;
+    background-color: lightgrey;
 }
 
 .Can-arg {
@@ -61,4 +62,5 @@
 
 .Can-argList {
     display: flex;
+    justify-content: center;
 }
