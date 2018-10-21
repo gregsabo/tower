@@ -1,4 +1,5 @@
 import Arg from "./Arg";
+import Constant from "./Constant";
 import Cork from "./Cork";
 
 const Library = {
@@ -40,6 +41,10 @@ const Library = {
         implementation: (a: string) => a.split(" "),
         name: "split",
         numArgs: 1
+    },
+    stringLiteral: {
+        invocationGenerator: () => new Constant(window.prompt("Enter the string.")),
+        name: "string"
     }
 };
 
