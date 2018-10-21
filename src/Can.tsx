@@ -11,20 +11,6 @@ interface IProps {
     onCanClick: any;
 }
 
-const style = {
-    border: "1px solid black",
-    "borderRadius": "5px 5px 0 0",
-    "borderTop": "10px solid black",
-    display: "inline-block",
-    "fontFamily": "monospace",
-    margin: "10px",
-    padding: "10px"
-};
-
-const styleArg = {
-    display: "inline"
-};
-
 const log = console.log;
 
 class Can extends React.Component<IProps, {}> {
@@ -39,27 +25,34 @@ class Can extends React.Component<IProps, {}> {
             e.stopPropagation();
             this.props.onCanClick(this.props.contents);
         };
-        return <div className="Can" style={style} onClick={onCanClick}>
-            {this.props.contents.isInvocation
-                ? this.renderInvocation()
-                : this.renderConst()
-            }
+        return <div className="Can" onClick={onCanClick}>
+            {this.renderBody()}
         </div>;
     }
 
-    public renderInvocation() {
+    public renderBody() {
         return <div>
             <div className="Can-argList">
-                {this.props.contents.args.map((item: any, i: number) => {
-                    return <span key={i} className="Can-arg" style={styleArg}>
-                        <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
-                    </span>;
-                })}
+                {this.renderArgs()}
             </div>
-            <div className="Can-name">
-                {this.props.contents.libraryFunction.name}
+            <div className="Can-top"/>
+            <div className="Can-side">
+                <div className="Can-name">
+                    {this.renderName()}
+                </div>
             </div>
         </div>;
+    }
+
+    public renderArgs() {
+        if (!this.props.contents.args) {
+            return null;
+        }
+        return this.props.contents.args.map((item: any, i: number) => {
+            return <span key={i} className="Can-arg">
+                <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
+            </span>;
+        });
     }
 
     public renderSocket() {
@@ -71,7 +64,10 @@ class Can extends React.Component<IProps, {}> {
         return <div className="Can-socket" onClick={onClickedMe}/>;
     }
 
-    public renderConst() {
+    public renderName() {
+        if (this.props.contents.isInvocation) {
+            return this.props.contents.libraryFunction.name;
+        }
         if (this.props.contents instanceof Arg) {
             return "ARG";
         }

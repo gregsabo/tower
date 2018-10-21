@@ -8,7 +8,8 @@ interface IProps {
 }
 
 const style = {
-    display: "flex"
+    display: "flex",
+    marginTop: "10px"
 };
 
 class Program extends React.Component<IProps, {}> {

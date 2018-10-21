@@ -49,7 +49,7 @@ class App extends React.Component<{}, IState> {
         }
         const onSocketClick = this.onSocketClick.bind(this);
         return (
-            <div style={{display: "flex"}}>
+            <div className="App" style={{display: "flex"}}>
                 <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
                 <div>
                     <Executor program={this.state.programs}/>

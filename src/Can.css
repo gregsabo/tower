@@ -1,3 +1,29 @@
+.Can {
+    display: inline-block;
+    font-family: monospace;
+    position: relative;
+    margin: 5px;
+}
+
+.Can-top {
+    border: 1px solid black;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 20px;
+    margin-top: -10px;
+    background: black;
+    z-index: -1;
+    border-radius: 10px 10px 0 0;
+}
+
+.Can-side {
+    border: 1px solid black;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+}
+
 .Can-socket {
     border: 2px dashed black;
     border-radius: 3px;
@@ -10,6 +36,10 @@
 
 .Can-socket:hover {
     background-color: grey;
+}
+
+.Can-arg {
+    display: inline;
 }
 
 .Can-argList {
