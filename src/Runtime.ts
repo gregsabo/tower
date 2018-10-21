@@ -64,9 +64,9 @@ function corkInvocation(invocation: Invocation) {
 }
 
 function invokeImplementation(invocation: Invocation, evaluatedArgs: any[]) {
-    // try {
+    try {
         return invocation.libraryFunction.implementation(...evaluatedArgs);
-    // } catch (e) {
-    //     return e as TowerError;
-    // }
+    } catch (e) {
+        return e as TowerError;
+    }
 }

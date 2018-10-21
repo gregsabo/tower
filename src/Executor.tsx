@@ -34,9 +34,8 @@ export default class Executor extends React.Component<IProps, IState> {
         return <div>
             Execute:
             <input type="text" placeholder="Input" onInput={this.setValue}/>
-            <button onClick={this.execute}>Run</button>
             Result:
-            <div>{renderResult(result)}</div>
+            <span>{renderResult(result)}</span>
         </div>;
     }
 

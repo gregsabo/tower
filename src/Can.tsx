@@ -67,7 +67,7 @@ class Can extends React.Component<IProps, {}> {
             log("Clicked a socket");
             e.stopPropagation();
             this.props.onSocketClick(this.props.contents);
-        }
+        };
         return <div className="Can-socket" onClick={onClickedMe}/>;
     }
 
@@ -79,9 +79,10 @@ class Can extends React.Component<IProps, {}> {
             return "CORK";
         }
         const contents = this.props.contents.value;
-        return contents.implementation === undefined
-            ? '"' + String(contents) + '"'
-            : contents.name;
+        if (typeof contents === "number") {
+            return contents;
+        }
+        return '"' + String(contents) + '"';
     }
 }
 

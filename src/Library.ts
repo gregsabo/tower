@@ -37,6 +37,20 @@ const Library = {
         name: "map",
         numArgs: 2
     },
+    numberLiteral: {
+        invocationGenerator: () => {
+            const givenString = window.prompt("Enter the float.");
+            if (givenString === null) {
+                return new Constant(0);
+            }
+            const given = Number.parseFloat(givenString);
+            if (Number.isNaN(given)) {
+                return new Constant(0);
+            }
+            return new Constant(given);
+        },
+        name: "number"
+    },
     split: {
         implementation: (a: string) => a.split(" "),
         name: "split",
