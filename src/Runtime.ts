@@ -1,14 +1,13 @@
 import Arg from "./Arg";
-import CORK from "./Cork";
+import Cork from "./Cork";
 import Invocation from "./Invocation";
 import Socket from "./Socket";
 import TowerError from "./TowerError";
 
 export function evaluate(invocation: Invocation, inputs: any[], resultMap: object): any{
-    // if there are any corks in inputs
-    // then this isn't being evaluated just now.
-    // it should be returned as a constant instead.
-    // return a function with a new set of arguments.
+    if (!invocation.isInvocation) {
+        return "Empty tower.";
+    }
     const evaluatedArgs = invocation.args.map((arg: any) => {
         if (arg instanceof Socket) {
             return arg;
@@ -41,7 +40,7 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
 
 function isInvocationGettingCorked(invocation: Invocation) {
     for (const arg of invocation.args) {
-        if (arg === CORK) {
+        if (arg instanceof Cork) {
             return true;
         }
     }
@@ -52,7 +51,7 @@ function corkInvocation(invocation: Invocation) {
     return (...args: any[]) => {
         let numCorksSeen = 0;
         const finalArgs = invocation.args.map((arg: any, i: number) => {
-            if (arg === CORK) {
+            if (arg instanceof Cork) {
                 const result = args[i - numCorksSeen];
                 numCorksSeen += 1;
                 return result;

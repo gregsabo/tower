@@ -1,6 +1,11 @@
-import CORK from "./Cork";
+import Arg from "./Arg";
+import Cork from "./Cork";
 
 const Library = {
+    arg: {
+        invocationGenerator: () => new Arg(),
+        name: "arg"
+    },
     capitalize: {
         implementation: (a: string) => {
             if (a.length === 0) {
@@ -17,7 +22,10 @@ const Library = {
         name: "concat",
         numArgs: 2
     },
-    cork: CORK,
+    cork: {
+        invocationGenerator: () => new Cork(),
+        name: "cork"
+    },
     join: {
         implementation: (a: [string], b: string) => a.join(b),
         name: "join",

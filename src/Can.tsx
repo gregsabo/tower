@@ -2,7 +2,7 @@ import * as React from "react";
 import "./Can.css";
 
 import Arg from "./Arg";
-import CORK from "./Cork";
+import Cork from "./Cork";
 import Socket from "./Socket";
 
 interface IProps {
@@ -75,7 +75,7 @@ class Can extends React.Component<IProps, {}> {
         if (this.props.contents instanceof Arg) {
             return "ARG";
         }
-        if (this.props.contents === CORK) {
+        if (this.props.contents instanceof Cork) {
             return "CORK";
         }
         const contents = this.props.contents.value;
