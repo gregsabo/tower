@@ -37,6 +37,7 @@ class Can extends React.Component<IProps, {}> {
             </div>
             <div className="Can-top"/>
             <div className="Can-side">
+                <div className="Can-topFront"/>
                 <div className="Can-name">
                     {this.renderName()}
                 </div>

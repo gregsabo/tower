@@ -2,26 +2,42 @@
     display: inline-block;
     font-family: monospace;
     position: relative;
-    margin: 5px;
+    margin: 0 5px 0 5px;
 }
 
 .Can-top {
-    border: 1px solid black;
+    border: 1px solid grey;
     position: absolute;
     left: 0;
     right: 0;
     height: 20px;
     margin-top: -10px;
-    background: black;
+    background: lightgrey;
     z-index: -1;
-    border-radius: 10px 10px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.Can-topFront {
+    background: lightgrey;
+    border: 1px solid grey;
+    height: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    margin-left: -1px;
+    margin-right: -1px;
 }
 
 .Can-side {
-    border: 1px solid black;
+    border: 1px solid grey;
     padding: 10px;
     background: white;
-    border-radius: 10px;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    position: relative;
 }
 
 .Can-socket {
