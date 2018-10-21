@@ -62,7 +62,9 @@ class Can extends React.Component<IProps, {}> {
             e.stopPropagation();
             this.props.onSocketClick(this.props.contents);
         };
-        return <div className="Can-socket" onClick={onClickedMe}/>;
+        return <div className="Can-socket">
+            <div className="Can-socketDisplay" onClick={onClickedMe}/>
+        </div>;
     }
 
     public renderName() {
