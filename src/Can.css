@@ -55,7 +55,8 @@
 }
 
 .Can-arg {
-    display: inline;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .Can-argList {
