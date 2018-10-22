@@ -11,7 +11,6 @@ export default class KeyboardController {
 
     public registerKeyEvents() {
         document.addEventListener("keydown", (e) => {
-            log("document got keydown", e, this.app);
             this.onKeyDown(e);
             return true;
         });
@@ -48,12 +47,64 @@ export default class KeyboardController {
         });
     }
 
+    public moveCursorLeft() {
+        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        if (!result) {
+            log("No result found. Cannot move cursor.");
+            return;
+        }
+        if (result.path.length === 0) {
+            log("Bottom of tower. Cannot go down.");
+            return;
+        }
+        const parent = result.path[result.path.length - 1];
+        const index = parent.args.indexOf(result.invocation);
+        if (index === 0) {
+            // just move down.
+            return this.app.setState({
+                canCursorId: parent.uniqueId
+            });
+        }
+        this.app.setState({
+            canCursorId: parent.args[index - 1].uniqueId
+        });
+    }
+
+    public moveCursorRight() {
+        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        if (!result) {
+            log("No result found. Cannot move cursor.");
+            return;
+        }
+        if (result.path.length === 0) {
+            log("Bottom of tower. Cannot go down.");
+            return;
+        }
+        const parent = result.path[result.path.length - 1];
+        const index = parent.args.indexOf(result.invocation);
+        if (index + 1 === parent.args.length) {
+            // just move down.
+            return this.app.setState({
+                canCursorId: parent.uniqueId
+            });
+        }
+        this.app.setState({
+            canCursorId: parent.args[index + 1].uniqueId
+        });
+    }
+
     private onKeyDown(e: KeyboardEvent) {
         if (e.code === "KeyJ") {
             this.moveCursorDown();
         }
         if (e.code === "KeyK") {
             this.moveCursorUp();
+        }
+        if (e.code === "KeyH") {
+            this.moveCursorLeft();
+        }
+        if (e.code === "KeyL") {
+            this.moveCursorRight();
         }
 
     }

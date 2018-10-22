@@ -31,7 +31,6 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
             return arg;
         }
     }
-    console.log("Invocation", invocation, "evaluated to", evaluatedArgs);
 
     const returnValue = invokeImplementation(invocation, evaluatedArgs);
     resultMap[invocation.uniqueId] = returnValue;

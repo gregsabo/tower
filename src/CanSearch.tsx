@@ -46,7 +46,6 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public filteredLibrary() {
         const libraryArray = values(this.props.library);
-        console.log("library array:", libraryArray);
         if (this.state === null || this.state.filter === null) {
             return libraryArray;
         }

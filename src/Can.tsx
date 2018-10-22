@@ -74,7 +74,11 @@ class Can extends React.Component<IProps, {}> {
             e.stopPropagation();
             this.props.onSocketClick(this.props.contents);
         };
-        return <div className="Can-socket">
+        let className = "Can-socket";
+        if (this.props.contents.uniqueId === this.props.canCursorId) {
+            className = "Can-socket Can-socket--isSelected";
+        }
+        return <div className={className}>
             <div className="Can-socketDisplay" onClick={onClickedMe}/>
         </div>;
     }
