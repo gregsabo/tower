@@ -3,6 +3,11 @@ import Constant from "./Constant";
 import Cork from "./Cork";
 
 const Library = {
+    add: {
+        implementation: (a: any, b: any) => a + b,
+        name: "add",
+        numArgs: 2
+    },
     arg: {
         invocationGenerator: () => new Arg(),
         name: "arg"
@@ -27,6 +32,28 @@ const Library = {
         invocationGenerator: () => new Cork(),
         name: "cork"
     },
+    equals: {
+        implementation: (a: any, b: any) => a === b,
+        name: "equals?",
+        numArgs: 2
+    },
+    fib: {
+        implementation: (a: any) => a * 2,
+        name: "fib",
+        numArgs: 1
+    },
+    ifThenElse: {
+        implementation: (cond: any, ifTrue: any, ifFalse: any) => {
+            // TODO: actually do conditional evaluation
+            if (cond) {
+                return ifTrue;
+            } else {
+                return ifFalse;
+            }
+        },
+        name: "if",
+        numArgs: 3
+    },
     join: {
         implementation: (a: [string], b: string) => a.join(b),
         name: "join",
@@ -35,6 +62,11 @@ const Library = {
     map: {
         implementation: (a: [any], func: any) => a.map(func),
         name: "map",
+        numArgs: 2
+    },
+    multiply: {
+        implementation: (a: any, b: any) => a * b,
+        name: "multiply",
         numArgs: 2
     },
     numberLiteral: {
@@ -59,6 +91,11 @@ const Library = {
     stringLiteral: {
         invocationGenerator: () => new Constant(window.prompt("Enter the string.")),
         name: "string"
+    },
+    subtract: {
+        implementation: (a: any, b: any) => a - b,
+        name: "subtract",
+        numArgs: 2
     }
 };
 
