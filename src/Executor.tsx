@@ -1,5 +1,6 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
+import "./Executor.css";
 import * as Runtime from "./Runtime";
 import Socket from "./Socket";
 
@@ -31,7 +32,7 @@ export default class Executor extends React.Component<IProps, IState> {
 
     public render() {
         const result = Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""], {});
-        return <div>
+        return <div className="Executor">
             Execute:
             <input type="text" placeholder="Input" onInput={this.setValue}/>
             Result:

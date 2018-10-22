@@ -1,3 +1,7 @@
+.CanSearch {
+    margin: 10px;
+}
+
 .CanSearch-libraryItem--selected {
     background-color: #dcdcdc;
 }

@@ -27,8 +27,8 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public render() {
         const onKeyUp = this.onKeyUp.bind(this);
-        return <div>
-            <input type="text" ref={this.inputBox} placeholder="Search for a can" onKeyUp={onKeyUp}/>
+        return <div className="CanSearch">
+            <input type="text" ref={this.inputBox} placeholder="Search the Library" onKeyUp={onKeyUp}/>
             <div className="CanSearch-library">
                 {this.filteredLibrary().map(this.renderLibraryItem.bind(this))}
             </div>
