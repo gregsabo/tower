@@ -5,6 +5,22 @@
     margin: 0 5px 0 5px;
 }
 
+.Can.Can--isSelected > div > .Can-top {
+    border-color: black;
+    background-color: #444;
+}
+
+.Can.Can--isSelected > div > .Can-side {
+    border-color: black;
+    background-color: gray;
+    color: white;
+}
+
+.Can.Can--isSelected > div > .Can-side > .Can-topFront {
+    border-color: black;
+    background-color: #444;
+}
+
 .Can-top {
     border: 1px solid grey;
     position: absolute;
@@ -13,12 +29,14 @@
     height: 50px;
     margin-top: -25px;
     background: lightgrey;
+    transition: background 0.1s;
     z-index: -1;
     border-radius: 5px 5px 0 0;
 }
 
 .Can-topFront {
     background: lightgrey;
+    transition: background 0.1s;
     border: 1px solid grey;
     height: 5px;
     position: absolute;
@@ -34,6 +52,7 @@
 .Can-side {
     border: 1px solid grey;
     background: white;
+    transition: background 0.1s;
     border-radius: 0 0 5px 5px;
     border-top: none;
     position: relative;
@@ -79,15 +98,4 @@
 
 .Can-name {
     padding: 10px;
-}
-
-.Can-cursor {
-    position: absolute;
-    border: 3px solid black;
-    width: 110%;
-    height: 110%;
-    z-index: 2;
-    margin-left: -6%;
-    border-radius: 8px;
-    margin-top: -1%;
 }
