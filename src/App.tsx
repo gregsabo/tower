@@ -1,3 +1,4 @@
+import autobind from "autobind-decorator";
 import * as React from "react";
 import "./App.css";
 import Arg from "./Arg";
@@ -5,6 +6,8 @@ import CanSearch from "./CanSearch";
 import Constant from "./Constant";
 import Cork from "./Cork";
 import Executor from "./Executor";
+import InputConfiguration from "./InputConfiguration";
+import InputConfigurator from "./InputConfigurator";
 import Invocation from "./Invocation";
 import KeyboardController from "./KeyboardController";
 import Library from "./Library";
@@ -29,6 +32,7 @@ const PROGRAMS = [
 interface IState {
     highlightedLibraryItem: any;
     canCursorId: string;
+    inputs: InputConfiguration[];
     programs: any;
 }
 const log = console.log;
@@ -41,6 +45,7 @@ class App extends React.Component<{}, IState> {
         this.setState({
             canCursorId: PROGRAMS[0].uniqueId,
             highlightedLibraryItem: Library.split,
+            inputs: [new InputConfiguration(0)],
             programs: PROGRAMS
         });
     }
@@ -57,6 +62,7 @@ class App extends React.Component<{}, IState> {
             <div className="App" style={{display: "flex"}}>
                 <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
                 <div>
+                    <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
                     <Executor program={this.state.programs}/>
                     {this.state.programs.map((program: any, i: number) => {
                         return <Program
@@ -109,6 +115,11 @@ class App extends React.Component<{}, IState> {
         const programs = this.state.programs;
         this.listFindAndReplace(programs, clickedInvocation, new Socket());
         this.setState({programs});
+    }
+
+    @autobind
+    public onInputsChanged(inputs: InputConfiguration[]) {
+        this.setState({ inputs });
     }
 
     public listFindAndReplace(programs: any, needle: any, invocation: any) {
