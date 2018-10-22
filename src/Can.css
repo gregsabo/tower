@@ -33,7 +33,6 @@
 
 .Can-side {
     border: 1px solid grey;
-    padding: 10px;
     background: white;
     border-radius: 0 0 5px 5px;
     border-top: none;
@@ -76,4 +75,19 @@
 .Can-argList {
     display: flex;
     justify-content: center;
+}
+
+.Can-name {
+    padding: 10px;
+}
+
+.Can-cursor {
+    position: absolute;
+    border: 3px solid black;
+    width: 110%;
+    height: 110%;
+    z-index: 2;
+    margin-left: -6%;
+    border-radius: 8px;
+    margin-top: -1%;
 }

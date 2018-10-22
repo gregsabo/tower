@@ -5,6 +5,7 @@ interface IProps {
     contents: any;
     onSocketClick: any;
     onCanClick: any;
+    canCursorId: string;
 }
 
 const style = {
@@ -15,7 +16,12 @@ const style = {
 class Program extends React.Component<IProps, {}> {
     public render() {
         return <div style={style}>
-            <Can contents={this.props.contents} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
+            <Can
+                contents={this.props.contents}
+                onSocketClick={this.props.onSocketClick}
+                onCanClick={this.props.onCanClick}
+                canCursorId={this.props.canCursorId}
+            />
         </div>;
     }
 }

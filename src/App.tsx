@@ -6,6 +6,7 @@ import Constant from "./Constant";
 import Cork from "./Cork";
 import Executor from "./Executor";
 import Invocation from "./Invocation";
+import KeyboardController from "./KeyboardController";
 import Library from "./Library";
 import Program from "./Program";
 import Socket from "./Socket";
@@ -27,14 +28,18 @@ const PROGRAMS = [
 
 interface IState {
     highlightedLibraryItem: any;
+    canCursorId: string;
     programs: any;
 }
 const log = console.log;
-log("hi");
 
 class App extends React.Component<{}, IState> {
     public componentDidMount() {
+        const keyboardController = new KeyboardController(this);
+        keyboardController.registerKeyEvents();
+
         this.setState({
+            canCursorId: PROGRAMS[0].uniqueId,
             highlightedLibraryItem: Library.split,
             programs: PROGRAMS
         });
@@ -54,7 +59,13 @@ class App extends React.Component<{}, IState> {
                 <div>
                     <Executor program={this.state.programs}/>
                     {this.state.programs.map((program: any, i: number) => {
-                        return <Program contents={program} key={i} onSocketClick={onSocketClick} onCanClick={onCanClick}/>;
+                        return <Program
+                            contents={program}
+                            key={i}
+                            onSocketClick={onSocketClick}
+                            onCanClick={onCanClick}
+                            canCursorId={this.state.canCursorId}
+                        />;
                     })}
                     <button onClick={appendProgram}>+ Add program</button>
                 </div>

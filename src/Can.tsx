@@ -9,6 +9,7 @@ interface IProps {
     contents: any;
     onSocketClick: any;
     onCanClick: any;
+    canCursorId: string;
 }
 
 const log = console.log;
@@ -25,7 +26,12 @@ class Can extends React.Component<IProps, {}> {
             e.stopPropagation();
             this.props.onCanClick(this.props.contents);
         };
-        return <div className="Can" onClick={onCanClick}>
+        let className = "Can";
+        if (this.props.contents.uniqueId === this.props.canCursorId) {
+            className = "Can Can--isSelected";
+        }
+
+        return <div className={className} onClick={onCanClick}>
             {this.renderBody()}
         </div>;
     }
@@ -37,6 +43,7 @@ class Can extends React.Component<IProps, {}> {
             </div>
             <div className="Can-top"/>
             <div className="Can-side">
+                {this.maybeRenderCursor()}
                 <div className="Can-topFront"/>
                 <div className="Can-name">
                     {this.renderName()}
@@ -51,7 +58,12 @@ class Can extends React.Component<IProps, {}> {
         }
         return this.props.contents.args.map((item: any, i: number) => {
             return <span key={i} className="Can-arg">
-                <Can contents={item} onSocketClick={this.props.onSocketClick} onCanClick={this.props.onCanClick}/>
+                <Can
+                    canCursorId={this.props.canCursorId}
+                    contents={item}
+                    onSocketClick={this.props.onSocketClick}
+                    onCanClick={this.props.onCanClick}
+                />
             </span>;
         });
     }
@@ -83,6 +95,14 @@ class Can extends React.Component<IProps, {}> {
         }
         return '"' + String(contents) + '"';
     }
+
+    private maybeRenderCursor() {
+        if (this.props.contents.uniqueId !== this.props.canCursorId) {
+            return null;
+        }
+        return <div className="Can-cursor"/>;
+    }
+
 }
 
 export default Can;

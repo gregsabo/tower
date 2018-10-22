@@ -1,1 +1,0 @@
-I've added a concept of corking, which is my metaphor for partial evaluation.
