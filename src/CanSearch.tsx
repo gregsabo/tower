@@ -9,14 +9,14 @@ interface IProps {
 
 interface IState {
     filter: string;
-    selected: any;
+    selectedId: string;
 }
 
-function values(inObject: any) {
+function keyValues(inObject: any) {
     const outArray = [];
     for (const key in inObject) {
         if (inObject.hasOwnProperty(key)) {
-            outArray.push(inObject[key]);
+            outArray.push([key, inObject[key]]);
         }
     }
     return outArray;
@@ -30,7 +30,7 @@ class CanSearch extends React.Component<IProps, IState> {
         return <div className="CanSearch">
             <input type="text" ref={this.inputBox} placeholder="Search the Library" onKeyUp={onKeyUp}/>
             <div className="CanSearch-library">
-                {this.filteredLibrary().map(this.renderLibraryItem.bind(this))}
+                {this.renderLibrary()}
             </div>
         </div>;
     }
@@ -39,28 +39,34 @@ class CanSearch extends React.Component<IProps, IState> {
         const selected = this.filteredLibrary()[0];
         this.setState({
             filter: e.target.value,
-            selected
+            selectedId: selected[0]
         });
-        this.props.onLibraryItemHighlighted(selected);
+        this.props.onLibraryItemHighlighted(selected[0], selected[1]);
     }
 
     public filteredLibrary() {
-        const libraryArray = values(this.props.library);
         if (this.state === null || this.state.filter === null) {
-            return libraryArray;
+            return keyValues(this.props.library);
         }
-        return libraryArray.filter((value: any) => {
+
+        return keyValues(this.props.library).filter(([_, value]: any) => {
             return value.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1;
         });
     }
 
+    public renderLibrary() {
+        return this.filteredLibrary().map((keyval: any) => {
+            return this.renderLibraryItem(keyval[1], keyval[0]);
+        });
+    }
+
     @autobind
-    public renderLibraryItem(libraryItem: any, index: number) {
+    public renderLibraryItem(libraryItem: any, key: string) {
         let className = "";
-        if (this.state && libraryItem === this.state.selected) {
+        if (this.state && key === this.state.selectedId) {
             className = "CanSearch-libraryItem--selected";
         }
-        return <div key={libraryItem.name} className={className}>
+        return <div key={key} className={className}>
             {libraryItem.name}
         </div>;
 

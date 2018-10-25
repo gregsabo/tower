@@ -33,7 +33,7 @@ export default class Executor extends React.Component<IProps, IState> {
 
     public render() {
         const result = Runtime.evaluate(
-            this.props.program[0],
+            this.props.program,
             [this.state.lastInput || ""],
             this.props.library,
             {}

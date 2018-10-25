@@ -14,28 +14,26 @@ import Library from "./Library";
 import Program from "./Program";
 import Socket from "./Socket";
 
-const PROGRAMS = [
-    new Invocation("join", [
-        new Invocation("map", [
-            new Invocation("split", [
-                new Arg()
-            ]),
-            new Invocation("capitalize", [
-                new Cork()
-            ])
+const CAPITALIZE_SENTENCE = new Invocation("join", [
+    new Invocation("map", [
+        new Invocation("split", [
+            new Arg()
         ]),
-        new Constant(" ")
+        new Invocation("capitalize", [
+            new Cork()
+        ])
     ]),
-    new Socket()
-
-];
+    new Constant(" ")
+]);
 
 interface IState {
-    highlightedLibraryItem: any;
+    highlightedLibraryItemId: string;
     canCursorId: string;
     inputs: InputConfiguration[];
     library: any;
-    programs: any;
+    modules: any;
+    currentModuleId: string;
+    currentBrickId: string;
 }
 const log = console.log;
 
@@ -45,17 +43,25 @@ class App extends React.Component<{}, IState> {
         keyboardController.registerKeyEvents();
 
         this.setState({
-            canCursorId: PROGRAMS[0].uniqueId,
-            highlightedLibraryItem: Library.split,
+            canCursorId: CAPITALIZE_SENTENCE.uniqueId,
+            currentBrickId: "sentence_cap",
+            currentModuleId: "basic",
+            highlightedLibraryItemId: "string",
             inputs: [new InputConfiguration(0)],
             library: Library,
-            programs: PROGRAMS
+            modules: {
+                basic: {
+                    bricks: {
+                        sentence_cap: CAPITALIZE_SENTENCE
+                    },
+                    name: "Starter Module"
+                }
+            }
         });
     }
 
     public render() {
         const highlight = this.highlightLibraryItem.bind(this);
-        const appendProgram = this.appendProgram.bind(this);
         const onCanClick = this.onCanClick.bind(this);
         if (this.state === null) {
             return null;
@@ -66,59 +72,60 @@ class App extends React.Component<{}, IState> {
                 <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
-                    <Executor program={this.state.programs} library={this.state.library}/>
-                    {this.state.programs.map((program: any, i: number) => {
-                        return <Program
-                            contents={program}
-                            key={i}
-                            library={this.state.library}
-                            onSocketClick={onSocketClick}
-                            onCanClick={onCanClick}
-                            canCursorId={this.state.canCursorId}
-                        />;
-                    })}
-                    <button onClick={appendProgram}>+ Add program</button>
+                    <Executor program={this.currentBrick()} library={this.state.library}/>
+                    <Program
+                        contents={this.currentBrick()}
+                        library={this.state.library}
+                        onSocketClick={onSocketClick}
+                        onCanClick={onCanClick}
+                        canCursorId={this.state.canCursorId}
+                    />
                 </div>
             </div>
         );
     }
 
-    public highlightLibraryItem(libraryItem: any) {
-        this.setState({highlightedLibraryItem: libraryItem});
+    public currentBrick() {
+        return this.state
+            .modules[this.state.currentModuleId]
+            .bricks[this.state.currentBrickId];
     }
 
-    public appendProgram(e: any) {
-        log("Adding program");
-        log(this.state.programs.concat([new Socket()]));
-        this.setState({
-            programs: this.state.programs.concat([new Socket()])
-        });
+    public highlightLibraryItem(libraryItemId: any) {
+        this.setState({highlightedLibraryItemId: libraryItemId});
     }
 
     public invocationForHighlightedItem() {
-        const item = this.state.highlightedLibraryItem;
-        if (item.invocationGenerator) {
-            return item.invocationGenerator();
+        const itemId = this.state.highlightedLibraryItemId;
+        const libraryItem = this.state.library[itemId];
+        if (libraryItem.invocationGenerator) {
+            return libraryItem.invocationGenerator();
         }
         const args = [];
-        for (let i = 0; i < item.numArgs; i++) {
+        for (let i = 0; i < libraryItem.numArgs; i++) {
             args.push(new Socket());
         }
-        return new Invocation(item, args);
+        return new Invocation(itemId, args);
     }
 
     public onSocketClick(clickedSocket: any) {
-        const programs = this.state.programs;
         const invocation = this.invocationForHighlightedItem();
-        this.listFindAndReplace(programs, clickedSocket, invocation);
-        this.setState({programs});
+        this.recurseFindAndReplace(
+            this.currentBrick(),
+            clickedSocket,
+            invocation
+        );
+        this.setState({});
     }
 
     public onCanClick(clickedInvocation: any) {
         log("Clicked a can", clickedInvocation);
-        const programs = this.state.programs;
-        this.listFindAndReplace(programs, clickedInvocation, new Socket());
-        this.setState({programs});
+        this.recurseFindAndReplace(
+            this.currentBrick(),
+            clickedInvocation,
+            new Socket()
+        );
+        this.setState({});
     }
 
     @autobind
@@ -126,25 +133,7 @@ class App extends React.Component<{}, IState> {
         this.setState({ inputs });
     }
 
-    public listFindAndReplace(programs: any, needle: any, invocation: any) {
-        for (let i = 0; i < programs.length; i++) {
-            if (programs[i].uniqueId === needle.uniqueId) {
-                programs[i] = invocation;
-                return;
-            }
-            log("finding in", programs, i, needle.uniqueId);
-            const found = this.recurseFindAndReplace(
-                programs[i],
-                needle,
-                invocation
-            );
-            if (found) {
-                return;
-            }
-        }
-    }
-
-    public recurseFindAndReplace(program: any, needle: any, invocation: Invocation) {
+    public recurseFindAndReplace(program: any, needle: any, invocation: any) {
         if (program.args === undefined)  {
             return false;
         }

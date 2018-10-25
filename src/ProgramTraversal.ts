@@ -1,18 +1,15 @@
-function findById(programs: any, uniqueId: string) {
-    for (const program of programs) {
-        if (program.uniqueId === uniqueId) {
-            return {
-                invocation: program,
-                path: []
-            };
-        }
-        return recurseFind(
-            program,
-            uniqueId,
-            []
-        );
+function findById(program: any, uniqueId: string) {
+    if (program.uniqueId === uniqueId) {
+        return {
+            invocation: program,
+            path: []
+        };
     }
-
+    return recurseFind(
+        program,
+        uniqueId,
+        []
+    );
 }
 
 function recurseFind(program: any, uniqueId: string, path: any): any {

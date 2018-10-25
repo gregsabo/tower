@@ -17,7 +17,7 @@ export default class KeyboardController {
     }
 
     public findCanAboveCursor() {
-        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
             return this.app.state.programs[0].uniqueId;
@@ -30,7 +30,7 @@ export default class KeyboardController {
     }
 
     public findCanBelowCursor() {
-        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
             return this.app.state.programs[0].uniqueId;
@@ -43,7 +43,7 @@ export default class KeyboardController {
     }
 
     public findCanToLeftOfCursor() {
-        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
             return this.app.state.programs[0].uniqueId;
@@ -62,7 +62,7 @@ export default class KeyboardController {
     }
 
     public findCanToRightOfCursor() {
-        const result = findById(this.app.state.programs, this.app.state.canCursorId);
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
             return this.app.state.programs[0].uniqueId;
