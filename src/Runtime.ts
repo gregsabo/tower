@@ -19,7 +19,7 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
                 return corkInvocation(arg);
             } else {
                 const evaluated = evaluate(arg, inputs, resultMap);
-                if (evaluated.isLazyValue) {
+                if (evaluated.isLazyValue || evaluated instanceof Socket) {
                     return evaluated;
                 } else {
                     return new LazyValue(() => evaluated);
