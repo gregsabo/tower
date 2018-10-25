@@ -6,6 +6,7 @@ import Socket from "./Socket";
 
 interface IProps {
     program: any;
+    library: any;
 }
 
 interface IState {
@@ -31,7 +32,12 @@ export default class Executor extends React.Component<IProps, IState> {
     };
 
     public render() {
-        const result = Runtime.evaluate(this.props.program[0], [this.state.lastInput || ""], {});
+        const result = Runtime.evaluate(
+            this.props.program[0],
+            [this.state.lastInput || ""],
+            this.props.library,
+            {}
+        );
         return <div className="Executor">
             Execute:
             <input type="text" placeholder="Input" onInput={this.setValue}/>

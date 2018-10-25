@@ -1,24 +1,32 @@
-interface ILibraryFunction {
-    name: string;
-    implementation: any;
-    numArgs: number;
-    isLazy: boolean;
-}
-
 class Invocation {
-    public libraryFunction: ILibraryFunction;
-    public args: any;
-    public isInvocation: boolean;
+    public isInvocation = true;
     public uniqueId = String(Math.random());
+    public implementationKey: string;
+    public args: any[];
 
-    constructor(libraryFunction: ILibraryFunction, args: any) {
-        this.libraryFunction = libraryFunction;
+    constructor(implementationKey: string, args: any[]) {
+        this.implementationKey = implementationKey;
         this.args = args;
-        this.isInvocation = true;
     }
 
-    public invoke() {
-        this.libraryFunction.implementation.call(this.args);
+    public invoke(args: any[], library: any) {
+        return this.implementation(library)(...args);
+    }
+
+    public numArgs(library: any) {
+        return this.libraryFunction(library).numArgs || 0;
+    }
+
+    public name(library: any) {
+        return this.libraryFunction(library).name;
+    }
+
+    public implementation(library: any) {
+        return this.libraryFunction(library).implementation;
+    }
+
+    public libraryFunction(library: any) {
+        return library[this.implementationKey];
     }
 }
 

@@ -15,24 +15,26 @@ import Program from "./Program";
 import Socket from "./Socket";
 
 const PROGRAMS = [
-    new Invocation(Library.join, [
-        new Invocation(Library.map, [
-            new Invocation(Library.split, [
+    new Invocation("join", [
+        new Invocation("map", [
+            new Invocation("split", [
                 new Arg()
             ]),
-            new Invocation(Library.capitalize, [
+            new Invocation("capitalize", [
                 new Cork()
             ])
         ]),
         new Constant(" ")
     ]),
     new Socket()
+
 ];
 
 interface IState {
     highlightedLibraryItem: any;
     canCursorId: string;
     inputs: InputConfiguration[];
+    library: any;
     programs: any;
 }
 const log = console.log;
@@ -46,6 +48,7 @@ class App extends React.Component<{}, IState> {
             canCursorId: PROGRAMS[0].uniqueId,
             highlightedLibraryItem: Library.split,
             inputs: [new InputConfiguration(0)],
+            library: Library,
             programs: PROGRAMS
         });
     }
@@ -63,11 +66,12 @@ class App extends React.Component<{}, IState> {
                 <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
-                    <Executor program={this.state.programs}/>
+                    <Executor program={this.state.programs} library={this.state.library}/>
                     {this.state.programs.map((program: any, i: number) => {
                         return <Program
                             contents={program}
                             key={i}
+                            library={this.state.library}
                             onSocketClick={onSocketClick}
                             onCanClick={onCanClick}
                             canCursorId={this.state.canCursorId}
