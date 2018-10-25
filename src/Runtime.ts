@@ -1,6 +1,7 @@
 import Arg from "./Arg";
 import Cork from "./Cork";
 import Invocation from "./Invocation";
+import LazyValue from "./LazyValue";
 import Socket from "./Socket";
 import TowerError from "./TowerError";
 
@@ -8,22 +9,27 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
     if (!invocation.isInvocation) {
         return "Empty tower.";
     }
-    const evaluatedArgs = invocation.args.map((arg: any) => {
+    const lazyArgs = invocation.args.map((arg: any) => {
         if (arg instanceof Socket) {
             return arg;
         } else if (arg instanceof Arg) {
-            return inputs[0];
+            return new LazyValue(() => inputs[0]);
         } else if (arg.isInvocation) {
             if (isInvocationGettingCorked(arg)) {
                 return corkInvocation(arg);
             } else {
-                return evaluate(arg, inputs, resultMap);
+                const evaluated = evaluate(arg, inputs, resultMap);
+                if (evaluated.isLazyValue) {
+                    return evaluated;
+                } else {
+                    return new LazyValue(() => evaluated);
+                }
             }
         } else if (arg.isConstant) {
-            return arg.value;
+            return new LazyValue(() => arg.value);
         }
     });
-    for (const arg of evaluatedArgs) {
+    for (const arg of lazyArgs) {
         if (arg instanceof Socket) {
             return new Socket();
         }
@@ -32,7 +38,7 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
         }
     }
 
-    const returnValue = invokeImplementation(invocation, evaluatedArgs);
+    const returnValue = invokeImplementation(invocation, lazyArgs);
     resultMap[invocation.uniqueId] = returnValue;
     return returnValue;
 }
@@ -47,7 +53,7 @@ function isInvocationGettingCorked(invocation: Invocation) {
 }
 
 function corkInvocation(invocation: Invocation) {
-    return (...args: any[]) => {
+    const corked = (...args: any[]) => {
         let numCorksSeen = 0;
         const finalArgs = invocation.args.map((arg: any, i: number) => {
             if (arg instanceof Cork) {
@@ -60,12 +66,18 @@ function corkInvocation(invocation: Invocation) {
         });
         return invocation.libraryFunction.implementation(...finalArgs);
     };
+    return new LazyValue(() => corked);
 }
 
-function invokeImplementation(invocation: Invocation, evaluatedArgs: any[]) {
-    try {
-        return invocation.libraryFunction.implementation(...evaluatedArgs);
-    } catch (e) {
-        return e as TowerError;
-    }
+function invokeImplementation(invocation: Invocation, lazyArgs: any[]) {
+    // try {
+        if (!invocation.libraryFunction.isLazy) {
+            const evaluatedArgs = lazyArgs.map((arg) => arg.get());
+            return invocation.libraryFunction.implementation(...evaluatedArgs);
+        } else {
+            return invocation.libraryFunction.implementation(...lazyArgs);
+        }
+    // } catch (e) {
+    //     return e as TowerError;
+    // }
 }

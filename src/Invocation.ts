@@ -2,6 +2,7 @@ interface ILibraryFunction {
     name: string;
     implementation: any;
     numArgs: number;
+    isLazy: boolean;
 }
 
 class Invocation {

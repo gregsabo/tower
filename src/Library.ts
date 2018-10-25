@@ -5,11 +5,13 @@ import Cork from "./Cork";
 const Library = {
     add: {
         implementation: (a: any, b: any) => a + b,
+        isLazy: false,
         name: "add",
         numArgs: 2
     },
     arg: {
         invocationGenerator: () => new Arg(),
+        isLazy: false,
         name: "arg"
     },
     capitalize: {
@@ -20,52 +22,60 @@ const Library = {
                 return a[0].toUpperCase() + a.slice(1);
             }
         },
+        isLazy: false,
         name: "capitalize",
         numArgs: 1
     },
     concat: {
         implementation: (a: string, b: string) => a + b,
+        isLazy: false,
         name: "concat",
         numArgs: 2
     },
     cork: {
         invocationGenerator: () => new Cork(),
+        isLazy: false,
         name: "cork"
     },
     equals: {
         implementation: (a: any, b: any) => a === b,
+        isLazy: false,
         name: "equals?",
         numArgs: 2
     },
     fib: {
         implementation: (a: any) => a * 2,
+        isLazy: false,
         name: "fib",
         numArgs: 1
     },
     ifThenElse: {
         implementation: (cond: any, ifTrue: any, ifFalse: any) => {
-            // TODO: actually do conditional evaluation
-            if (cond) {
-                return ifTrue;
+            if (cond.get()) {
+                return ifTrue.get();
             } else {
-                return ifFalse;
+                return ifFalse.get();
             }
         },
+        isLazy: true,
         name: "if",
         numArgs: 3
     },
     join: {
         implementation: (a: [string], b: string) => a.join(b),
+        isLazy: false,
         name: "join",
         numArgs: 2
     },
     map: {
         implementation: (a: [any], func: any) => a.map(func),
+        isLazy: false,
         name: "map",
         numArgs: 2
     },
     multiply: {
         implementation: (a: any, b: any) => a * b,
+        isLazy: false,
         name: "multiply",
         numArgs: 2
     },
@@ -81,19 +91,23 @@ const Library = {
             }
             return new Constant(given);
         },
+        isLazy: false,
         name: "number"
     },
     split: {
-        implementation: (a: string) => a.split(" "),
+        implementation: (a: any) => a.split(" "),
+        isLazy: false,
         name: "split",
         numArgs: 1
     },
     stringLiteral: {
         invocationGenerator: () => new Constant(window.prompt("Enter the string.")),
+        isLazy: false,
         name: "string"
     },
     subtract: {
         implementation: (a: any, b: any) => a - b,
+        isLazy: false,
         name: "subtract",
         numArgs: 2
     }
