@@ -9,7 +9,23 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
     if (!invocation.isInvocation) {
         return "Empty tower.";
     }
-    const lazyArgs = invocation.args.map((arg: any) => {
+    const lazyArgs = makeLazyArgs(invocation.args, inputs, resultMap);
+    for (const arg of lazyArgs) {
+        if (arg instanceof Socket) {
+            return new Socket();
+        }
+        if (arg instanceof TowerError) {
+            return arg;
+        }
+    }
+
+    const returnValue = invokeImplementation(invocation, lazyArgs);
+    resultMap[invocation.uniqueId] = returnValue;
+    return returnValue;
+}
+
+function makeLazyArgs(args: any, inputs: any[], resultMap: object) {
+    return args.map((arg: any) => {
         if (arg instanceof Socket) {
             return arg;
         } else if (arg instanceof Arg) {
@@ -29,18 +45,6 @@ export function evaluate(invocation: Invocation, inputs: any[], resultMap: objec
             return new LazyValue(() => arg.value);
         }
     });
-    for (const arg of lazyArgs) {
-        if (arg instanceof Socket) {
-            return new Socket();
-        }
-        if (arg instanceof TowerError) {
-            return arg;
-        }
-    }
-
-    const returnValue = invokeImplementation(invocation, lazyArgs);
-    resultMap[invocation.uniqueId] = returnValue;
-    return returnValue;
 }
 
 function isInvocationGettingCorked(invocation: Invocation) {
