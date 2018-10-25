@@ -1,3 +1,6 @@
+import * as Modules from "./Modules";
+import * as Runtime from "./Runtime";
+
 class Invocation {
     public isInvocation = true;
     public uniqueId = String(Math.random());
@@ -9,24 +12,49 @@ class Invocation {
         this.args = args;
     }
 
-    public invoke(args: any[], library: any) {
-        return this.implementation(library)(...args);
+    public invoke(args: any[], library: any, modules: any) {
+        return this.implementation(library, modules)(...args);
     }
 
-    public numArgs(library: any) {
-        return this.libraryFunction(library).numArgs || 0;
+    public numArgs(library: any, modules: any) {
+        return this.libraryFunction(library, modules) || 0;
     }
 
-    public name(library: any) {
-        return this.libraryFunction(library).name;
+    public name(library: any, modules: any) {
+        return this.libraryFunction(library, modules).name;
     }
 
-    public implementation(library: any) {
-        return this.libraryFunction(library).implementation;
+    public implementation(library: any, modules: any) {
+        const libraryFunction = this.libraryFunction(library, modules)
+        if (libraryFunction.rootInvocation) {
+            return (...args: any[]) => {
+                return Runtime.evaluate(
+                    libraryFunction.rootInvocation,
+                    args,
+                    library,
+                    modules,
+                    {}
+                );
+            };
+        } else {
+            return libraryFunction.implementation;
+        }
     }
 
-    public libraryFunction(library: any) {
-        return library[this.implementationKey];
+    public maybeLookupModule(item: any, modules: any) {
+        if (item.moduleKey && item.brickKey) {
+            return Modules.getBrickFromModules(
+                item.moduleKey, item.brickKey, modules
+            )
+        } else {
+            return item;
+        }
+    }
+
+    public libraryFunction(library: any, modules: any) {
+        return this.maybeLookupModule(
+            library[this.implementationKey], modules
+        );
     }
 }
 

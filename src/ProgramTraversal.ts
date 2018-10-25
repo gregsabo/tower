@@ -1,12 +1,12 @@
 function findById(program: any, uniqueId: string) {
-    if (program.uniqueId === uniqueId) {
+    if (program.rootInvocation.uniqueId === uniqueId) {
         return {
-            invocation: program,
+            invocation: program.rootInvocation,
             path: []
         };
     }
     return recurseFind(
-        program,
+        program.rootInvocation,
         uniqueId,
         []
     );

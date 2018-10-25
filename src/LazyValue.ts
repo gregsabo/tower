@@ -1,12 +1,24 @@
 export default class LazyValue {
+    public static wrap(value: any) {
+        if (value.isLazyValue) {
+            return value;
+        } else {
+            return new LazyValue(() => value);
+        }
+    }
+
     public isLazyValue = true;
     private value: null;
     private evaluated: boolean;
     private evaluationFunction: any;
 
+
     constructor(evaluationFunction: any) {
         this.value = null;
         this.evaluationFunction = evaluationFunction;
+        if (this.evaluationFunction() === undefined) {
+            throw new Error("Got undefined evaluation function.");
+        }
         this.evaluated = false;
     }
 

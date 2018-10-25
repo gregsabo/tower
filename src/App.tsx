@@ -11,6 +11,7 @@ import InputConfigurator from "./InputConfigurator";
 import Invocation from "./Invocation";
 import KeyboardController from "./KeyboardController";
 import Library from "./Library";
+import * as Modules from "./Modules";
 import Program from "./Program";
 import Socket from "./Socket";
 
@@ -41,6 +42,20 @@ class App extends React.Component<{}, IState> {
     public componentDidMount() {
         const keyboardController = new KeyboardController(this);
         keyboardController.registerKeyEvents();
+        const modules = {
+            basic: {
+                bricks: {
+                    sentence_cap: {
+                        name: "Sentence Capitalization",
+                        numArgs: 1,
+                        rootInvocation: CAPITALIZE_SENTENCE
+                    }
+                },
+                name: "Starter Module"
+            }
+        };
+        Modules.importModulesIntoLibrary(modules, Library);
+        log("Library is now", Library);
 
         this.setState({
             canCursorId: CAPITALIZE_SENTENCE.uniqueId,
@@ -49,14 +64,7 @@ class App extends React.Component<{}, IState> {
             highlightedLibraryItemId: "string",
             inputs: [new InputConfiguration(0)],
             library: Library,
-            modules: {
-                basic: {
-                    bricks: {
-                        sentence_cap: CAPITALIZE_SENTENCE
-                    },
-                    name: "Starter Module"
-                }
-            }
+            modules
         });
     }
 
@@ -69,14 +77,16 @@ class App extends React.Component<{}, IState> {
         const onSocketClick = this.onSocketClick.bind(this);
         return (
             <div className="App" style={{display: "flex"}}>
-                <CanSearch library={Library} onLibraryItemHighlighted={highlight}/>
+                <CanSearch library={Library} modules={this.state.modules} onLibraryItemHighlighted={highlight}/>
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
-                    <Executor program={this.currentBrick()} library={this.state.library}/>
+                    <Executor program={this.currentBrick()} library={this.state.library} modules={this.state.modules}/>
                     <Program
                         contents={this.currentBrick()}
                         library={this.state.library}
+                        modules={this.state.modules}
                         onSocketClick={onSocketClick}
+                        onBrickNameChange={this.onBrickNameChange}
                         onCanClick={onCanClick}
                         canCursorId={this.state.canCursorId}
                     />
@@ -86,9 +96,17 @@ class App extends React.Component<{}, IState> {
     }
 
     public currentBrick() {
-        return this.state
-            .modules[this.state.currentModuleId]
-            .bricks[this.state.currentBrickId];
+        return Modules.getBrickFromModules(
+            this.state.currentModuleId,
+            this.state.currentBrickId,
+            this.state.modules
+        );
+    }
+
+    @autobind
+    public onBrickNameChange(newName: string) {
+        this.currentBrick().name = newName;
+        this.setState({});
     }
 
     public highlightLibraryItem(libraryItemId: any) {
@@ -97,7 +115,10 @@ class App extends React.Component<{}, IState> {
 
     public invocationForHighlightedItem() {
         const itemId = this.state.highlightedLibraryItemId;
-        const libraryItem = this.state.library[itemId];
+        const libraryItem = Modules.maybeLookUpModule(
+            this.state.library[itemId], this.state.modules
+        );
+
         if (libraryItem.invocationGenerator) {
             return libraryItem.invocationGenerator();
         }
@@ -111,7 +132,7 @@ class App extends React.Component<{}, IState> {
     public onSocketClick(clickedSocket: any) {
         const invocation = this.invocationForHighlightedItem();
         this.recurseFindAndReplace(
-            this.currentBrick(),
+            this.currentBrick().rootInvocation,
             clickedSocket,
             invocation
         );
@@ -121,7 +142,7 @@ class App extends React.Component<{}, IState> {
     public onCanClick(clickedInvocation: any) {
         log("Clicked a can", clickedInvocation);
         this.recurseFindAndReplace(
-            this.currentBrick(),
+            this.currentBrick().rootInvocation,
             clickedInvocation,
             new Socket()
         );

@@ -11,6 +11,7 @@ interface IProps {
     onCanClick: any;
     canCursorId: string;
     library: any;
+    modules: any;
 }
 
 const log = console.log;
@@ -65,6 +66,7 @@ class Can extends React.Component<IProps, {}> {
                     onSocketClick={this.props.onSocketClick}
                     onCanClick={this.props.onCanClick}
                     library={this.props.library}
+                    modules={this.props.modules}
                 />
             </span>;
         });
@@ -87,7 +89,7 @@ class Can extends React.Component<IProps, {}> {
 
     public renderName() {
         if (this.props.contents.isInvocation) {
-            return this.props.contents.name(this.props.library);
+            return this.props.contents.name(this.props.library, this.props.modules);
         }
         if (this.props.contents instanceof Arg) {
             return "ARG";

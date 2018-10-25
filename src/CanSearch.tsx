@@ -1,9 +1,11 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import "./CanSearch.css";
+import * as Modules from "./Modules";
 
 interface IProps {
     library: any;
+    modules: any;
     onLibraryItemHighlighted: any;
 }
 
@@ -37,11 +39,15 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public onKeyUp(e: any) {
         const selected = this.filteredLibrary()[0];
-        this.setState({
-            filter: e.target.value,
-            selectedId: selected[0]
-        });
-        this.props.onLibraryItemHighlighted(selected[0], selected[1]);
+        if (selected && selected.length > 0) {
+            this.setState({
+                filter: e.target.value,
+                selectedId: selected[0]
+            });
+            this.props.onLibraryItemHighlighted(selected[0], selected[1]);
+        } else {
+            this.setState({ filter: e.target.value });
+        }
     }
 
     public filteredLibrary() {
@@ -50,7 +56,8 @@ class CanSearch extends React.Component<IProps, IState> {
         }
 
         return keyValues(this.props.library).filter(([_, value]: any) => {
-            return value.name.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1;
+            const name = this.maybeLookupModule(value).name;
+            return name.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1;
         });
     }
 
@@ -67,9 +74,16 @@ class CanSearch extends React.Component<IProps, IState> {
             className = "CanSearch-libraryItem--selected";
         }
         return <div key={key} className={className}>
-            {libraryItem.name}
+            {this.maybeLookupModule(libraryItem).name}
         </div>;
+    }
 
+    public maybeLookupModule(item: any) {
+        if (item.moduleKey && item.brickKey) {
+            return Modules.getBrickFromModules(item.moduleKey, item.brickKey, this.props.modules);
+        } else {
+            return item;
+        }
     }
 }
 

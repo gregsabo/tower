@@ -7,6 +7,7 @@ import Socket from "./Socket";
 interface IProps {
     program: any;
     library: any;
+    modules: any;
 }
 
 interface IState {
@@ -33,9 +34,10 @@ export default class Executor extends React.Component<IProps, IState> {
 
     public render() {
         const result = Runtime.evaluate(
-            this.props.program,
+            this.props.program.rootInvocation,
             [this.state.lastInput || ""],
             this.props.library,
+            this.props.modules,
             {}
         );
         return <div className="Executor">

@@ -4,50 +4,45 @@ import Cork from "./Cork";
 
 const Library = {
     add: {
-        implementation: (a: any, b: any) => a + b,
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get() + b.get(0),
+        isEager: true,
         name: "add",
         numArgs: 2
     },
     arg: {
         invocationGenerator: () => new Arg(),
-        isLazy: false,
+        isEager: true,
         name: "arg"
     },
     capitalize: {
-        implementation: (a: string) => {
+        implementation: (lazyA: any) => {
+            const a = lazyA.get();
             if (a.length === 0) {
                 return a;
             } else {
                 return a[0].toUpperCase() + a.slice(1);
             }
         },
-        isLazy: false,
+        isEager: true,
         name: "capitalize",
         numArgs: 1
     },
     concat: {
-        implementation: (a: string, b: string) => a + b,
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get() + b.get(),
+        isEager: true,
         name: "concat",
         numArgs: 2
     },
     cork: {
         invocationGenerator: () => new Cork(),
-        isLazy: false,
+        isEager: true,
         name: "cork"
     },
     equals: {
-        implementation: (a: any, b: any) => a === b,
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get() === b.get(),
+        isEager: true,
         name: "equals?",
         numArgs: 2
-    },
-    fib: {
-        implementation: (a: any) => a * 2,
-        isLazy: false,
-        name: "fib",
-        numArgs: 1
     },
     ifThenElse: {
         implementation: (cond: any, ifTrue: any, ifFalse: any) => {
@@ -62,20 +57,20 @@ const Library = {
         numArgs: 3
     },
     join: {
-        implementation: (a: [string], b: string) => a.join(b),
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get().join(b.get()),
+        isEager: true,
         name: "join",
         numArgs: 2
     },
     map: {
-        implementation: (a: [any], func: any) => a.map(func),
-        isLazy: false,
+        implementation: (a: any, func: any) => a.get().map(func.get()),
+        isEager: true,
         name: "map",
         numArgs: 2
     },
     multiply: {
-        implementation: (a: any, b: any) => a * b,
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get() * b.get(),
+        isEager: true,
         name: "multiply",
         numArgs: 2
     },
@@ -91,23 +86,23 @@ const Library = {
             }
             return new Constant(given);
         },
-        isLazy: false,
+        isEager: true,
         name: "number"
     },
     split: {
-        implementation: (a: any) => a.split(" "),
-        isLazy: false,
+        implementation: (a: any) => a.get().split(" "),
+        isEager: true,
         name: "split",
         numArgs: 1
     },
     stringLiteral: {
         invocationGenerator: () => new Constant(window.prompt("Enter the string.")),
-        isLazy: false,
+        isEager: true,
         name: "string"
     },
     subtract: {
-        implementation: (a: any, b: any) => a - b,
-        isLazy: false,
+        implementation: (a: any, b: any) => a.get() - b.get(),
+        isEager: true,
         name: "subtract",
         numArgs: 2
     }
