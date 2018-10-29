@@ -46,7 +46,7 @@ export default class KeyboardController {
         const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
-            return this.app.state.programs[0].uniqueId;
+            return this.app.currentBrick().rootInvocation.uniqueId;
         }
         if (result.path.length === 0) {
             log("Bottom of tower. Cannot go down.");
@@ -65,7 +65,7 @@ export default class KeyboardController {
         const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
         if (!result) {
             log("No result found. Assuming bottom.");
-            return this.app.state.programs[0].uniqueId;
+            return this.app.currentBrick().rootInvocation.uniqueId;
         }
         if (result.path.length === 0) {
             log("Bottom of tower. Cannot go down.");

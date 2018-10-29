@@ -39,7 +39,9 @@ const Library = {
         name: "cork"
     },
     equals: {
-        implementation: (a: any, b: any) => a.get() === b.get(),
+        implementation: (a: any, b: any) => {
+            return a.get() === b.get();
+        },
         isEager: true,
         name: "equals?",
         numArgs: 2
@@ -60,6 +62,14 @@ const Library = {
         implementation: (a: any, b: any) => a.get().join(b.get()),
         isEager: true,
         name: "join",
+        numArgs: 2
+    },
+    lessOrEquals: {
+        implementation: (a: any, b: any) => {
+            return a.get() <= b.get();
+        },
+        isEager: true,
+        name: "less than or equal?",
         numArgs: 2
     },
     map: {

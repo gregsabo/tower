@@ -3,6 +3,7 @@ import * as React from "react";
 import "./Executor.css";
 import * as Runtime from "./Runtime";
 import Socket from "./Socket";
+import TowerError from "./TowerError";
 
 interface IProps {
     program: any;
@@ -11,7 +12,6 @@ interface IProps {
 }
 
 interface IState {
-    inputValue: any;
     lastInput: any;
 }
 
@@ -28,34 +28,42 @@ function renderResult(result: any) {
 export default class Executor extends React.Component<IProps, IState> {
     public contents: any;
     public state: IState = {
-        inputValue: 0,
         lastInput: 0
     };
 
     public render() {
-        const result = Runtime.evaluate(
-            this.props.program.rootInvocation,
-            [this.state.lastInput || ""],
-            this.props.library,
-            this.props.modules,
-            {}
-        );
+        const result = this.evaulateAndCatch();
         return <div className="Executor">
             Execute:
-            <input type="text" placeholder="Input" onInput={this.setValue}/>
+            <input type="text" placeholder="Input" onChange={this.setValue}/>
             Result:
             <span>{renderResult(result)}</span>
         </div>;
     }
 
-    @autobind
-    public setValue(e: any) {
-        this.setState({inputValue: e.target.value});
-        this.execute(e);
+    public evaulateAndCatch() {
+        try {
+            return Runtime.evaluate(
+                this.props.program.rootInvocation,
+                [this.state.lastInput || ""],
+                this.props.library,
+                this.props.modules,
+                {}
+            );
+        } catch (e) {
+            return e as TowerError;
+        }
     }
 
     @autobind
-    public execute(e: any) {
-        this.setState({lastInput: this.state.inputValue});
+    public setValue(e: any) {
+        const stringInput = e.target.value;
+        let finalInput;
+        if (isNaN(parseFloat(stringInput))) {
+            finalInput = stringInput;
+        } else {
+            finalInput = parseFloat(stringInput);
+        }
+        this.setState({lastInput: finalInput});
     }
 }

@@ -19,7 +19,7 @@ export function evaluate(invocation: Invocation, inputs: any[], library: object,
         }
     }
 
-    const returnValue = invokeImplementation(invocation, lazyArgs, library, modules);
+    const returnValue = invocation.invoke(lazyArgs, library, modules);
     resultMap[invocation.uniqueId] = returnValue;
     return returnValue;
 }
@@ -34,12 +34,15 @@ function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, r
             if (isInvocationGettingCorked(arg)) {
                 return corkInvocation(arg, library, modules);
             } else {
-                const evaluated = evaluate(arg, inputs, library, modules, resultMap);
-                if (evaluated.isLazyValue || evaluated instanceof Socket) {
-                    return evaluated;
-                } else {
-                    return LazyValue.wrap(evaluated);
-                }
+                return new LazyValue(() => {
+                    return evaluate(arg, inputs, library, modules, resultMap);
+                });
+                // const evaluated = evaluate(arg, inputs, library, modules, resultMap);
+                // if (evaluated.isLazyValue || evaluated instanceof Socket) {
+                //     return evaluated;
+                // } else {
+                //     return LazyValue.wrap(evaluated);
+                // }
             }
         } else if (arg.isConstant) {
             return LazyValue.wrap(arg.value);
@@ -71,17 +74,4 @@ function corkInvocation(invocation: Invocation, library: object, modules: object
         return invocation.invoke(finalArgs, library, modules);
     };
     return LazyValue.wrap(corked);
-}
-
-function invokeImplementation(invocation: Invocation, lazyArgs: any[], library: any, modules: object) {
-    // try {
-        // if (invocation.libraryFunction(library, modules).isEager) {
-        //     const evaluatedArgs = lazyArgs.map((arg) => arg.get());
-        //     return invocation.invoke(evaluatedArgs, library, modules);
-        // } else {
-        return invocation.invoke(lazyArgs, library, modules);
-    // }
-    // } catch (e) {
-    //     return e as TowerError;
-    // }
 }

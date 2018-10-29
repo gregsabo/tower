@@ -131,6 +131,11 @@ class App extends React.Component<{}, IState> {
 
     public onSocketClick(clickedSocket: any) {
         const invocation = this.invocationForHighlightedItem();
+        if (this.currentBrick().rootInvocation === clickedSocket) {
+            this.currentBrick().rootInvocation = invocation;
+            this.setState({});
+            return;
+        }
         this.recurseFindAndReplace(
             this.currentBrick().rootInvocation,
             clickedSocket,
@@ -141,6 +146,11 @@ class App extends React.Component<{}, IState> {
 
     public onCanClick(clickedInvocation: any) {
         log("Clicked a can", clickedInvocation);
+        if (this.currentBrick().rootInvocation === clickedInvocation) {
+            this.currentBrick().rootInvocation = new Socket();
+            this.setState({});
+            return;
+        }
         this.recurseFindAndReplace(
             this.currentBrick().rootInvocation,
             clickedInvocation,
