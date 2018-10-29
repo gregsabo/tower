@@ -35,6 +35,7 @@ class CanSearch extends React.Component<IProps, IState> {
                 ref={this.inputBox}
                 placeholder="Search the Library"
                 onKeyUp={onKeyUp}
+                autoFocus={true}
             />
             <div className="CanSearch-library">
                 {this.renderLibrary()}
@@ -44,9 +45,9 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public onKeyUp(e: any) {
         const selected = this.filteredLibrary()[0];
-        console.log(e.code);
+        console.log("CanSeach sees", e.nativeEvent.code);
         // TODO: what's the right code here?
-        if (e.code === "enter" && this.state.selectedId) {
+        if (e.nativeEvent.code === "Enter" && this.state.selectedId) {
             return this.props.onLibraryItemSelected(this.state.selectedId);
         }
         if (selected && selected.length > 0) {

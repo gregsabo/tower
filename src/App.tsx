@@ -129,8 +129,7 @@ class App extends React.Component<{}, IState> {
         this.setState({highlightedLibraryItemId: libraryItemId});
     }
 
-    public invocationForHighlightedItem() {
-        const itemId = this.state.highlightedLibraryItemId;
+    public invocationForLibraryItemId(itemId: string) {
         const libraryItem = Modules.maybeLookUpModule(
             this.state.library[itemId], this.state.modules
         );
@@ -149,7 +148,7 @@ class App extends React.Component<{}, IState> {
     }
 
     public onSocketClick(clickedSocket: any) {
-        const invocation = this.invocationForHighlightedItem();
+        const invocation = this.invocationForLibraryItemId(this.state.highlightedLibraryItemId);
         if (this.currentBrick().rootInvocation === clickedSocket) {
             this.currentBrick().rootInvocation = invocation;
             this.setState({});
@@ -185,14 +184,37 @@ class App extends React.Component<{}, IState> {
 
     @autobind
     public onCanInserted(canId: string, selectedLibraryItem: string) {
-        console.log("Trying to insert", canId, selectedLibraryItem);
+        const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
+        this.recurseFindAndReplaceById(
+            this.currentBrick().rootInvocation,
+            canId,
+            invocation
+        );
+        this.setState({
+            canCursorId: invocation.uniqueId,
+            editorMode: "cursor"
+        });
+    }
+
+    public recurseFindAndReplaceById(program: any, needle: string, invocation: any) {
+        if (program.args === undefined)  {
+            return false;
+        }
+        for (let i = 0; i < program.args.length; i++) {
+            if (program.args[i].uniqueId === needle) {
+                log("Replacing", program, i, invocation);
+                program.args[i] = invocation;
+                return true;
+            }
+            this.recurseFindAndReplaceById(program.args[i], needle, invocation);
+        }
+        return false;
     }
 
     public recurseFindAndReplace(program: any, needle: any, invocation: any) {
         if (program.args === undefined)  {
             return false;
         }
-        log("Checking", program.args.map((i: any) => i.uniqueId), needle.uniqueId);
         for (let i = 0; i < program.args.length; i++) {
             if (program.args[i].uniqueId === needle.uniqueId) {
                 log("Replacing", program, i, invocation);

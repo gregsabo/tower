@@ -116,12 +116,14 @@ export default class KeyboardController {
     }
 
     private onKeyDown(e: KeyboardEvent) {
-        console.log(e.code);
-        if (e.code === "KeyI") {
-            this.enterInsertMode();
-        }
         if (e.code === "Escape") {
             this.enterCursorMode();
+        }
+        if (this.app.state.editorMode !== "cursor") {
+            return true;
+        }
+        if (e.code === "KeyI") {
+            this.enterInsertMode();
         }
         if (e.code === "KeyD") {
             this.deleteSelectedCan();
@@ -138,6 +140,7 @@ export default class KeyboardController {
         if (e.code === "KeyL") {
             this.moveCursorTo(this.findCanToRightOfCursor());
         }
-
+        e.preventDefault();
+        return false;
     }
 }
