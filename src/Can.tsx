@@ -3,6 +3,7 @@ import "./Can.css";
 
 import Arg from "./Arg";
 import Cork from "./Cork";
+import Invocation from "./Invocation";
 import Socket from "./Socket";
 
 interface IProps {
@@ -88,8 +89,13 @@ class Can extends React.Component<IProps, {}> {
     }
 
     public renderName() {
-        if (this.props.contents.isInvocation) {
-            return this.props.contents.name(this.props.library, this.props.modules);
+        if (Invocation.describes(this.props.contents)) {
+            console.log("Getting name for", this.props.contents, this.props.library, this.props.modules);
+            return Invocation.getName(
+                this.props.contents,
+                this.props.library,
+                this.props.modules
+            );
         }
         if (this.props.contents instanceof Arg) {
             return "ARG";

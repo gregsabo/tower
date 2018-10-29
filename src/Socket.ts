@@ -1,3 +1,3 @@
 import makeType from "./Type";
 
-export default makeType("socket");
+export default makeType("socket", [], {});

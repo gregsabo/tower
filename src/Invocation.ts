@@ -1,31 +1,22 @@
 import * as Modules from "./Modules";
 import * as Runtime from "./Runtime";
+import makeType from "./Type";
 
-class Invocation {
-    public isInvocation = true;
-    public uniqueId = String(Math.random());
-    public implementationKey: string;
-    public args: any[];
+const Invocation = makeType("invocation", ["args", "implementationKey"], {
+    invoke: (self: any, args: any[], library: any, modules: any) => {
+        return Invocation.implementation(self, library, modules)(...args);
+    },
 
-    constructor(implementationKey: string, args: any[]) {
-        this.implementationKey = implementationKey;
-        this.args = args;
-    }
+    numArgs: (self: any, library: any, modules: any) => {
+        return Invocation.libraryFunction(self, library, modules) || 0;
+    },
 
-    public invoke(args: any[], library: any, modules: any) {
-        return this.implementation(library, modules)(...args);
-    }
+    getName: (self: any, library: any, modules: any) => {
+        return Invocation.libraryFunction(self, library, modules).name;
+    },
 
-    public numArgs(library: any, modules: any) {
-        return this.libraryFunction(library, modules) || 0;
-    }
-
-    public name(library: any, modules: any) {
-        return this.libraryFunction(library, modules).name;
-    }
-
-    public implementation(library: any, modules: any) {
-        const libraryFunction = this.libraryFunction(library, modules)
+    implementation: (self: any, library: any, modules: any) => {
+        const libraryFunction = Invocation.libraryFunction(self, library, modules);
         if (libraryFunction.rootInvocation) {
             return (...args: any[]) => {
                 return Runtime.evaluate(
@@ -39,23 +30,23 @@ class Invocation {
         } else {
             return libraryFunction.implementation;
         }
-    }
+    },
 
-    public maybeLookupModule(item: any, modules: any) {
+    maybeLookupModule: (item: any, modules: any) => {
         if (item.moduleKey && item.brickKey) {
             return Modules.getBrickFromModules(
                 item.moduleKey, item.brickKey, modules
-            )
+            );
         } else {
             return item;
         }
-    }
+    },
 
-    public libraryFunction(library: any, modules: any) {
-        return this.maybeLookupModule(
-            library[this.implementationKey], modules
+    libraryFunction: (self: any, library: any, modules: any) => {
+        return Invocation.maybeLookupModule(
+            library[self.implementationKey], modules
         );
     }
-}
+});
 
 export default Invocation;

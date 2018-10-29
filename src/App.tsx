@@ -15,17 +15,29 @@ import * as Modules from "./Modules";
 import Program from "./Program";
 import Socket from "./Socket";
 
-const CAPITALIZE_SENTENCE = new Invocation("join", [
-    new Invocation("map", [
-        new Invocation("split", [
-            new Arg()
-        ]),
-        new Invocation("capitalize", [
-            new Cork()
-        ])
-    ]),
-    new Constant(" ")
-]);
+const CAPITALIZE_SENTENCE = Invocation.create({
+    args: [
+        Invocation.create({
+            args: [
+                Invocation.create({
+                    args: [
+                        new Arg()
+                    ],
+                    implementationKey: "split"
+                }),
+                Invocation.create({
+                    args: [
+                        new Cork()
+                    ],
+                    implementationKey: "capitalize"
+                })
+            ],
+            implementationKey: "map"
+        }),
+        new Constant(" ")
+    ],
+    implementationKey: "join"
+});
 
 interface IState {
     highlightedLibraryItemId: string;
@@ -124,9 +136,12 @@ class App extends React.Component<{}, IState> {
         }
         const args = [];
         for (let i = 0; i < libraryItem.numArgs; i++) {
-            args.push(Socket.create());
+            args.push(Socket.create({}));
         }
-        return new Invocation(itemId, args);
+        return Invocation.create({
+            args,
+            implementationKey: itemId
+        });
     }
 
     public onSocketClick(clickedSocket: any) {
@@ -147,14 +162,14 @@ class App extends React.Component<{}, IState> {
     public onCanClick(clickedInvocation: any) {
         log("Clicked a can", clickedInvocation);
         if (this.currentBrick().rootInvocation === clickedInvocation) {
-            this.currentBrick().rootInvocation = Socket.create();
+            this.currentBrick().rootInvocation = Socket.create({});
             this.setState({});
             return;
         }
         this.recurseFindAndReplace(
             this.currentBrick().rootInvocation,
             clickedInvocation,
-            Socket.create()
+            Socket.create({})
         );
         this.setState({});
     }
