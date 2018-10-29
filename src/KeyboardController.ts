@@ -1,4 +1,5 @@
 import {findById} from "./ProgramTraversal";
+import Socket from "./Socket";
 
 const log = console.log;
 
@@ -89,7 +90,42 @@ export default class KeyboardController {
         });
     }
 
+    public enterInsertMode() {
+        this.app.setState({
+            editorMode: "insert"
+        });
+    }
+
+    public enterCursorMode() {
+        this.app.setState({
+            editorMode: "cursor"
+        });
+    }
+
+    public deleteSelectedCan() {
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
+        if (!result) {
+            throw new Error("Couldn't find can to delete.");
+        }
+        const parent = result.path[result.path.length - 1];
+        const index = parent.args.indexOf(result.invocation);
+        parent.args[index] = Socket.create({});
+        this.app.setState({
+            canCursorId: parent.args[index].uniqueId
+        });
+    }
+
     private onKeyDown(e: KeyboardEvent) {
+        console.log(e.code);
+        if (e.code === "KeyI") {
+            this.enterInsertMode();
+        }
+        if (e.code === "Escape") {
+            this.enterCursorMode();
+        }
+        if (e.code === "KeyD") {
+            this.deleteSelectedCan();
+        }
         if (e.code === "KeyJ") {
             this.moveCursorTo(this.findCanBelowCursor());
         }

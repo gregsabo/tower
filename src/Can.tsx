@@ -1,15 +1,19 @@
+import autobind from "autobind-decorator";
 import * as React from "react";
 import "./Can.css";
 
 import Arg from "./Arg";
+import CanSearch from "./CanSearch";
 import Cork from "./Cork";
 import Invocation from "./Invocation";
 import Socket from "./Socket";
 
 interface IProps {
     contents: any;
+    editorMode: string;
     onSocketClick: any;
     onCanClick: any;
+    onCanInserted: any;
     canCursorId: string;
     library: any;
     modules: any;
@@ -41,6 +45,7 @@ class Can extends React.Component<IProps, {}> {
 
     public renderBody() {
         return <div>
+            {this.maybeRenderCanSearch()}
             <div className="Can-argList">
                 {this.renderArgs()}
             </div>
@@ -55,6 +60,24 @@ class Can extends React.Component<IProps, {}> {
         </div>;
     }
 
+    public maybeRenderCanSearch() {
+        if (this.props.editorMode !== "insert") {
+            return null;
+        }
+        if (this.props.contents.uniqueId !== this.props.canCursorId) {
+            return null;
+        }
+        return <CanSearch
+            library={this.props.library}
+            modules={this.props.modules}
+            onLibraryItemSelected={this.onLibraryItemSelected}/>;
+    }
+
+    @autobind
+    public onLibraryItemSelected(selected: string) {
+        return this.props.onCanInserted(this.props.contents.uniqueId, selected);
+    }
+
     public renderArgs() {
         if (!this.props.contents.args) {
             return null;
@@ -64,8 +87,10 @@ class Can extends React.Component<IProps, {}> {
                 <Can
                     canCursorId={this.props.canCursorId}
                     contents={item}
+                    editorMode={this.props.editorMode}
                     onSocketClick={this.props.onSocketClick}
                     onCanClick={this.props.onCanClick}
+                    onCanInserted={this.props.onCanInserted}
                     library={this.props.library}
                     modules={this.props.modules}
                 />
@@ -84,6 +109,7 @@ class Can extends React.Component<IProps, {}> {
             className = "Can-socket Can-socket--isSelected";
         }
         return <div className={className}>
+            {this.maybeRenderCanSearch()}
             <div className="Can-socketDisplay" onClick={onClickedMe}/>
         </div>;
     }

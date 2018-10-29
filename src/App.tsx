@@ -2,7 +2,7 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import "./App.css";
 import Arg from "./Arg";
-import CanSearch from "./CanSearch";
+// import CanSearch from "./CanSearch";
 import Constant from "./Constant";
 import Cork from "./Cork";
 import Executor from "./Executor";
@@ -42,6 +42,7 @@ const CAPITALIZE_SENTENCE = Invocation.create({
 interface IState {
     highlightedLibraryItemId: string;
     canCursorId: string;
+    editorMode: string;
     inputs: InputConfiguration[];
     library: any;
     modules: any;
@@ -73,6 +74,7 @@ class App extends React.Component<{}, IState> {
             canCursorId: CAPITALIZE_SENTENCE.uniqueId,
             currentBrickId: "sentence_cap",
             currentModuleId: "basic",
+            editorMode: "cursor",
             highlightedLibraryItemId: "string",
             inputs: [new InputConfiguration(0)],
             library: Library,
@@ -81,7 +83,7 @@ class App extends React.Component<{}, IState> {
     }
 
     public render() {
-        const highlight = this.highlightLibraryItem.bind(this);
+        // const highlight = this.highlightLibraryItem.bind(this);
         const onCanClick = this.onCanClick.bind(this);
         if (this.state === null) {
             return null;
@@ -89,17 +91,19 @@ class App extends React.Component<{}, IState> {
         const onSocketClick = this.onSocketClick.bind(this);
         return (
             <div className="App" style={{display: "flex"}}>
-                <CanSearch library={Library} modules={this.state.modules} onLibraryItemHighlighted={highlight}/>
+                {/* <CanSearch library={Library} modules={this.state.modules} onLibraryItemHighlighted={highlight}/> */}
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
                     <Executor program={this.currentBrick()} library={this.state.library} modules={this.state.modules}/>
                     <Program
                         contents={this.currentBrick()}
+                        editorMode={this.state.editorMode}
                         library={this.state.library}
                         modules={this.state.modules}
                         onSocketClick={onSocketClick}
                         onBrickNameChange={this.onBrickNameChange}
                         onCanClick={onCanClick}
+                        onCanInserted={this.onCanInserted}
                         canCursorId={this.state.canCursorId}
                     />
                 </div>
@@ -177,6 +181,11 @@ class App extends React.Component<{}, IState> {
     @autobind
     public onInputsChanged(inputs: InputConfiguration[]) {
         this.setState({ inputs });
+    }
+
+    @autobind
+    public onCanInserted(canId: string, selectedLibraryItem: string) {
+        console.log("Trying to insert", canId, selectedLibraryItem);
     }
 
     public recurseFindAndReplace(program: any, needle: any, invocation: any) {

@@ -6,7 +6,7 @@ import * as Modules from "./Modules";
 interface IProps {
     library: any;
     modules: any;
-    onLibraryItemHighlighted: any;
+    onLibraryItemSelected: any;
 }
 
 interface IState {
@@ -30,7 +30,12 @@ class CanSearch extends React.Component<IProps, IState> {
     public render() {
         const onKeyUp = this.onKeyUp.bind(this);
         return <div className="CanSearch">
-            <input type="text" ref={this.inputBox} placeholder="Search the Library" onKeyUp={onKeyUp}/>
+            <input
+                type="text"
+                ref={this.inputBox}
+                placeholder="Search the Library"
+                onKeyUp={onKeyUp}
+            />
             <div className="CanSearch-library">
                 {this.renderLibrary()}
             </div>
@@ -39,12 +44,16 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public onKeyUp(e: any) {
         const selected = this.filteredLibrary()[0];
+        console.log(e.code);
+        // TODO: what's the right code here?
+        if (e.code === "enter" && this.state.selectedId) {
+            return this.props.onLibraryItemSelected(this.state.selectedId);
+        }
         if (selected && selected.length > 0) {
             this.setState({
                 filter: e.target.value,
                 selectedId: selected[0]
             });
-            this.props.onLibraryItemHighlighted(selected[0], selected[1]);
         } else {
             this.setState({ filter: e.target.value });
         }

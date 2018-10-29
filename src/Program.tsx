@@ -5,8 +5,10 @@ import "./Program.css";
 
 interface IProps {
     contents: any;
+    editorMode: string;
     onSocketClick: any;
     onCanClick: any;
+    onCanInserted: any;
     onBrickNameChange: any;
     canCursorId: string;
     library: any;
@@ -24,8 +26,10 @@ class Program extends React.Component<IProps, {}> {
             <div style={style}>
                 <Can
                     contents={this.props.contents.rootInvocation}
+                    editorMode={this.props.editorMode}
                     onSocketClick={this.props.onSocketClick}
                     onCanClick={this.props.onCanClick}
+                    onCanInserted={this.props.onCanInserted}
                     canCursorId={this.props.canCursorId}
                     library={this.props.library}
                     modules={this.props.modules}
