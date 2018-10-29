@@ -1,3 +1,3 @@
-export default class Socket {
-    public uniqueId = String(Math.random());
-}
+import makeType from "./Type";
+
+export default makeType("socket");

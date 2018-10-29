@@ -16,7 +16,7 @@ interface IState {
 }
 
 function renderResult(result: any) {
-    if (result instanceof Socket) {
+    if (Socket.describes(result)) {
         return "<unfilled socket>";
     } else if (result instanceof Error) {
         return `Error: ${result.message}`;

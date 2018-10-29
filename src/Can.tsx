@@ -20,7 +20,7 @@ class Can extends React.Component<IProps, {}> {
     public contents: any;
 
     public render() {
-        if (this.props.contents instanceof Socket) {
+        if (Socket.describes(this.props.contents)) {
             return this.renderSocket();
         }
         const onCanClick = (e: any) => {

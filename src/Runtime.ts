@@ -11,10 +11,10 @@ export function evaluate(invocation: Invocation, inputs: any[], library: object,
     }
     const lazyArgs = makeLazyArgs(invocation.args, inputs, library, modules, resultMap);
     for (const arg of lazyArgs) {
-        if (arg instanceof Socket) {
-            return new Socket();
-        }
         if (arg instanceof TowerError) {
+            return arg;
+        }
+        if (Socket.describes(arg)) {
             return arg;
         }
     }
@@ -26,7 +26,7 @@ export function evaluate(invocation: Invocation, inputs: any[], library: object,
 
 function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, resultMap: object) {
     return args.map((arg: any) => {
-        if (arg instanceof Socket) {
+        if (Socket.describes(arg)) {
             return arg;
         } else if (arg instanceof Arg) {
             return LazyValue.wrap(inputs[0]);
@@ -37,12 +37,6 @@ function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, r
                 return new LazyValue(() => {
                     return evaluate(arg, inputs, library, modules, resultMap);
                 });
-                // const evaluated = evaluate(arg, inputs, library, modules, resultMap);
-                // if (evaluated.isLazyValue || evaluated instanceof Socket) {
-                //     return evaluated;
-                // } else {
-                //     return LazyValue.wrap(evaluated);
-                // }
             }
         } else if (arg.isConstant) {
             return LazyValue.wrap(arg.value);

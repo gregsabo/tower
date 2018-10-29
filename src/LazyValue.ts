@@ -30,7 +30,7 @@ export default class LazyValue {
             this.value = this.evaluationFunction();
             this.evaluated = true;
         }
-        if (this.value instanceof Socket) {
+        if (Socket.describes(this.value)) {
             throw new TowerError("Empty socket.");
         }
         if (this.value instanceof TowerError) {

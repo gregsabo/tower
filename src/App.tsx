@@ -124,7 +124,7 @@ class App extends React.Component<{}, IState> {
         }
         const args = [];
         for (let i = 0; i < libraryItem.numArgs; i++) {
-            args.push(new Socket());
+            args.push(Socket.create());
         }
         return new Invocation(itemId, args);
     }
@@ -147,14 +147,14 @@ class App extends React.Component<{}, IState> {
     public onCanClick(clickedInvocation: any) {
         log("Clicked a can", clickedInvocation);
         if (this.currentBrick().rootInvocation === clickedInvocation) {
-            this.currentBrick().rootInvocation = new Socket();
+            this.currentBrick().rootInvocation = Socket.create();
             this.setState({});
             return;
         }
         this.recurseFindAndReplace(
             this.currentBrick().rootInvocation,
             clickedInvocation,
-            new Socket()
+            Socket.create()
         );
         this.setState({});
     }
