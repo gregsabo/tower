@@ -47,7 +47,7 @@ function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, r
 
 function isInvocationGettingCorked(invocation: any) {
     for (const arg of invocation.args) {
-        if (arg instanceof Cork) {
+        if (Cork.describes(arg)) {
             return true;
         }
     }
@@ -58,7 +58,7 @@ function corkInvocation(invocation: any, library: object, modules: object) {
     const corked = (...args: any[]) => {
         let numCorksSeen = 0;
         const finalArgs = invocation.args.map((arg: any, i: number) => {
-            if (arg instanceof Cork) {
+            if (Cork.describes(arg)) {
                 const result = args[i - numCorksSeen];
                 numCorksSeen += 1;
                 return LazyValue.wrap(result);

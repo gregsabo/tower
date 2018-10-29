@@ -1,3 +1,3 @@
-export default class Cork {
-    public uniqueId = String(Math.random());
-}
+import makeType from "./Type";
+
+export default makeType("cork", [], {});

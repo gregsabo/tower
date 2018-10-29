@@ -27,7 +27,7 @@ const CAPITALIZE_SENTENCE = Invocation.create({
                 }),
                 Invocation.create({
                     args: [
-                        new Cork()
+                        Cork.create({})
                     ],
                     implementationKey: "capitalize"
                 })

@@ -34,7 +34,7 @@ const Library = {
         numArgs: 2
     },
     cork: {
-        invocationGenerator: () => new Cork(),
+        invocationGenerator: () => Cork.create({}),
         isEager: true,
         name: "cork"
     },

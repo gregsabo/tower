@@ -90,7 +90,6 @@ class Can extends React.Component<IProps, {}> {
 
     public renderName() {
         if (Invocation.describes(this.props.contents)) {
-            console.log("Getting name for", this.props.contents, this.props.library, this.props.modules);
             return Invocation.getName(
                 this.props.contents,
                 this.props.library,
@@ -100,7 +99,7 @@ class Can extends React.Component<IProps, {}> {
         if (Arg.describes(this.props.contents)) {
             return "ARG";
         }
-        if (this.props.contents instanceof Cork) {
+        if (Cork.describes(this.props.contents)) {
             return "CORK";
         }
         const contents = this.props.contents.value;
