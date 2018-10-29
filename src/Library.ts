@@ -88,13 +88,13 @@ const Library = {
         invocationGenerator: () => {
             const givenString = window.prompt("Enter the float.");
             if (givenString === null) {
-                return new Constant(0);
+                return Constant.create({value: 0});
             }
             const given = Number.parseFloat(givenString);
             if (Number.isNaN(given)) {
-                return new Constant(0);
+                return Constant.create({value: 0});
             }
-            return new Constant(given);
+            return Constant.create({value: given});
         },
         isEager: true,
         name: "number"
@@ -106,7 +106,7 @@ const Library = {
         numArgs: 1
     },
     stringLiteral: {
-        invocationGenerator: () => new Constant(window.prompt("Enter the string.")),
+        invocationGenerator: () => Constant.create({value: window.prompt("Enter the string.")}),
         isEager: true,
         name: "string"
     },

@@ -1,9 +1,3 @@
-export default class Constant {
-    public uniqueId = String(Math.random());
-    public value: any;
-    public isConstant = true;
+import makeType from "./Type";
 
-    public constructor(value: any) {
-        this.value = value;
-    }
-}
+export default makeType("constant", ["value"], {});

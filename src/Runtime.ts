@@ -1,4 +1,5 @@
 import Arg from "./Arg";
+import Constant from "./Constant";
 import Cork from "./Cork";
 import Invocation from "./Invocation";
 import LazyValue from "./LazyValue";
@@ -38,7 +39,7 @@ function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, r
                     return evaluate(arg, inputs, library, modules, resultMap);
                 });
             }
-        } else if (arg.isConstant) {
+        } else if (Constant.describes(arg)) {
             return LazyValue.wrap(arg.value);
         }
     });

@@ -34,7 +34,7 @@ const CAPITALIZE_SENTENCE = Invocation.create({
             ],
             implementationKey: "map"
         }),
-        new Constant(" ")
+        Constant.create({value: " "})
     ],
     implementationKey: "join"
 });
