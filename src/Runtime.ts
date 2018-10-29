@@ -29,7 +29,7 @@ function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, r
     return args.map((arg: any) => {
         if (Socket.describes(arg)) {
             return arg;
-        } else if (arg instanceof Arg) {
+        } else if (Arg.describes(arg)) {
             return LazyValue.wrap(inputs[0]);
         } else if (Invocation.describes(arg)) {
             if (isInvocationGettingCorked(arg)) {

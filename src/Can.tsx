@@ -97,7 +97,7 @@ class Can extends React.Component<IProps, {}> {
                 this.props.modules
             );
         }
-        if (this.props.contents instanceof Arg) {
+        if (Arg.describes(this.props.contents)) {
             return "ARG";
         }
         if (this.props.contents instanceof Cork) {

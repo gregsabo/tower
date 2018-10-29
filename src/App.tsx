@@ -21,7 +21,7 @@ const CAPITALIZE_SENTENCE = Invocation.create({
             args: [
                 Invocation.create({
                     args: [
-                        new Arg()
+                        Arg.create({})
                     ],
                     implementationKey: "split"
                 }),

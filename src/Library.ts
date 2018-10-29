@@ -10,7 +10,7 @@ const Library = {
         numArgs: 2
     },
     arg: {
-        invocationGenerator: () => new Arg(),
+        invocationGenerator: () => Arg.create({}),
         isEager: true,
         name: "arg"
     },
