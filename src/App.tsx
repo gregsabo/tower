@@ -14,6 +14,7 @@ import Library from "./Library";
 import * as Modules from "./Modules";
 import Program from "./Program";
 import Socket from "./Socket";
+import UndoManager from "./UndoManager";
 
 const CAPITALIZE_SENTENCE = Invocation.create({
     args: [
@@ -52,9 +53,12 @@ interface IState {
 const log = console.log;
 
 class App extends React.Component<{}, IState> {
+    public undoManager: UndoManager;
+
     public componentDidMount() {
         const keyboardController = new KeyboardController(this);
         keyboardController.registerKeyEvents();
+        this.undoManager = new UndoManager(10);
         const modules = {
             basic: {
                 bricks: {
@@ -67,6 +71,7 @@ class App extends React.Component<{}, IState> {
                 name: "Starter Module"
             }
         };
+        this.undoManager.remember(modules);
         Modules.importModulesIntoLibrary(modules, Library);
         log("Library is now", Library);
 
@@ -177,6 +182,27 @@ class App extends React.Component<{}, IState> {
         this.setState({});
     }
 
+    public modulesChanged() {
+        this.setState({});
+        this.undoManager.remember(this.state.modules);
+    }
+
+    public undo() {
+        if (this.undoManager.undoAble()) {
+            this.setState({
+                modules: this.undoManager.undo()
+            });
+        }
+    }
+
+    public redo() {
+        if (this.undoManager.redoAble()) {
+            this.setState({
+                modules: this.undoManager.redo()
+            });
+        }
+    }
+
     @autobind
     public onInputsChanged(inputs: InputConfiguration[]) {
         this.setState({ inputs });
@@ -194,6 +220,7 @@ class App extends React.Component<{}, IState> {
             canCursorId: invocation.uniqueId,
             editorMode: "cursor"
         });
+        this.modulesChanged();
     }
 
     public recurseFindAndReplaceById(program: any, needle: string, invocation: any) {

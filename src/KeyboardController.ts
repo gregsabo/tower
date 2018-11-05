@@ -113,32 +113,47 @@ export default class KeyboardController {
         this.app.setState({
             canCursorId: parent.args[index].uniqueId
         });
+        this.app.modulesChanged();
     }
 
     private onKeyDown(e: KeyboardEvent) {
+        if (e.metaKey) {
+            // Don't interfere with browser shortcuts
+            return true;
+        }
         if (e.code === "Escape") {
             this.enterCursorMode();
         }
         if (this.app.state.editorMode !== "cursor") {
             return true;
         }
-        if (e.code === "KeyI") {
-            this.enterInsertMode();
-        }
-        if (e.code === "KeyD") {
-            this.deleteSelectedCan();
-        }
-        if (e.code === "KeyJ") {
-            this.moveCursorTo(this.findCanBelowCursor());
-        }
-        if (e.code === "KeyK") {
-            this.moveCursorTo(this.findCanAboveCursor());
-        }
-        if (e.code === "KeyH") {
-            this.moveCursorTo(this.findCanToLeftOfCursor());
-        }
-        if (e.code === "KeyL") {
-            this.moveCursorTo(this.findCanToRightOfCursor());
+        switch (e.code) {
+            case "KeyU":
+                this.app.undo();
+                break;
+            case "KeyY":
+                this.app.redo();
+                break;
+            case "KeyI":
+                this.enterInsertMode();
+                break;
+            case "KeyD":
+                this.deleteSelectedCan();
+                break;
+            case "KeyJ":
+                this.moveCursorTo(this.findCanBelowCursor());
+                break;
+            case "KeyK":
+                this.moveCursorTo(this.findCanAboveCursor());
+                break;
+            case "KeyH":
+                this.moveCursorTo(this.findCanToLeftOfCursor());
+                break;
+            case "KeyL":
+                this.moveCursorTo(this.findCanToRightOfCursor());
+                break;
+            default:
+                return true;
         }
         e.preventDefault();
         return false;
