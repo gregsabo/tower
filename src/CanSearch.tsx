@@ -45,7 +45,6 @@ class CanSearch extends React.Component<IProps, IState> {
 
     public onKeyUp(e: any) {
         const selected = this.filteredLibrary()[0];
-        console.log("CanSeach sees", e.nativeEvent.code);
         // TODO: what's the right code here?
         if (e.nativeEvent.code === "Enter" && this.state.selectedId) {
             return this.props.onLibraryItemSelected(this.state.selectedId);

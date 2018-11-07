@@ -84,6 +84,12 @@ const Library = {
         name: "multiply",
         numArgs: 2
     },
+    newBrick: {
+        implementation: () => new Error("Uninitialized brick"),
+        isEager: true,
+        name: "newBrick",
+        numArgs: 0
+    },
     numberLiteral: {
         invocationGenerator: () => {
             const givenString = window.prompt("Enter the float.");
@@ -98,6 +104,18 @@ const Library = {
         },
         isEager: true,
         name: "number"
+    },
+    range: {
+        implementation: (a: any) => {
+            const outArray = [];
+            for (let i = 1; i <= a; i++) {
+                outArray.push(i);
+            }
+            return outArray;
+        },
+        isEager: true,
+        name: "range",
+        numArgs: 1
     },
     split: {
         implementation: (a: any) => a.get().split(" "),

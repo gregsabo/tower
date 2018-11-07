@@ -135,6 +135,16 @@ class App extends React.Component<{}, IState> {
     }
 
     public invocationForLibraryItemId(itemId: string) {
+        if (itemId === "newBrick") {
+            itemId = Modules.createNewBrick(
+                this.state.currentModuleId,
+                this.state.modules
+            );
+            Modules.importModulesIntoLibrary(
+                this.state.modules,
+                this.state.library
+            );
+        }
         const libraryItem = Modules.maybeLookUpModule(
             this.state.library[itemId], this.state.modules
         );
@@ -214,8 +224,9 @@ class App extends React.Component<{}, IState> {
         const rootInvocation = this.currentBrick().rootInvocation;
         if (rootInvocation.uniqueId === canId) {
             // it's the root, replace it.
-            this.currentBrick().rootInvocation = invocation
+            this.currentBrick().rootInvocation = invocation;
             this.setState({
+                canCursorId: invocation.uniqueId,
                 editorMode: "cursor"
             });
             return this.modulesChanged();

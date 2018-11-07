@@ -1,3 +1,5 @@
+import Socket from "./Socket";
+
 export function makeLibraryKey(moduleKey: any, brickKey: any) {
     return moduleKey + "::" + brickKey;
 }
@@ -24,8 +26,18 @@ export function maybeLookUpModule(libraryItem: any, modules: object) {
             libraryItem.moduleKey,
             libraryItem.brickKey,
             modules
-        )
+        );
     } else {
         return libraryItem;
     }
+}
+
+export function createNewBrick(moduleKey: string, modules: any) {
+    const newBrickId = String(Math.random());
+    modules[moduleKey].bricks[newBrickId] = {
+        name: `New Brick ${newBrickId}`,
+        numArgs: 1,
+        rootInvocation: Socket.create({})
+    };
+    return makeLibraryKey(moduleKey, newBrickId);
 }
