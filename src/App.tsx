@@ -211,6 +211,15 @@ class App extends React.Component<{}, IState> {
     @autobind
     public onCanInserted(canId: string, selectedLibraryItem: string) {
         const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
+        const rootInvocation = this.currentBrick().rootInvocation;
+        if (rootInvocation.uniqueId === canId) {
+            // it's the root, replace it.
+            this.currentBrick().rootInvocation = invocation
+            this.setState({
+                editorMode: "cursor"
+            });
+            return this.modulesChanged();
+        }
         this.recurseFindAndReplaceById(
             this.currentBrick().rootInvocation,
             canId,

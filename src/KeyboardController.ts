@@ -32,6 +32,7 @@ export default class KeyboardController {
 
     public findCanBelowCursor() {
         const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
+        console.log("Trying to find below cursor", result);
         if (!result) {
             log("No result found. Assuming bottom.");
             return this.app.currentBrick().rootInvocation.uniqueId;
@@ -108,10 +109,20 @@ export default class KeyboardController {
             throw new Error("Couldn't find can to delete.");
         }
         const parent = result.path[result.path.length - 1];
-        const index = parent.args.indexOf(result.invocation);
-        parent.args[index] = Socket.create({});
+        if (parent) {
+            const index = parent.args.indexOf(result.invocation);
+            parent.args[index] = Socket.create({});
+            this.app.setState({
+                canCursorId: parent.args[index].uniqueId
+            });
+        } else {
+            this.app.currentBrick().rootInvocation = Socket.create({});
+            this.app.setState({
+                canCursorId: this.app.currentBrick().rootInvocation.uniqueId
+            });
+        }
         this.app.setState({
-            canCursorId: parent.args[index].uniqueId
+            editorMode: "cursor"
         });
         this.app.modulesChanged();
     }
@@ -125,6 +136,9 @@ export default class KeyboardController {
             this.enterCursorMode();
         }
         if (this.app.state.editorMode !== "cursor") {
+            return true;
+        }
+        if (e.target !== window.document.body) {
             return true;
         }
         switch (e.code) {
