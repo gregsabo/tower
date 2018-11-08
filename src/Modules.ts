@@ -35,6 +35,8 @@ export function maybeLookUpModule(libraryItem: any, modules: object) {
 export function createNewBrick(moduleKey: string, modules: any) {
     const newBrickId = String(Math.random());
     modules[moduleKey].bricks[newBrickId] = {
+        brickKey: newBrickId,
+        moduleKey,
         name: `New Brick ${newBrickId}`,
         numArgs: 1,
         rootInvocation: Socket.create({})

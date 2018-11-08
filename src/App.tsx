@@ -63,6 +63,8 @@ class App extends React.Component<{}, IState> {
             basic: {
                 bricks: {
                     sentence_cap: {
+                        brickKey: "sentence_cap",
+                        moduleKey: "basic",
                         name: "Sentence Capitalization",
                         numArgs: 1,
                         rootInvocation: CAPITALIZE_SENTENCE

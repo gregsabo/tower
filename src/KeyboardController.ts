@@ -1,3 +1,4 @@
+import Invocation from "./Invocation";
 import {findById} from "./ProgramTraversal";
 import Socket from "./Socket";
 
@@ -127,6 +128,19 @@ export default class KeyboardController {
         this.app.modulesChanged();
     }
 
+    public visitSelectedBrick() {
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
+        console.log("Got result", result, "and impl key", result.invocation.implementationKey);
+        const brick = Invocation.libraryFunction(
+            result.invocation, this.app.state.library, this.app.state.modules
+        );
+        console.log("Got module", brick, "key", brick.moduleKey)
+        this.app.setState({
+            currentBrickId: brick.brickKey,
+            currentModuleId: brick.moduleKey
+        });
+    }
+
     private onKeyDown(e: KeyboardEvent) {
         if (e.metaKey) {
             // Don't interfere with browser shortcuts
@@ -153,6 +167,9 @@ export default class KeyboardController {
                 break;
             case "KeyD":
                 this.deleteSelectedCan();
+                break;
+            case "KeyM":
+                this.visitSelectedBrick();
                 break;
             case "KeyJ":
                 this.moveCursorTo(this.findCanBelowCursor());
