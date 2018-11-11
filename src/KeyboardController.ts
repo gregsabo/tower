@@ -1,14 +1,17 @@
 import Invocation from "./Invocation";
 import {findById} from "./ProgramTraversal";
 import Socket from "./Socket";
+import History from "./History";
 
 const log = console.log;
 
 export default class KeyboardController {
+    public history: History;
     private app: any;
 
     constructor(app: any) {
         this.app = app;
+        this.history = new History();
     }
 
     public registerKeyEvents() {
@@ -139,6 +142,28 @@ export default class KeyboardController {
             currentBrickId: brick.brickKey,
             currentModuleId: brick.moduleKey
         });
+        this.history.remember(
+            brick.moduleKey,
+            brick.brickKey
+        );
+    }
+
+    public goBack() {
+        const current = this.history.goBack();
+        console.log("going back", current);
+        this.app.setState({
+            currentBrickId: current.brickKey,
+            currentModuleId: current.moduleKey
+        });
+    }
+
+    public goForwards() {
+        const current = this.history.goForwards();
+        console.log("going forwards", current);
+        this.app.setState({
+            currentBrickId: current.brickKey,
+            currentModuleId: current.moduleKey
+        });
     }
 
     private onKeyDown(e: KeyboardEvent) {
@@ -170,6 +195,12 @@ export default class KeyboardController {
                 break;
             case "KeyM":
                 this.visitSelectedBrick();
+                break;
+            case "KeyE":
+                this.goBack();
+                break;
+            case "KeyR":
+                this.goForwards();
                 break;
             case "KeyJ":
                 this.moveCursorTo(this.findCanBelowCursor());

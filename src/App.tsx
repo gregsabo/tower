@@ -87,6 +87,10 @@ class App extends React.Component<{}, IState> {
             library: Library,
             modules
         });
+        keyboardController.history.remember(
+            "basic",
+            "sentence_cap"
+        );
     }
 
     public render() {

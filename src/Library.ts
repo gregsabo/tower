@@ -9,6 +9,12 @@ const Library = {
         name: "add",
         numArgs: 2
     },
+    and: {
+        implementation: (a: any, b: any) => a.get() && b.get(0),
+        isEager: true,
+        name: "and",
+        numArgs: 2
+    },
     arg: {
         invocationGenerator: () => Arg.create({}),
         isEager: true,
@@ -76,6 +82,12 @@ const Library = {
         implementation: (a: any, func: any) => a.get().map(func.get()),
         isEager: true,
         name: "map",
+        numArgs: 2
+    },
+    mo: {
+        implementation: (a: any, b: any) => a.get() % b.get(0),
+        isEager: true,
+        name: "modulo",
         numArgs: 2
     },
     multiply: {

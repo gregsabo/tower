@@ -23,6 +23,12 @@ const style = {
 class Program extends React.Component<IProps, {}> {
     public render() {
         return <div>
+            <input
+                className="App-brickNameInput"
+                placeholder="Untitled Brick"
+                onChange={this.onBrickNameChange}
+                value={this.props.contents.name}
+            />
             <div style={style}>
                 <Can
                     contents={this.props.contents.rootInvocation}
@@ -35,12 +41,6 @@ class Program extends React.Component<IProps, {}> {
                     modules={this.props.modules}
                 />
             </div>
-            <input
-                className="App-brickNameInput"
-                placeholder="Untitled Brick"
-                onChange={this.onBrickNameChange}
-                value={this.props.contents.name}
-            />
         </div>;
     }
 
