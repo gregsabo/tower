@@ -16,10 +16,17 @@ interface IState {
 }
 
 function renderResult(result: any) {
+    console.log("Rendering result", result);
     if (Socket.describes(result)) {
         return "<unfilled socket>";
     } else if (result instanceof Error) {
         return `Error: ${result.message}`;
+    } else if (Array.isArray(result)) {
+        return <table>
+            <tr>
+                {result.map((item, i) => <td key={i}>{item}</td>)}
+            </tr>
+        </table>
     } else {
         return result;
     }

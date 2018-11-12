@@ -120,7 +120,7 @@ const Library = {
     range: {
         implementation: (a: any) => {
             const outArray = [];
-            for (let i = 1; i <= a; i++) {
+            for (let i = 1; i <= a.get(); i++) {
                 outArray.push(i);
             }
             return outArray;

@@ -59,7 +59,7 @@ class App extends React.Component<{}, IState> {
         const keyboardController = new KeyboardController(this);
         keyboardController.registerKeyEvents();
         this.undoManager = new UndoManager(10);
-        const modules = {
+        let modules = {
             basic: {
                 bricks: {
                     sentence_cap: {
@@ -73,7 +73,11 @@ class App extends React.Component<{}, IState> {
                 name: "Starter Module"
             }
         };
-        this.undoManager.remember(modules);
+
+        if (window.localStorage.modules) {
+            modules = JSON.parse(window.localStorage.modules)
+        }
+
         Modules.importModulesIntoLibrary(modules, Library);
         log("Library is now", Library);
 
@@ -87,6 +91,9 @@ class App extends React.Component<{}, IState> {
             library: Library,
             modules
         });
+
+        this.undoManager.remember(modules);
+
         keyboardController.history.remember(
             "basic",
             "sentence_cap"
@@ -201,6 +208,7 @@ class App extends React.Component<{}, IState> {
     public modulesChanged() {
         this.setState({});
         this.undoManager.remember(this.state.modules);
+        window.localStorage.modules = JSON.stringify(this.state.modules)
     }
 
     public undo() {
