@@ -4,6 +4,7 @@ import "./Can.css";
 
 import Arg from "./Arg";
 import CanSearch from "./CanSearch";
+import Constant from "./Constant";
 import Cork from "./Cork";
 import Invocation from "./Invocation";
 import Socket from "./Socket";
@@ -25,16 +26,22 @@ class Can extends React.Component<IProps, {}> {
     public contents: any;
 
     public render() {
-        if (Socket.describes(this.props.contents)) {
-            return this.renderSocket();
-        }
         const onCanClick = (e: any) => {
             log(e.target);
             e.stopPropagation();
             this.props.onCanClick(this.props.contents);
         };
+
+        const isSelected = this.props.contents.uniqueId === this.props.canCursorId;
+        if (Socket.describes(this.props.contents)) {
+            return this.renderSocket(isSelected);
+        }
+        if (Constant.describes(this.props.contents)) {
+            return this.renderConstant(isSelected);
+        }
+
         let className = "Can";
-        if (this.props.contents.uniqueId === this.props.canCursorId) {
+        if (isSelected) {
             className = "Can Can--isSelected";
         }
 
@@ -98,19 +105,32 @@ class Can extends React.Component<IProps, {}> {
         });
     }
 
-    public renderSocket() {
+    public renderSocket(isSelected: boolean) {
         const onClickedMe = (e: any) => {
             log("Clicked a socket");
             e.stopPropagation();
             this.props.onSocketClick(this.props.contents);
         };
         let className = "Can-socket";
-        if (this.props.contents.uniqueId === this.props.canCursorId) {
+        if (isSelected) {
             className = "Can-socket Can-socket--isSelected";
         }
         return <div className={className}>
             {this.maybeRenderCanSearch()}
             <div className="Can-socketDisplay" onClick={onClickedMe}/>
+        </div>;
+    }
+
+    public renderConstant(isSelected: boolean) {
+        let className = "Can-constant";
+        if (isSelected) {
+            className = "Can-constant Can-constant--isSelected";
+        }
+        return <div className={className}>
+            {this.maybeRenderCanSearch()}
+            <div className="Can-constantDisplay">
+                {this.props.contents.value}
+            </div>
         </div>;
     }
 
