@@ -2,6 +2,7 @@ import Invocation from "./Invocation";
 import {findById} from "./ProgramTraversal";
 import Socket from "./Socket";
 import History from "./History";
+import Constant from "./Constant";
 
 const log = console.log;
 
@@ -112,23 +113,27 @@ export default class KeyboardController {
         if (!result) {
             throw new Error("Couldn't find can to delete.");
         }
-        const parent = result.path[result.path.length - 1];
-        if (parent) {
-            const index = parent.args.indexOf(result.invocation);
-            parent.args[index] = Socket.create({});
-            this.app.setState({
-                canCursorId: parent.args[index].uniqueId
-            });
-        } else {
-            this.app.currentBrick().rootInvocation = Socket.create({});
-            this.app.setState({
-                canCursorId: this.app.currentBrick().rootInvocation.uniqueId
-            });
-        }
+        this.replaceResult(result, Socket.create({}));
         this.app.setState({
             editorMode: "cursor"
         });
         this.app.modulesChanged();
+    }
+
+    public replaceResult(result, value) {
+        const parent = result.path[result.path.length - 1];
+        if (parent) {
+            const index = parent.args.indexOf(result.invocation);
+            parent.args[index] = value;
+            this.app.setState({
+                canCursorId: parent.args[index].uniqueId
+            });
+        } else {
+            this.app.currentBrick().rootInvocation = value;
+            this.app.setState({
+                canCursorId: this.app.currentBrick().rootInvocation.uniqueId
+            });
+        }
     }
 
     public visitSelectedBrick() {
@@ -166,6 +171,18 @@ export default class KeyboardController {
         });
     }
 
+    public editConstant() {
+        this.app.setState({
+            editorMode: "constant"
+        });
+        const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
+        let constant;
+        if (!Constant.describes(result.invocation)) {
+            constant = Constant.create({});
+            this.replaceResult(result, constant);
+        }
+    }
+
     private onKeyDown(e: KeyboardEvent) {
         if (e.metaKey) {
             // Don't interfere with browser shortcuts
@@ -201,6 +218,9 @@ export default class KeyboardController {
                 break;
             case "KeyR":
                 this.goForwards();
+                break;
+            case "KeyO":
+                this.editConstant();
                 break;
             case "KeyJ":
                 this.moveCursorTo(this.findCanBelowCursor());
