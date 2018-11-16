@@ -183,6 +183,18 @@ export default class KeyboardController {
         }
     }
 
+    public goToTestMode() {
+        this.app.setState({
+            editorMode: "test"
+        });
+    }
+
+    public renameBrick() {
+        this.app.setState({
+            editorMode: "naming"
+        });
+    }
+
     private onKeyDown(e: KeyboardEvent) {
         if (e.metaKey) {
             // Don't interfere with browser shortcuts
@@ -194,9 +206,9 @@ export default class KeyboardController {
         if (this.app.state.editorMode !== "cursor") {
             return true;
         }
-        if (e.target !== window.document.body) {
-            return true;
-        }
+        // if (e.target !== window.document.body) {
+        //     return true;
+        // }
         switch (e.code) {
             case "KeyU":
                 this.app.undo();
@@ -218,6 +230,12 @@ export default class KeyboardController {
                 break;
             case "KeyR":
                 this.goForwards();
+                break;
+            case "KeyT":
+                this.goToTestMode();
+                break;
+            case "KeyN":
+                this.renameBrick();
                 break;
             case "KeyO":
                 this.editConstant();

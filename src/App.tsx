@@ -2,6 +2,7 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import "./App.css";
 import Arg from "./Arg";
+import BrickNamer from "./BrickNamer";
 // import CanSearch from "./CanSearch";
 import Constant from "./Constant";
 import Cork from "./Cork";
@@ -14,6 +15,7 @@ import Library from "./Library";
 import * as Modules from "./Modules";
 import Program from "./Program";
 import Socket from "./Socket";
+import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
 
 const CAPITALIZE_SENTENCE = Invocation.create({
@@ -67,7 +69,8 @@ class App extends React.Component<{}, IState> {
                         moduleKey: "basic",
                         name: "Sentence Capitalization",
                         numArgs: 1,
-                        rootInvocation: CAPITALIZE_SENTENCE
+                        rootInvocation: CAPITALIZE_SENTENCE,
+                        tests: []
                     }
                 },
                 name: "Starter Module"
@@ -109,21 +112,23 @@ class App extends React.Component<{}, IState> {
         const onSocketClick = this.onSocketClick.bind(this);
         return (
             <div className="App" style={{display: "flex"}}>
-                {/* <CanSearch library={Library} modules={this.state.modules} onLibraryItemHighlighted={highlight}/> */}
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
                     <Executor program={this.currentBrick()} library={this.state.library} modules={this.state.modules}/>
-                    <Program
-                        contents={this.currentBrick()}
-                        editorMode={this.state.editorMode}
-                        library={this.state.library}
-                        modules={this.state.modules}
-                        onSocketClick={onSocketClick}
-                        onBrickNameChange={this.onBrickNameChange}
-                        onCanClick={onCanClick}
-                        onCanInserted={this.onCanInserted}
-                        canCursorId={this.state.canCursorId}
-                    />
+                    <BrickNamer editorMode={this.state.editorMode} name={this.currentBrick().name} onBrickNameChange={this.onBrickNameChange}/>
+                    {this.state.editorMode === "test" ? <TestGrid brick={this.currentBrick()} modules={this.state.modules} library={this.state.library} onTestsChanged={this.onTestsChanged}/> : 
+                        <Program
+                            contents={this.currentBrick()}
+                            editorMode={this.state.editorMode}
+                            library={this.state.library}
+                            modules={this.state.modules}
+                            onSocketClick={onSocketClick}
+                            onBrickNameChange={this.onBrickNameChange}
+                            onCanClick={onCanClick}
+                            onCanInserted={this.onCanInserted}
+                            canCursorId={this.state.canCursorId}
+                        />
+                    }
                 </div>
             </div>
         );
@@ -141,6 +146,12 @@ class App extends React.Component<{}, IState> {
     public onBrickNameChange(newName: string) {
         this.currentBrick().name = newName;
         this.setState({});
+    }
+
+    @autobind
+    public onTestsChanged(tests) {
+        this.currentBrick().tests = tests;
+        this.modulesChanged();
     }
 
     public highlightLibraryItem(libraryItemId: any) {

@@ -39,7 +39,8 @@ export function createNewBrick(moduleKey: string, modules: any) {
         moduleKey,
         name: `New Brick ${newBrickId}`,
         numArgs: 1,
-        rootInvocation: Socket.create({})
+        rootInvocation: Socket.create({}),
+        tests: []
     };
     return makeLibraryKey(moduleKey, newBrickId);
 }
