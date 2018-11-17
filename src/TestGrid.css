@@ -1,3 +1,9 @@
-td {
-    border: 1px solid black;
+.TestGrid td {
+    border: none;
+    outline: none;
+    /* border: 1px solid black; */
+}
+
+.TestGrid-input {
+    border: none;
 }

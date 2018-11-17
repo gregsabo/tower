@@ -23,7 +23,7 @@ export default class TestGrid extends React.Component<IProps> {
     }
 
     public render() {
-        return <table>
+        return <table className="TestGrid">
             <thead>
                 <tr>
                     <td>ARG 1</td><td>Expected Result</td><td>Actual Result</td>
@@ -38,6 +38,7 @@ export default class TestGrid extends React.Component<IProps> {
 
     @autobind
     public renderTest(test, num) {
+        test = test || this.newTest();
         let ref = null;
         if (num === 0) {
             ref = (first) => this.firstCell = first
@@ -54,8 +55,13 @@ export default class TestGrid extends React.Component<IProps> {
             );
         }
         return <tr>
-            <td ref={ref} contentEditable={true} onInput={this.onArgChanged.bind(this, num, 0)}>
-                {test.args[0]}
+            <td>
+                <input 
+                    className="TestGrid-input"
+                    ref={ref}
+                    contentEditable={true}
+                    onChange={this.onArgChanged.bind(this, num, 0)}
+                    value={test.args[0]}/>
             </td>
             <td contentEditable={true} onInput={this.onExpectationChanged.bind(this, num)}>{test.expected}</td>
             <td>{result ? <Value value={result}/> : null}</td>
@@ -65,7 +71,7 @@ export default class TestGrid extends React.Component<IProps> {
     @autobind
     public onArgChanged(row, argnum, e) {
         const test = this.getTestNum(row);
-        test.args[argnum] = parseLiteral(e.target.textContent);
+        test.args[argnum] = parseLiteral(e.target.value);
         this.props.onTestsChanged(this.props.brick.tests);
     }
 
@@ -80,7 +86,7 @@ export default class TestGrid extends React.Component<IProps> {
         if (this.props.brick.tests === undefined) {
             this.props.brick.tests = [];
         }
-        if (this.props.brick.tests[num] === undefined) {
+        if (!this.props.brick.tests[num]) {
             this.props.brick.tests[num] = this.newTest();
         }
         return this.props.brick.tests[num]
