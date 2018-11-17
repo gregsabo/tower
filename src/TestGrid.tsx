@@ -57,21 +57,33 @@ export default class TestGrid extends React.Component<IProps> {
             <td ref={ref} contentEditable={true} onInput={this.onArgChanged.bind(this, num, 0)}>
                 {test.args[0]}
             </td>
-            <td contentEditable={true}>{test.expected}</td>
+            <td contentEditable={true} onInput={this.onExpectationChanged.bind(this, num)}>{test.expected}</td>
             <td>{result ? <Value value={result}/> : null}</td>
         </tr>
     }
 
     @autobind
     public onArgChanged(row, argnum, e) {
+        const test = this.getTestNum(row);
+        test.args[argnum] = parseLiteral(e.target.textContent);
+        this.props.onTestsChanged(this.props.brick.tests);
+    }
+
+    @autobind
+    public onExpectationChanged(row, e) {
+        const test = this.getTestNum(row);
+        test.expected = parseLiteral(e.target.textContent);
+        this.props.onTestsChanged(this.props.brick.tests);
+    }
+
+    public getTestNum(num: number) {
         if (this.props.brick.tests === undefined) {
             this.props.brick.tests = [];
         }
-        if (this.props.brick.tests[row] === undefined) {
-            this.props.brick.tests[row] = this.newTest();
+        if (this.props.brick.tests[num] === undefined) {
+            this.props.brick.tests[num] = this.newTest();
         }
-        this.props.brick.tests[row].args[argnum] = parseLiteral(e.target.textContent);
-        this.props.onTestsChanged(this.props.brick.tests);
+        return this.props.brick.tests[num]
     }
 
     public newTest() {
