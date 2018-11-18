@@ -50,3 +50,13 @@ export interface IBrick {
     numArgs: number,
     tests: ITest[]
 }
+
+export interface IModule {
+    bricks: {
+        [key: string]: IBrick;
+    }
+}
+
+export interface IModules {
+    [key: string]: IModule
+}
