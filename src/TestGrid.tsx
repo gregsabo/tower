@@ -17,8 +17,15 @@ export default class TestGrid extends React.Component<IProps> {
 
     public componentDidMount() {
         console.log("Testgrid mounted", this.firstCell);
+        if (this.props.brick.tests.length === 0) {
+            for (let i = 0; i < 10; i++) {
+                this.props.brick.tests.push(this.newTest())
+            }
+            this.props.onTestsChanged(this.props.brick.tests);
+        }
         if (this.firstCell) {
             this.firstCell.focus();
+            this.firstCell.select();
         }
     }
 
@@ -26,12 +33,14 @@ export default class TestGrid extends React.Component<IProps> {
         return <table className="TestGrid">
             <thead>
                 <tr>
-                    <td>ARG 1</td><td>Expected Result</td><td>Actual Result</td>
+                    <td/>
+                    <td>ARG 1</td>
+                    <td>Expected Result</td>
+                    <td>Actual Result</td>
                 </tr>
             </thead>
             <tbody>
                 {this.props.brick.tests.map(this.renderTest)}
-                {this.renderEmptyTests()}
             </tbody>
         </table>
     }
@@ -43,42 +52,90 @@ export default class TestGrid extends React.Component<IProps> {
         if (num === 0) {
             ref = (first) => this.firstCell = first
         }
-        const inputs = test.args;
-        let result = null;
-        if (inputs.length === this.props.brick.numArgs) {
-            result = Runtime.evaluate(
-                this.props.brick.rootInvocation,
-                test.args,
-                this.props.library,
-                this.props.modules,
-                {}
-            );
-        }
-        return <tr>
+        const result = this.renderResult(test);
+        const passed = this.testPassed(test, result);
+        return <tr className={passed ? "TestGrid-passingTestCase" : "TestGrid-failingTestCase"}>
+            <td>{(num+1) % 10}</td>
             <td>
                 <input 
                     className="TestGrid-input"
+                    type="text"
                     ref={ref}
                     contentEditable={true}
                     onChange={this.onArgChanged.bind(this, num, 0)}
                     value={test.args[0]}/>
             </td>
-            <td contentEditable={true} onInput={this.onExpectationChanged.bind(this, num)}>{test.expected}</td>
+            <td>
+                <input 
+                    className="TestGrid-input"
+                    type="text"
+                    contentEditable={true}
+                    onChange={this.onExpectationChanged.bind(this, num)}
+                    value={test.expected}/>
+            </td>
             <td>{result ? <Value value={result}/> : null}</td>
         </tr>
+    }
+
+    public renderResult(test) {
+        const inputs = test.args;
+        let result = null;
+        const parsedExpected = parseLiteral(test.expected);
+
+        if (test.args.length === 0 || 
+            test.args[0] === "" || 
+            parsedExpected === "")
+        {
+            return "";
+        } else if (inputs.length === this.props.brick.numArgs) {
+            try {
+                result = Runtime.evaluate(
+                    this.props.brick.rootInvocation,
+                    test.args.map(parseLiteral),
+                    this.props.library,
+                    this.props.modules,
+                    {}
+                );
+            } catch(e) {
+                result = "ERROR: " + e.message;
+            }
+
+            if (result === parsedExpected) {
+                return "=";
+            } else {
+                return result;
+            }
+        }
+    }
+
+    public testPassed(test, result) {
+        const parsedExpected = parseLiteral(test.expected);
+        if (result === "=") {
+            return true;
+        }
+
+        if (test.args.length === 0 || 
+            test.args[0] === "" || 
+            parsedExpected === "")
+        {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @autobind
     public onArgChanged(row, argnum, e) {
         const test = this.getTestNum(row);
-        test.args[argnum] = parseLiteral(e.target.value);
+        test.args[argnum] = e.target.value;
         this.props.onTestsChanged(this.props.brick.tests);
     }
 
     @autobind
     public onExpectationChanged(row, e) {
         const test = this.getTestNum(row);
-        test.expected = parseLiteral(e.target.textContent);
+        test.expected = e.target.value;
         this.props.onTestsChanged(this.props.brick.tests);
     }
 
@@ -95,7 +152,7 @@ export default class TestGrid extends React.Component<IProps> {
     public newTest() {
         return {
             args: [],
-            expeced: null
+            expected: null
         };
     }
 

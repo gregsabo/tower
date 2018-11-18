@@ -4,8 +4,11 @@ html, body, #root, .App {
 }
 
 .App {
-  font-family: Georgia;
   margin: 30px;
+}
+
+.App, input[type='text'] {
+  font-family: Georgia;
 }
 
 .App-logo {

@@ -18,6 +18,7 @@ export default class BrickNamer extends React.Component<IProps> {
             onChange={this.handleChange}
             value={this.props.name}
             ref={(input) => this.input = input}
+            type="text"
         />
     }
 

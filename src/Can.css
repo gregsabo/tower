@@ -1,6 +1,6 @@
 .Can {
     display: inline-block;
-    font-family: monospace;
+    /* font-family: monospace; */
     position: relative;
     margin: 0 5px 0 5px;
 }

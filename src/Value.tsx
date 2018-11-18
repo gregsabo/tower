@@ -2,7 +2,6 @@ import Socket from "./Socket";
 import * as React from "react";
 
 export default function Value(props) {
-    console.log("Rendering value", props);
     const result = props.value;
 
     if (Socket.describes(result)) {

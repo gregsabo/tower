@@ -1,9 +1,25 @@
 .TestGrid td {
     border: none;
-    outline: none;
+    background: none;
     /* border: 1px solid black; */
+}
+
+.TestGrid thead {
+    font-weight: bold;
 }
 
 .TestGrid-input {
     border: none;
+    outline: none;
+    font-size: 14px;
+    background: none;
+    border: 1px solid transparent;
+}
+
+.TestGrid-input:focus {
+    border: 1px solid lightgrey;
+}
+
+.TestGrid-failingTestCase {
+    background-color: lightgrey;
 }
