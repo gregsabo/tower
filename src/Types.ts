@@ -1,13 +1,34 @@
 export interface ITest {
-    args: string[],
-    expected: string
+    args: string[];
+    expected: string;
+}
+
+export interface ILibraryBrickWithImplementation {
+    implementation: any;
+    numArgs: number;
+    isEager?: boolean;
+    isLazy?: boolean;
+    name: string;
+}
+
+export interface IGeneratingLibraryBrick {
+    invocationGenerator: () => ILibraryBrickWithImplementation;
+    isEager?: boolean;
+    name: string;
+}
+
+export type ILibraryBrick = ILibraryBrickWithImplementation | IGeneratingLibraryBrick;
+
+export type LibraryKey = string;
+export interface ILibrary {
+    [key: string]: ILibraryBrick;
 }
 
 export type InvocationKeyType = UniqueId;
 
 export interface IInvocation {
-    args: IInvocation[],
-    implementationKey: ImplementationKey,
+    args: IInvocation[];
+    implementationKey: ImplementationKey;
     uniqueId: InvocationKeyType;
 }
 

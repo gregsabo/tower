@@ -17,7 +17,7 @@ import Program from "./Program";
 import Socket from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
-import {ITest} from "./Types"
+import {ITest, ILibrary} from "./Types"
 
 const CAPITALIZE_SENTENCE = Invocation.create({
     args: [
@@ -48,7 +48,7 @@ interface IState {
     canCursorId: string;
     editorMode: string;
     inputs: InputConfiguration[];
-    library: any;
+    library: ILibrary;
     modules: any;
     currentModuleId: string;
     currentBrickId: string;
