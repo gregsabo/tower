@@ -1,5 +1,6 @@
 import Invocation from "./Invocation";
-import {findById} from "./ProgramTraversal";
+import {IInvocation} from "./Types";
+import {findById, ITraversalResult} from "./ProgramTraversal";
 import Socket from "./Socket";
 import History from "./History";
 import Constant from "./Constant";
@@ -120,7 +121,7 @@ export default class KeyboardController {
         this.app.modulesChanged();
     }
 
-    public replaceResult(result, value) {
+    public replaceResult(result: ITraversalResult, value: IInvocation) {
         const parent = result.path[result.path.length - 1];
         if (parent) {
             const index = parent.args.indexOf(result.invocation);

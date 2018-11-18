@@ -1,4 +1,12 @@
-function findById(program: any, uniqueId: string) {
+import {UniqueId, IBrick, InvocationKeyType, IInvocation} from "./Types";
+
+export interface ITraversalResult {
+    invocation: IInvocation,
+    path: IInvocation[],
+    uniqueId: InvocationKeyType
+}
+
+export function findById(program: IBrick, uniqueId: UniqueId) {
     if (program.rootInvocation.uniqueId === uniqueId) {
         return {
             invocation: program.rootInvocation,
@@ -12,7 +20,7 @@ function findById(program: any, uniqueId: string) {
     );
 }
 
-function recurseFind(program: any, uniqueId: string, path: any): any {
+function recurseFind(program: IInvocation, uniqueId: UniqueId, path: IInvocation[]): any {
     if (program.args === undefined)  {
         return false;
     }
@@ -33,8 +41,4 @@ function recurseFind(program: any, uniqueId: string, path: any): any {
         }
     }
     return false;
-}
-
-export {
-    findById
 }

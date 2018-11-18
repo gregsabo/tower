@@ -1,6 +1,8 @@
+import {ModuleKey, BrickKey} from "./Types";
+
 interface IHistoryEntry {
-    brickKey: string;
-    moduleKey: string;
+    brickKey: BrickKey;
+    moduleKey: ModuleKey;
 };
 
 export default class History {
@@ -11,7 +13,7 @@ export default class History {
         this.history = [];
     }
 
-    public remember(moduleKey, brickKey) {
+    public remember(moduleKey: ModuleKey, brickKey: BrickKey) {
         console.log("About to remember", this.history, this.historyPointer);
         if (this.historyPointer + 1 < this.history.length) {
             this.history = this.history.slice(0, this.historyPointer + 1);

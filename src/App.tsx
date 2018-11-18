@@ -17,6 +17,7 @@ import Program from "./Program";
 import Socket from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
+import {ITest} from "./Types"
 
 const CAPITALIZE_SENTENCE = Invocation.create({
     args: [
@@ -149,7 +150,7 @@ class App extends React.Component<{}, IState> {
     }
 
     @autobind
-    public onTestsChanged(tests) {
+    public onTestsChanged(tests: ITest[]) {
         this.currentBrick().tests = tests;
         this.modulesChanged();
     }

@@ -3,24 +3,24 @@
 
 // import Constant from "./Constant";
 
-export function parseLiteral(givenString: string) {
-    if (givenString === null) {
-        return null;
-    }
-    if (givenString.trim() === "") {
-        return null;
-    }
+import {TowerPrimitive} from "./Types";
+
+export function parseLiteral(givenString: string) : TowerPrimitive {
     if (givenString.trim()[0] === "[" && givenString.indexOf("]") > -1) {
         const withoutBraces = givenString
             .trim()
             .replace("[", "")
             .replace("]", "");
-        return withoutBraces.split(",").map(parseLiteral);
+        return withoutBraces.split(",").filter(parseable).map(parseLiteral) as TowerPrimitive;
     }
     const givenNum = Number.parseFloat(givenString);
     if (Number.isNaN(givenNum)) {
-        return givenString;
+        return givenString as TowerPrimitive;
     } else {
-        return givenNum;
+        return givenNum as TowerPrimitive;
     }
+}
+
+export function parseable(givenString: string) {
+    return givenString.trim() !== "";
 }

@@ -4,6 +4,7 @@ import * as Runtime from "./Runtime";
 import Value from "./Value";
 import {parseLiteral} from "./Parsing";
 import "./TestGrid.css";
+import {ITest} from "./Types";
 
 interface IProps {
     brick: any;
@@ -13,7 +14,7 @@ interface IProps {
 }
 
 export default class TestGrid extends React.Component<IProps> {
-    private firstCell = null;
+    private firstCell? : HTMLInputElement;
 
     public componentDidMount() {
         console.log("Testgrid mounted", this.firstCell);
@@ -46,16 +47,16 @@ export default class TestGrid extends React.Component<IProps> {
     }
 
     @autobind
-    public renderTest(test, num) {
+    public renderTest(test: ITest, num: number) {
         test = test || this.newTest();
-        let ref = null;
+        let ref;
         if (num === 0) {
-            ref = (first) => this.firstCell = first
+            ref = (first: HTMLInputElement) => this.firstCell = first
         }
         const result = this.renderResult(test);
         const passed = this.testPassed(test, result);
         return <tr className={passed ? "TestGrid-passingTestCase" : "TestGrid-failingTestCase"}>
-            <td>{(num+1) % 10}</td>
+            <td className="TestGrid-digitColumn">{(num+1) % 10}</td>
             <td>
                 <input 
                     className="TestGrid-input"
@@ -77,14 +78,16 @@ export default class TestGrid extends React.Component<IProps> {
         </tr>
     }
 
-    public renderResult(test) {
+    public renderResult(test: ITest) {
         const inputs = test.args;
         let result = null;
-        const parsedExpected = parseLiteral(test.expected);
 
-        if (test.args.length === 0 || 
-            test.args[0] === "" || 
-            parsedExpected === "")
+        let parsedExpected;
+        if (test.expected !== null) {
+            parsedExpected = parseLiteral(test.expected);
+        }
+
+        if (test.args.length === 0 || test.args[0] === "")
         {
             return "";
         } else if (inputs.length === this.props.brick.numArgs) {
@@ -108,7 +111,10 @@ export default class TestGrid extends React.Component<IProps> {
         }
     }
 
-    public testPassed(test, result) {
+    public testPassed(test: ITest, result: string) {
+        if (test.expected === null) {
+            return true;
+        }
         const parsedExpected = parseLiteral(test.expected);
         if (result === "=") {
             return true;
@@ -126,14 +132,14 @@ export default class TestGrid extends React.Component<IProps> {
     }
 
     @autobind
-    public onArgChanged(row, argnum, e) {
+    public onArgChanged(row: number, argnum: number, e: React.ChangeEvent<HTMLInputElement>) {
         const test = this.getTestNum(row);
         test.args[argnum] = e.target.value;
         this.props.onTestsChanged(this.props.brick.tests);
     }
 
     @autobind
-    public onExpectationChanged(row, e) {
+    public onExpectationChanged(row: number, e: React.ChangeEvent<HTMLInputElement>) {
         const test = this.getTestNum(row);
         test.expected = e.target.value;
         this.props.onTestsChanged(this.props.brick.tests);
@@ -152,7 +158,7 @@ export default class TestGrid extends React.Component<IProps> {
     public newTest() {
         return {
             args: [],
-            expected: null
+            expected: ""
         };
     }
 
@@ -161,7 +167,7 @@ export default class TestGrid extends React.Component<IProps> {
         for (let i = this.props.brick.tests.length; i < 10; i++) {
             tests.push(this.renderTest({
                 args: [],
-                expected: null
+                expected: ""
             }, i));
         }
         return tests;

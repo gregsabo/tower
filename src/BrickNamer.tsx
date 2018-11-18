@@ -9,7 +9,7 @@ interface IProps {
 }
 
 export default class BrickNamer extends React.Component<IProps> {
-    private input = null;
+    private input : HTMLInputElement|null = null;
 
     public render() {
         return <input
@@ -17,12 +17,12 @@ export default class BrickNamer extends React.Component<IProps> {
             placeholder="Untitled Brick"
             onChange={this.handleChange}
             value={this.props.name}
-            ref={(input) => this.input = input}
+            ref={(input) => this.input = input }
             type="text"
         />
     }
 
-    public componentDidUpdate(oldProps) {
+    public componentDidUpdate(oldProps: IProps) {
         if (
             this.props.editorMode === "naming" &&
             this.props.editorMode !== oldProps.editorMode &&
@@ -40,7 +40,7 @@ export default class BrickNamer extends React.Component<IProps> {
     }
 
     @autobind
-    public handleChange(e) {
+    public handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         this.props.onBrickNameChange(e.target.value);
     }
 }

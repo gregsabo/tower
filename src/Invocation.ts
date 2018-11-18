@@ -1,6 +1,7 @@
 import * as Modules from "./Modules";
 import * as Runtime from "./Runtime";
-import makeType from "./Type";
+import makeType from "./TowerType";
+import {IInvocation} from "./Types";
 
 const Invocation = makeType("invocation", ["args", "implementationKey"], {
     invoke: (self: any, args: any[], library: any, modules: any) => {
@@ -48,5 +49,10 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
         );
     }
 });
+
+const oldCreate = Invocation.create;
+Invocation.create = (...args: any[]) => {
+    return oldCreate(...args) as IInvocation;
+}
 
 export default Invocation;
