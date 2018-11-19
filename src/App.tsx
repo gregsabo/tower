@@ -17,7 +17,7 @@ import Program from "./Program";
 import Socket from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
-import {ITest, ILibrary, IModules} from "./Types"
+import {ITest, ILibrary, IModules, LibraryKey, ISocket, IInvocation, UniqueId} from "./Types"
 
 const CAPITALIZE_SENTENCE = Invocation.create({
     args: [
@@ -110,7 +110,6 @@ class App extends React.Component<{}, IState> {
         if (this.state === null) {
             return null;
         }
-        const onSocketClick = this.onSocketClick.bind(this);
         return (
             <div className="App" style={{display: "flex"}}>
                 <div>
@@ -123,7 +122,6 @@ class App extends React.Component<{}, IState> {
                             editorMode={this.state.editorMode}
                             library={this.state.library}
                             modules={this.state.modules}
-                            onSocketClick={onSocketClick}
                             onBrickNameChange={this.onBrickNameChange}
                             onCanClick={onCanClick}
                             onCanInserted={this.onCanInserted}
@@ -155,7 +153,7 @@ class App extends React.Component<{}, IState> {
         this.modulesChanged();
     }
 
-    public highlightLibraryItem(libraryItemId: any) {
+    public highlightLibraryItem(libraryItemId: LibraryKey) {
         this.setState({highlightedLibraryItemId: libraryItemId});
     }
 
@@ -187,22 +185,7 @@ class App extends React.Component<{}, IState> {
         });
     }
 
-    public onSocketClick(clickedSocket: any) {
-        const invocation = this.invocationForLibraryItemId(this.state.highlightedLibraryItemId);
-        if (this.currentBrick().rootInvocation === clickedSocket) {
-            this.currentBrick().rootInvocation = invocation;
-            this.setState({});
-            return;
-        }
-        this.recurseFindAndReplace(
-            this.currentBrick().rootInvocation,
-            clickedSocket,
-            invocation
-        );
-        this.setState({});
-    }
-
-    public onCanClick(clickedInvocation: any) {
+    public onCanClick(clickedInvocation: IInvocation) {
         log("Clicked a can", clickedInvocation);
         if (this.currentBrick().rootInvocation === clickedInvocation) {
             this.currentBrick().rootInvocation = Socket.create({});
@@ -269,7 +252,7 @@ class App extends React.Component<{}, IState> {
         this.modulesChanged();
     }
 
-    public recurseFindAndReplaceById(program: any, needle: string, invocation: any) {
+    public recurseFindAndReplaceById(program: IInvocation, needle: UniqueId, invocation: IInvocation) {
         if (program.args === undefined)  {
             return false;
         }
@@ -284,7 +267,7 @@ class App extends React.Component<{}, IState> {
         return false;
     }
 
-    public recurseFindAndReplace(program: any, needle: any, invocation: any) {
+    public recurseFindAndReplace(program: IInvocation, needle: IInvocation|ISocket, invocation: IInvocation) {
         if (program.args === undefined)  {
             return false;
         }

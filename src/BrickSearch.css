@@ -1,7 +1,7 @@
-.CanSearch {
+.BrickSearch {
     margin: 10px;
 }
 
-.CanSearch-libraryItem--selected {
+.BrickSearch-libraryItem--selected {
     background-color: #dcdcdc;
 }

@@ -51,7 +51,7 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
 });
 
 const oldCreate = Invocation.create;
-Invocation.create = (...args: any[]) => {
+Invocation.create = (...args: any[]) : IInvocation => {
     return oldCreate(...args) as IInvocation;
 }
 

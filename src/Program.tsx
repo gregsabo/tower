@@ -1,12 +1,11 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
-import Can from "./Can";
+import {BrickComponent} from "./BrickComponent";
 import "./Program.css";
 
 interface IProps {
     contents: any;
     editorMode: string;
-    onSocketClick: any;
     onCanClick: any;
     onCanInserted: any;
     onBrickNameChange: any;
@@ -24,10 +23,9 @@ class Program extends React.Component<IProps, {}> {
     public render() {
         return <div>
             <div style={style}>
-                <Can
+                <BrickComponent
                     contents={this.props.contents.rootInvocation}
                     editorMode={this.props.editorMode}
-                    onSocketClick={this.props.onSocketClick}
                     onCanClick={this.props.onCanClick}
                     onCanInserted={this.props.onCanInserted}
                     canCursorId={this.props.canCursorId}

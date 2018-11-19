@@ -4,7 +4,7 @@ import "./BrickNamer.css";
 
 interface IProps {
     name: string;
-    onBrickNameChange: any;
+    onBrickNameChange: (value: string) => any;
     editorMode: string;
 }
 

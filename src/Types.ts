@@ -32,6 +32,15 @@ export interface IInvocation {
     uniqueId: InvocationKeyType;
 }
 
+export interface ISocket {
+    uniqueId: InvocationKeyType;
+}
+
+export interface IConstant {
+    uniqueId: InvocationKeyType;
+    value: TowerPrimitive;
+}
+
 export type ModuleKey = string;
 export type BrickKey = string;
 export type UniqueId = string;
@@ -49,6 +58,14 @@ export interface IBrick {
     name: string,
     numArgs: number,
     tests: ITest[]
+}
+
+export interface IArg {
+    uniqueId: UniqueId;
+}
+
+export interface ICork {
+    uniqueId: UniqueId;
 }
 
 export interface IModule {

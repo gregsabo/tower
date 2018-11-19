@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
-import "./CanSearch.css";
+import "./BrickSearch.css";
 import * as Modules from "./Modules";
 
 interface IProps {
@@ -24,12 +24,12 @@ function keyValues(inObject: any) {
     return outArray;
 }
 
-class CanSearch extends React.Component<IProps, IState> {
+class BrickSearch extends React.Component<IProps, IState> {
     public inputBox: any;
 
     public render() {
         const onKeyUp = this.onKeyUp.bind(this);
-        return <div className="CanSearch">
+        return <div className="BrickSearch">
             <input
                 type="text"
                 ref={this.inputBox}
@@ -37,7 +37,7 @@ class CanSearch extends React.Component<IProps, IState> {
                 onKeyUp={onKeyUp}
                 autoFocus={true}
             />
-            <div className="CanSearch-library">
+            <div className="BrickSearch-library">
                 {this.renderLibrary()}
             </div>
         </div>;
@@ -80,7 +80,7 @@ class CanSearch extends React.Component<IProps, IState> {
     public renderLibraryItem(libraryItem: any, key: string) {
         let className = "";
         if (this.state && key === this.state.selectedId) {
-            className = "CanSearch-libraryItem--selected";
+            className = "BrickSearch-libraryItem--selected";
         }
         return <div key={key} className={className}>
             {this.maybeLookupModule(libraryItem).name}
@@ -96,4 +96,4 @@ class CanSearch extends React.Component<IProps, IState> {
     }
 }
 
-export default CanSearch;
+export {BrickSearch};

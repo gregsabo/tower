@@ -1,0 +1,74 @@
+
+.InvocationBrickComponent {
+    display: inline-block;
+    /* font-family: monospace; */
+    position: relative;
+    margin: 0 5px 0 5px;
+}
+
+.InvocationBrickComponent-top.is-selected {
+    border-color: black;
+    background-color: #444;
+}
+
+.InvocationBrickComponent-side.is-selected {
+    border-color: black;
+    background-color: gray;
+    color: white;
+}
+
+.InvocationBrickComponent-topFront.is-selected {
+    border-color: black;
+    background-color: #444;
+}
+
+.InvocationBrickComponent-top {
+    border: 1px solid grey;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50px;
+    margin-top: -25px;
+    background: lightgrey;
+    transition: background 0.1s;
+    z-index: -1;
+    border-radius: 5px 5px 0 0;
+}
+
+.InvocationBrickComponent-topFront {
+    background: lightgrey;
+    transition: background 0.1s;
+    border: 1px solid grey;
+    height: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.InvocationBrickComponent-side {
+    border: 1px solid grey;
+    background: white;
+    transition: all 0.1s;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    position: relative;
+}
+
+.InvocationBrickComponent-arg {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.InvocationBrickComponent-argList {
+    display: flex;
+    justify-content: center;
+}
+
+.InvocationBrickComponent-name {
+    padding: 10px;
+}
