@@ -17,7 +17,7 @@ import { ArgBrickComponent } from "./ArgBrickComponent";
 import { CorkBrickComponent } from "./CorkBrickComponent";
 
 interface IProps {
-    contents: IInvocation|ISocket|IConstant;
+    contents: IInvocation|ISocket|IConstant|IArg;
     editorMode: string;
     onCanClick: any;
     onCanInserted: any;
@@ -68,7 +68,7 @@ function renderBrick(props: IProps) {
             contents={props.contents as IInvocation}
         />
     }
-    return <div/>
+    throw new Error("Couldn't understand this invocation to render.")
 }
 
 
