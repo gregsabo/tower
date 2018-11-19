@@ -1,16 +1,17 @@
 import Arg from "./Arg";
 import Constant from "./Constant";
 import Cork from "./Cork";
+import LazyValue from "./LazyValue";
 
 const Library = {
     add: {
-        implementation: (a: any, b: any) => a.get() + b.get(0),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
         isEager: true,
         name: "add",
         numArgs: 2
     },
     and: {
-        implementation: (a: any, b: any) => a.get() && b.get(0),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() && b.get(),
         isEager: true,
         name: "and",
         numArgs: 2
@@ -21,7 +22,7 @@ const Library = {
         name: "arg"
     },
     capitalize: {
-        implementation: (lazyA: any) => {
+        implementation: (lazyA: LazyValue) => {
             const a = lazyA.get();
             if (a.length === 0) {
                 return a;
@@ -34,7 +35,7 @@ const Library = {
         numArgs: 1
     },
     concat: {
-        implementation: (a: any, b: any) => a.get() + b.get(),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
         isEager: true,
         name: "concat",
         numArgs: 2
@@ -45,7 +46,7 @@ const Library = {
         name: "cork"
     },
     equals: {
-        implementation: (a: any, b: any) => {
+        implementation: (a: LazyValue, b: LazyValue) => {
             return a.get() === b.get();
         },
         isEager: true,
@@ -53,7 +54,7 @@ const Library = {
         numArgs: 2
     },
     ifThenElse: {
-        implementation: (cond: any, ifTrue: any, ifFalse: any) => {
+        implementation: (cond: LazyValue, ifTrue: LazyValue, ifFalse: LazyValue) => {
             if (cond.get()) {
                 return ifTrue.get();
             } else {
@@ -65,13 +66,13 @@ const Library = {
         numArgs: 3
     },
     join: {
-        implementation: (a: any, b: any) => a.get().join(b.get()),
+        implementation: (a: LazyValue, b: LazyValue) => a.get().join(b.get()),
         isEager: true,
         name: "join",
         numArgs: 2
     },
     lessOrEquals: {
-        implementation: (a: any, b: any) => {
+        implementation: (a: LazyValue, b: LazyValue) => {
             return a.get() <= b.get();
         },
         isEager: true,
@@ -79,19 +80,19 @@ const Library = {
         numArgs: 2
     },
     map: {
-        implementation: (a: any, func: any) => a.get().map(func.get()),
+        implementation: (a: LazyValue, func: LazyValue) => a.get().map(func.get()),
         isEager: true,
         name: "map",
         numArgs: 2
     },
     mo: {
-        implementation: (a: any, b: any) => a.get() % b.get(0),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() % b.get(),
         isEager: true,
         name: "modulo",
         numArgs: 2
     },
     multiply: {
-        implementation: (a: any, b: any) => a.get() * b.get(),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() * b.get(),
         isEager: true,
         name: "multiply",
         numArgs: 2
@@ -118,7 +119,7 @@ const Library = {
         name: "number"
     },
     range: {
-        implementation: (a: any) => {
+        implementation: (a: LazyValue) => {
             const outArray = [];
             // Purposefully starting from 1.
             for (let i = 1; i <= a.get(); i++) {
@@ -131,7 +132,7 @@ const Library = {
         numArgs: 1
     },
     split: {
-        implementation: (a: any) => a.get().split(" "),
+        implementation: (a: LazyValue) => a.get().split(" "),
         isEager: true,
         name: "split",
         numArgs: 1
@@ -142,7 +143,7 @@ const Library = {
         name: "string"
     },
     subtract: {
-        implementation: (a: any, b: any) => a.get() - b.get(),
+        implementation: (a: LazyValue, b: LazyValue) => a.get() - b.get(),
         isEager: true,
         name: "subtract",
         numArgs: 2
