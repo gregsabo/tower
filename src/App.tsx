@@ -211,7 +211,7 @@ class App extends React.Component<{}, IState> {
     }
 
     @autobind
-    public onCanInserted(canId: string, selectedLibraryItem: string) {
+    public onCanInserted(canId: UniqueId, selectedLibraryItem: LibraryKey) {
         const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
         const rootInvocation = this.currentBrick().rootInvocation;
         if (rootInvocation.uniqueId === canId) {

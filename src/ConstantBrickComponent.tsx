@@ -1,13 +1,13 @@
-import * as React from "react";
-import {IConstant, ILibrary, IModules, EditorMode} from "./Types";
-import Value from "./Value";
-import "./ConstantBrickComponent.css";
 import classnames from "classnames";
+import * as React from "react";
+import "./ConstantBrickComponent.css";
+import { EditorMode, IConstant, ILibrary, IModules, LibraryKey, UniqueId } from "./Types";
+import Value from "./Value";
 
 interface IProps {
     contents: IConstant;
     editorMode: EditorMode;
-    onCanInserted: any;
+    onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
     canCursorId: string;
     library: ILibrary;
     modules: IModules;

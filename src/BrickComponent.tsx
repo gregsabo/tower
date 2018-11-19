@@ -1,25 +1,25 @@
 // import autobind from "autobind-decorator";
 import * as React from "react";
-import "./BrickComponent.css";
-
 import Arg from "./Arg";
-import {BrickSearch} from "./BrickSearch";
-import Constant from "./Constant";
-import Cork from "./Cork";
-import Invocation from "./Invocation";
-import Socket from "./Socket";
-
-import {IInvocation, ISocket, IConstant, IArg, ILibrary, IModules, EditorMode} from "./Types";
-import { InvocationBrickComponent } from "./InvocationBrickComponent";
-import { SocketComponent } from "./SocketComponent";
-import { ConstantBrickComponent } from "./ConstantBrickComponent";
 import { ArgBrickComponent } from "./ArgBrickComponent";
+import "./BrickComponent.css";
+import { BrickSearch } from "./BrickSearch";
+import Constant from "./Constant";
+import { ConstantBrickComponent } from "./ConstantBrickComponent";
+import Cork from "./Cork";
 import { CorkBrickComponent } from "./CorkBrickComponent";
+import Invocation from "./Invocation";
+import { InvocationBrickComponent } from "./InvocationBrickComponent";
+import Socket from "./Socket";
+import { SocketComponent } from "./SocketComponent";
+import { EditorMode, IArg, IConstant, IInvocation, ILibrary, IModules, ISocket, LibraryKey, UniqueId } from "./Types";
+
+
 
 interface IProps {
     contents: IInvocation|ISocket|IConstant|IArg;
     editorMode: EditorMode;
-    onCanInserted: any;
+    onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
     canCursorId: string;
     library: ILibrary;
     modules: IModules;
