@@ -106,7 +106,6 @@ class App extends React.Component<{}, IState> {
 
     public render() {
         // const highlight = this.highlightLibraryItem.bind(this);
-        const onCanClick = this.onCanClick.bind(this);
         if (this.state === null) {
             return null;
         }
@@ -123,7 +122,6 @@ class App extends React.Component<{}, IState> {
                             library={this.state.library}
                             modules={this.state.modules}
                             onBrickNameChange={this.onBrickNameChange}
-                            onCanClick={onCanClick}
                             onCanInserted={this.onCanInserted}
                             canCursorId={this.state.canCursorId}
                         />
@@ -183,21 +181,6 @@ class App extends React.Component<{}, IState> {
             args,
             implementationKey: itemId
         });
-    }
-
-    public onCanClick(clickedInvocation: IInvocation) {
-        log("Clicked a can", clickedInvocation);
-        if (this.currentBrick().rootInvocation === clickedInvocation) {
-            this.currentBrick().rootInvocation = Socket.create({});
-            this.setState({});
-            return;
-        }
-        this.recurseFindAndReplace(
-            this.currentBrick().rootInvocation,
-            clickedInvocation,
-            Socket.create({})
-        );
-        this.setState({});
     }
 
     public modulesChanged() {

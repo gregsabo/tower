@@ -6,7 +6,6 @@ import "./Program.css";
 interface IProps {
     contents: any;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     onBrickNameChange: any;
     canCursorId: string;
@@ -26,7 +25,6 @@ class Program extends React.Component<IProps, {}> {
                 <BrickComponent
                     contents={this.props.contents.rootInvocation}
                     editorMode={this.props.editorMode}
-                    onCanClick={this.props.onCanClick}
                     onCanInserted={this.props.onCanInserted}
                     canCursorId={this.props.canCursorId}
                     library={this.props.library}

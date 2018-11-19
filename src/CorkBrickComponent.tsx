@@ -6,7 +6,6 @@ import "./CorkBrickComponent.css";
 interface IProps {
     contents: ICork;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     canCursorId: string;
     library: any;

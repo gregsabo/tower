@@ -7,7 +7,6 @@ import classnames from "classnames";
 interface IProps {
     contents: IConstant;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     canCursorId: string;
     library: any;

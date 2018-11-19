@@ -8,7 +8,6 @@ import "./InvocationBrickComponent.css";
 interface IProps {
     contents: IInvocation;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     canCursorId: string;
     library: any;
@@ -33,7 +32,6 @@ function renderArgs(props: IProps) {
                 canCursorId={props.canCursorId}
                 contents={item}
                 editorMode={props.editorMode}
-                onCanClick={props.onCanClick}
                 onCanInserted={props.onCanInserted}
                 library={props.library}
                 modules={props.modules}

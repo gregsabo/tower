@@ -6,7 +6,6 @@ import "./SocketComponent.css";
 interface IProps {
     contents: ISocket;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     canCursorId: string;
     library: any;

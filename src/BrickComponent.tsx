@@ -19,7 +19,6 @@ import { CorkBrickComponent } from "./CorkBrickComponent";
 interface IProps {
     contents: IInvocation|ISocket|IConstant|IArg;
     editorMode: string;
-    onCanClick: any;
     onCanInserted: any;
     canCursorId: string;
     library: any;
