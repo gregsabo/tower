@@ -1,9 +1,8 @@
-import {UniqueId, IBrick, InvocationKeyType, IInvocation} from "./Types";
+import {UniqueId, IBrick, IInvocation} from "./Types";
 
 export interface ITraversalResult {
     invocation: IInvocation,
-    path: IInvocation[],
-    uniqueId: InvocationKeyType
+    path: IInvocation[]
 }
 
 export function findById(program: IBrick, uniqueId: UniqueId) {
@@ -20,7 +19,7 @@ export function findById(program: IBrick, uniqueId: UniqueId) {
     );
 }
 
-function recurseFind(program: IInvocation, uniqueId: UniqueId, path: IInvocation[]): any {
+function recurseFind(program: IInvocation, uniqueId: UniqueId, path: IInvocation[]): ITraversalResult|false {
     if (program.args === undefined)  {
         return false;
     }

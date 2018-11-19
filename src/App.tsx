@@ -117,7 +117,6 @@ class App extends React.Component<{}, IState> {
                             editorMode={this.state.editorMode}
                             library={this.state.library}
                             modules={this.state.modules}
-                            onBrickNameChange={this.onBrickNameChange}
                             onCanInserted={this.onCanInserted}
                             canCursorId={this.state.canCursorId}
                         />

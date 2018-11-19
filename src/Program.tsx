@@ -1,14 +1,12 @@
-import autobind from "autobind-decorator";
 import * as React from "react";
 import {BrickComponent} from "./BrickComponent";
 import "./Program.css";
-import {ILibrary, IModules, EditorMode, UniqueId, LibraryKey} from "./Types";
+import {ILibrary, IModules, EditorMode, UniqueId, LibraryKey, IBrick} from "./Types";
 
 interface IProps {
-    contents: any;
+    contents: IBrick;
     editorMode: EditorMode;
     onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
-    onBrickNameChange: any;
     canCursorId: string;
     library: ILibrary;
     modules: IModules;
@@ -33,11 +31,6 @@ class Program extends React.Component<IProps, {}> {
                 />
             </div>
         </div>;
-    }
-
-    @autobind
-    public onBrickNameChange(e: any) {
-        this.props.onBrickNameChange(e.target.value);
     }
 }
 

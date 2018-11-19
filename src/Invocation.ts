@@ -4,22 +4,18 @@ import makeType from "./TowerType";
 import {IInvocation, ILibrary, IModules} from "./Types";
 
 const Invocation = makeType("invocation", ["args", "implementationKey"], {
-    invoke: (self: any, args: any[], library: ILibrary, modules: IModules) => {
+    invoke: (self: IInvocation, args: IInvocation[], library: ILibrary, modules: IModules) => {
         return Invocation.implementation(self, library, modules)(...args);
     },
 
-    numArgs: (self: any, library: ILibrary, modules: IModules) => {
-        return Invocation.libraryFunction(self, library, modules) || 0;
-    },
-
-    getName: (self: any, library: ILibrary, modules: IModules) => {
+    getName: (self: IInvocation, library: ILibrary, modules: IModules) => {
         return Invocation.libraryFunction(self, library, modules).name;
     },
 
-    implementation: (self: any, library: ILibrary, modules: IModules) => {
+    implementation: (self: IInvocation, library: ILibrary, modules: IModules) => {
         const libraryFunction = Invocation.libraryFunction(self, library, modules);
         if (libraryFunction.rootInvocation) {
-            return (...args: any[]) => {
+            return (...args: IInvocation[]) => {
                 return Runtime.evaluate(
                     libraryFunction.rootInvocation,
                     args,
@@ -43,7 +39,7 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
         }
     },
 
-    libraryFunction: (self: any, library: ILibrary, modules: IModules) => {
+    libraryFunction: (self: IInvocation, library: ILibrary, modules: IModules) => {
         return Invocation.maybeLookupModule(
             library[self.implementationKey], modules
         );
@@ -51,7 +47,7 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
 });
 
 const oldCreate = Invocation.create;
-Invocation.create = (...args: any[]) : IInvocation => {
+Invocation.create = (...args: IInvocation[]) : IInvocation => {
     return oldCreate(...args) as IInvocation;
 }
 

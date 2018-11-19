@@ -35,6 +35,7 @@ export interface IInvocation {
     args: IInvocation[];
     implementationKey: ImplementationKey;
     uniqueId: InvocationKeyType;
+    types: string[];
 }
 
 export interface ISocket {

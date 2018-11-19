@@ -4,14 +4,15 @@ import {findById, ITraversalResult} from "./ProgramTraversal";
 import Socket from "./Socket";
 import History from "./History";
 import Constant from "./Constant";
+import App from "./App";
 
 const log = console.log;
 
 export default class KeyboardController {
     public history: History;
-    private app: any;
+    private app: App;
 
-    constructor(app: any) {
+    constructor(app: App) {
         this.app = app;
         this.history = new History();
     }
@@ -77,7 +78,7 @@ export default class KeyboardController {
         }
         if (result.path.length === 0) {
             log("Bottom of tower. Cannot go down.");
-            return;
+            return null;
         }
         const parent = result.path[result.path.length - 1];
         const index = parent.args.indexOf(result.invocation);
@@ -139,10 +140,19 @@ export default class KeyboardController {
 
     public visitSelectedBrick() {
         const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
-        console.log("Got result", result, "and impl key", result.invocation.implementationKey);
+        if (result === false) {
+            console.log("Could not find brick");
+            return;
+        }
+        if (result.invocation.types.indexOf("invocation") === -1) {
+            return;
+        }
         const brick = Invocation.libraryFunction(
             result.invocation, this.app.state.library, this.app.state.modules
         );
+        if (!brick.brickKey || !brick.moduleKey) {
+            return;
+        }
         console.log("Got module", brick, "key", brick.moduleKey)
         this.app.setState({
             currentBrickId: brick.brickKey,
@@ -177,6 +187,9 @@ export default class KeyboardController {
             editorMode: "constant"
         });
         const result = findById(this.app.currentBrick(), this.app.state.canCursorId);
+        if (result === false) {
+            return;
+        }
         let constant;
         if (!Constant.describes(result.invocation)) {
             constant = Constant.create({});

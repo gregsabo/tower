@@ -13,10 +13,10 @@ export default class LazyValue {
     public isLazyValue = true;
     private value: any;
     private evaluated: boolean;
-    private evaluationFunction: any;
+    private evaluationFunction: () => any;
 
 
-    constructor(evaluationFunction: any) {
+    constructor(evaluationFunction: () => any) {
         this.value = null;
         this.evaluationFunction = evaluationFunction;
         if (this.evaluationFunction === undefined) {
