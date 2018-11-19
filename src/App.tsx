@@ -1,20 +1,19 @@
-import autobind from 'autobind-decorator';
-import * as React from 'react';
-import './App.css';
-import Arg from './Arg';
-import BrickNamer from './BrickNamer';
-// import CanSearch from "./CanSearch";
-import Constant from './Constant';
-import Cork from './Cork';
-import InputConfiguration from './InputConfiguration';
-import Invocation from './Invocation';
-import KeyboardController from './KeyboardController';
-import Library from './Library';
-import * as Modules from './Modules';
-import Program from './Program';
-import Socket from './Socket';
-import TestGrid from './TestGrid';
-import UndoManager from './UndoManager';
+import autobind from "autobind-decorator";
+import * as React from "react";
+import "./App.css";
+import Arg from "./Arg";
+import BrickNamer from "./BrickNamer";
+import Constant from "./Constant";
+import Cork from "./Cork";
+import InputConfiguration from "./InputConfiguration";
+import Invocation from "./Invocation";
+import KeyboardController from "./KeyboardController";
+import Library from "./Library";
+import * as Modules from "./Modules";
+import Program from "./Program";
+import Socket from "./Socket";
+import TestGrid from "./TestGrid";
+import UndoManager from "./UndoManager";
 import {
   ITest,
   ILibrary,
@@ -24,7 +23,7 @@ import {
   IInvocation,
   UniqueId,
   EditorMode
-} from './Types';
+} from "./Types";
 
 const CAPITALIZE_SENTENCE = Invocation.create({
   args: [
@@ -32,18 +31,18 @@ const CAPITALIZE_SENTENCE = Invocation.create({
       args: [
         Invocation.create({
           args: [Arg.create({})],
-          implementationKey: 'split'
+          implementationKey: "split"
         }),
         Invocation.create({
           args: [Cork.create({})],
-          implementationKey: 'capitalize'
+          implementationKey: "capitalize"
         })
       ],
-      implementationKey: 'map'
+      implementationKey: "map"
     }),
-    Constant.create({ value: ' ' })
+    Constant.create({ value: " " })
   ],
-  implementationKey: 'join'
+  implementationKey: "join"
 });
 
 interface IState {
@@ -69,15 +68,15 @@ class App extends React.Component<{}, IState> {
       basic: {
         bricks: {
           sentence_cap: {
-            brickKey: 'sentence_cap',
-            moduleKey: 'basic',
-            name: 'Sentence Capitalization',
+            brickKey: "sentence_cap",
+            moduleKey: "basic",
+            name: "Sentence Capitalization",
             numArgs: 1,
             rootInvocation: CAPITALIZE_SENTENCE,
             tests: []
           }
         },
-        name: 'Starter Module'
+        name: "Starter Module"
       }
     };
 
@@ -86,14 +85,14 @@ class App extends React.Component<{}, IState> {
     }
 
     Modules.importModulesIntoLibrary(modules, Library);
-    log('Library is now', Library);
+    log("Library is now", Library);
 
     this.setState({
       canCursorId: CAPITALIZE_SENTENCE.uniqueId,
-      currentBrickId: 'sentence_cap',
-      currentModuleId: 'basic',
-      editorMode: 'cursor',
-      highlightedLibraryItemId: 'string',
+      currentBrickId: "sentence_cap",
+      currentModuleId: "basic",
+      editorMode: "cursor",
+      highlightedLibraryItemId: "string",
       inputs: [new InputConfiguration(0)],
       library: Library,
       modules
@@ -101,7 +100,7 @@ class App extends React.Component<{}, IState> {
 
     this.undoManager.remember(modules);
 
-    keyboardController.history.remember('basic', 'sentence_cap');
+    keyboardController.history.remember("basic", "sentence_cap");
   }
 
   public render() {
@@ -110,14 +109,14 @@ class App extends React.Component<{}, IState> {
       return null;
     }
     return (
-      <div className="App" style={{ display: 'flex' }}>
+      <div className="App" style={{ display: "flex" }}>
         <div>
           <BrickNamer
             editorMode={this.state.editorMode}
             name={this.currentBrick().name}
             onBrickNameChange={this.onBrickNameChange}
           />
-          {this.state.editorMode === 'test' ? (
+          {this.state.editorMode === "test" ? (
             <TestGrid
               brick={this.currentBrick()}
               modules={this.state.modules}
@@ -164,7 +163,7 @@ class App extends React.Component<{}, IState> {
   }
 
   public invocationForLibraryItemId(itemId: string) {
-    if (itemId === 'newBrick') {
+    if (itemId === "newBrick") {
       itemId = Modules.createNewBrick(
         this.state.currentModuleId,
         this.state.modules
@@ -225,7 +224,7 @@ class App extends React.Component<{}, IState> {
       this.currentBrick().rootInvocation = invocation;
       this.setState({
         canCursorId: invocation.uniqueId,
-        editorMode: 'cursor'
+        editorMode: "cursor"
       });
       return this.modulesChanged();
     }
@@ -236,7 +235,7 @@ class App extends React.Component<{}, IState> {
     );
     this.setState({
       canCursorId: invocation.uniqueId,
-      editorMode: 'cursor'
+      editorMode: "cursor"
     });
     this.modulesChanged();
   }
@@ -251,7 +250,7 @@ class App extends React.Component<{}, IState> {
     }
     for (let i = 0; i < program.args.length; i++) {
       if (program.args[i].uniqueId === needle) {
-        log('Replacing', program, i, invocation);
+        log("Replacing", program, i, invocation);
         program.args[i] = invocation;
         return true;
       }
@@ -270,7 +269,7 @@ class App extends React.Component<{}, IState> {
     }
     for (let i = 0; i < program.args.length; i++) {
       if (program.args[i].uniqueId === needle.uniqueId) {
-        log('Replacing', program, i, invocation);
+        log("Replacing", program, i, invocation);
         program.args[i] = invocation;
         return true;
       }

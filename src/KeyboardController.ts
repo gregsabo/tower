@@ -1,10 +1,10 @@
-import Invocation from './Invocation';
-import { IInvocation } from './Types';
-import { findById, ITraversalResult } from './ProgramTraversal';
-import Socket from './Socket';
-import History from './History';
-import Constant from './Constant';
-import App from './App';
+import Invocation from "./Invocation";
+import { IInvocation } from "./Types";
+import { findById, ITraversalResult } from "./ProgramTraversal";
+import Socket from "./Socket";
+import History from "./History";
+import Constant from "./Constant";
+import App from "./App";
 
 const log = console.log;
 
@@ -18,7 +18,7 @@ export default class KeyboardController {
   }
 
   public registerKeyEvents() {
-    document.addEventListener('keydown', e => {
+    document.addEventListener("keydown", e => {
       this.onKeyDown(e);
       return true;
     });
@@ -30,7 +30,7 @@ export default class KeyboardController {
       this.app.state.canCursorId
     );
     if (!result) {
-      log('No result found. Assuming bottom.');
+      log("No result found. Assuming bottom.");
       return this.app.currentBrick().rootInvocation.uniqueId;
     }
     if (result.invocation.args && result.invocation.args.length > 0) {
@@ -45,13 +45,13 @@ export default class KeyboardController {
       this.app.currentBrick(),
       this.app.state.canCursorId
     );
-    console.log('Trying to find below cursor', result);
+    console.log("Trying to find below cursor", result);
     if (!result) {
-      log('No result found. Assuming bottom.');
+      log("No result found. Assuming bottom.");
       return this.app.currentBrick().rootInvocation.uniqueId;
     }
     if (result.path.length === 0) {
-      log('Bottom of tower. Cannot go down.');
+      log("Bottom of tower. Cannot go down.");
       return null;
     }
     return result.path[result.path.length - 1].uniqueId;
@@ -63,11 +63,11 @@ export default class KeyboardController {
       this.app.state.canCursorId
     );
     if (!result) {
-      log('No result found. Assuming bottom.');
+      log("No result found. Assuming bottom.");
       return this.app.currentBrick().rootInvocation.uniqueId;
     }
     if (result.path.length === 0) {
-      log('Bottom of tower. Cannot go down.');
+      log("Bottom of tower. Cannot go down.");
       return null;
     }
     const parent = result.path[result.path.length - 1];
@@ -85,11 +85,11 @@ export default class KeyboardController {
       this.app.state.canCursorId
     );
     if (!result) {
-      log('No result found. Assuming bottom.');
+      log("No result found. Assuming bottom.");
       return this.app.currentBrick().rootInvocation.uniqueId;
     }
     if (result.path.length === 0) {
-      log('Bottom of tower. Cannot go down.');
+      log("Bottom of tower. Cannot go down.");
       return null;
     }
     const parent = result.path[result.path.length - 1];
@@ -112,13 +112,13 @@ export default class KeyboardController {
 
   public enterInsertMode() {
     this.app.setState({
-      editorMode: 'insert'
+      editorMode: "insert"
     });
   }
 
   public enterCursorMode() {
     this.app.setState({
-      editorMode: 'cursor'
+      editorMode: "cursor"
     });
   }
 
@@ -132,7 +132,7 @@ export default class KeyboardController {
     }
     this.replaceResult(result, Socket.create({}));
     this.app.setState({
-      editorMode: 'cursor'
+      editorMode: "cursor"
     });
     this.app.modulesChanged();
   }
@@ -159,10 +159,10 @@ export default class KeyboardController {
       this.app.state.canCursorId
     );
     if (result === false) {
-      console.log('Could not find brick');
+      console.log("Could not find brick");
       return;
     }
-    if (result.invocation.types.indexOf('invocation') === -1) {
+    if (result.invocation.types.indexOf("invocation") === -1) {
       return;
     }
     const brick = Invocation.libraryFunction(
@@ -173,7 +173,7 @@ export default class KeyboardController {
     if (!brick.brickKey || !brick.moduleKey) {
       return;
     }
-    console.log('Got module', brick, 'key', brick.moduleKey);
+    console.log("Got module", brick, "key", brick.moduleKey);
     this.app.setState({
       currentBrickId: brick.brickKey,
       currentModuleId: brick.moduleKey
@@ -183,7 +183,7 @@ export default class KeyboardController {
 
   public goBack() {
     const current = this.history.goBack();
-    console.log('going back', current);
+    console.log("going back", current);
     this.app.setState({
       currentBrickId: current.brickKey,
       currentModuleId: current.moduleKey
@@ -192,7 +192,7 @@ export default class KeyboardController {
 
   public goForwards() {
     const current = this.history.goForwards();
-    console.log('going forwards', current);
+    console.log("going forwards", current);
     this.app.setState({
       currentBrickId: current.brickKey,
       currentModuleId: current.moduleKey
@@ -201,7 +201,7 @@ export default class KeyboardController {
 
   public editConstant() {
     this.app.setState({
-      editorMode: 'constant'
+      editorMode: "constant"
     });
     const result = findById(
       this.app.currentBrick(),
@@ -219,13 +219,13 @@ export default class KeyboardController {
 
   public goToTestMode() {
     this.app.setState({
-      editorMode: 'test'
+      editorMode: "test"
     });
   }
 
   public renameBrick() {
     this.app.setState({
-      editorMode: 'naming'
+      editorMode: "naming"
     });
   }
 
@@ -234,56 +234,56 @@ export default class KeyboardController {
       // Don't interfere with browser shortcuts
       return true;
     }
-    if (e.code === 'Escape') {
+    if (e.code === "Escape") {
       this.enterCursorMode();
     }
-    if (this.app.state.editorMode !== 'cursor') {
+    if (this.app.state.editorMode !== "cursor") {
       return true;
     }
     // if (e.target !== window.document.body) {
     //     return true;
     // }
     switch (e.code) {
-      case 'KeyU':
+      case "KeyU":
         this.app.undo();
         break;
-      case 'KeyY':
+      case "KeyY":
         this.app.redo();
         break;
-      case 'KeyI':
+      case "KeyI":
         this.enterInsertMode();
         break;
-      case 'KeyD':
+      case "KeyD":
         this.deleteSelectedCan();
         break;
-      case 'KeyM':
+      case "KeyM":
         this.visitSelectedBrick();
         break;
-      case 'KeyE':
+      case "KeyE":
         this.goBack();
         break;
-      case 'KeyR':
+      case "KeyR":
         this.goForwards();
         break;
-      case 'KeyT':
+      case "KeyT":
         this.goToTestMode();
         break;
-      case 'KeyN':
+      case "KeyN":
         this.renameBrick();
         break;
-      case 'KeyO':
+      case "KeyO":
         this.editConstant();
         break;
-      case 'KeyJ':
+      case "KeyJ":
         this.moveCursorTo(this.findCanBelowCursor());
         break;
-      case 'KeyK':
+      case "KeyK":
         this.moveCursorTo(this.findCanAboveCursor());
         break;
-      case 'KeyH':
+      case "KeyH":
         this.moveCursorTo(this.findCanToLeftOfCursor());
         break;
-      case 'KeyL':
+      case "KeyL":
         this.moveCursorTo(this.findCanToRightOfCursor());
         break;
       default:
