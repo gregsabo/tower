@@ -2,7 +2,7 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import "./BrickSearch.css";
 import * as Modules from "./Modules";
-import {ILibrary, IModules, LibraryKey} from "./Types";
+import { ILibrary, ILibraryBrick, ILibraryBrickWithImplementation, IModuleLibraryBrick, IModules, LibraryKey } from "./Types";
 
 interface IProps {
     library: ILibrary;
@@ -28,7 +28,7 @@ function keyValues(inObject: object) {
 class BrickSearch extends React.Component<IProps, IState> {
     public inputBox = React.createRef<HTMLInputElement>();
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
         this.state = { filter: "", selectedId: "" };
     }
@@ -70,36 +70,38 @@ class BrickSearch extends React.Component<IProps, IState> {
     }
 
     public filteredLibrary(filter: string) {
-        return keyValues(this.props.library).filter(([_, value]: any) => {
-            const name = this.maybeLookupModule(value).name;
+        return keyValues(this.props.library).filter(([_, value]: [LibraryKey, ILibraryBrick]) => {
+            const name = this.lookupBrickName(value);
             return name.toLowerCase().indexOf(filter.toLowerCase()) > -1;
         });
     }
 
     public renderLibrary() {
-        return this.filteredLibrary(this.state.filter).map((keyval: any) => {
-            return this.renderLibraryItem(keyval[1], keyval[0]);
+        return this.filteredLibrary(this.state.filter).map(([key, brick]: [LibraryKey, ILibraryBrick]) => {
+            return this.renderLibraryItem(brick, key);
         });
     }
 
     @autobind
-    public renderLibraryItem(libraryItem: any, key: string) {
+    public renderLibraryItem(libraryItem: ILibraryBrick, key: LibraryKey) {
         let className = "";
         if (this.state && key === this.state.selectedId) {
             className = "BrickSearch-libraryItem--selected";
         }
         return <div key={key} className={className}>
-            {this.maybeLookupModule(libraryItem).name}
+            {this.lookupBrickName(libraryItem)}
         </div>;
     }
 
-    public maybeLookupModule(item: any) {
-        if (item.moduleKey && item.brickKey) {
-            return Modules.getBrickFromModules(item.moduleKey, item.brickKey, this.props.modules);
+    public lookupBrickName(item: ILibraryBrick) {
+        const moduleItem = item as IModuleLibraryBrick;
+        if (moduleItem.moduleKey && moduleItem.brickKey) {
+            return Modules.getBrickFromModules(moduleItem.moduleKey, moduleItem.brickKey, this.props.modules).name;
         } else {
-            return item;
+            return (item as ILibraryBrickWithImplementation).name;
         }
     }
 }
 
-export {BrickSearch};
+export { BrickSearch };
+
