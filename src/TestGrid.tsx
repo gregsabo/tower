@@ -1,175 +1,194 @@
-import autobind from "autobind-decorator";
-import * as React from "react";
-import * as Runtime from "./Runtime";
-import Value from "./Value";
-import {parseLiteral} from "./Parsing";
-import "./TestGrid.css";
-import {ITest, ILibrary, IModules} from "./Types";
+import autobind from 'autobind-decorator';
+import * as React from 'react';
+import * as Runtime from './Runtime';
+import Value from './Value';
+import { parseLiteral } from './Parsing';
+import './TestGrid.css';
+import { ITest, ILibrary, IModules } from './Types';
 
 interface IProps {
-    brick: any;
-    onTestsChanged: any;
-    library: ILibrary;
-    modules: IModules;
+  brick: any;
+  onTestsChanged: any;
+  library: ILibrary;
+  modules: IModules;
 }
 
 export default class TestGrid extends React.Component<IProps> {
-    private firstCell? : HTMLInputElement;
+  private firstCell?: HTMLInputElement;
 
-    public componentDidMount() {
-        console.log("Testgrid mounted", this.firstCell);
-        if (this.props.brick.tests.length === 0) {
-            for (let i = 0; i < 10; i++) {
-                this.props.brick.tests.push(this.newTest())
-            }
-            this.props.onTestsChanged(this.props.brick.tests);
+  public componentDidMount() {
+    console.log('Testgrid mounted', this.firstCell);
+    if (this.props.brick.tests.length === 0) {
+      for (let i = 0; i < 10; i++) {
+        this.props.brick.tests.push(this.newTest());
+      }
+      this.props.onTestsChanged(this.props.brick.tests);
+    }
+    if (this.firstCell) {
+      this.firstCell.focus();
+      this.firstCell.select();
+    }
+  }
+
+  public render() {
+    return (
+      <table className="TestGrid">
+        <thead>
+          <tr>
+            <td />
+            <td>ARG 1</td>
+            <td>Expected Result</td>
+            <td>Actual Result</td>
+          </tr>
+        </thead>
+        <tbody>{this.props.brick.tests.map(this.renderTest)}</tbody>
+      </table>
+    );
+  }
+
+  @autobind
+  public renderTest(test: ITest, num: number) {
+    test = test || this.newTest();
+    let ref;
+    if (num === 0) {
+      ref = (first: HTMLInputElement) => (this.firstCell = first);
+    }
+    const result = this.renderResult(test);
+    const passed = this.testPassed(test, result);
+    return (
+      <tr
+        className={
+          passed ? 'TestGrid-passingTestCase' : 'TestGrid-failingTestCase'
         }
-        if (this.firstCell) {
-            this.firstCell.focus();
-            this.firstCell.select();
-        }
+      >
+        <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
+        <td>
+          <input
+            className="TestGrid-input"
+            type="text"
+            ref={ref}
+            contentEditable={true}
+            onChange={this.onArgChanged.bind(this, num, 0)}
+            value={test.args[0]}
+          />
+        </td>
+        <td>
+          <input
+            className="TestGrid-input"
+            type="text"
+            contentEditable={true}
+            onChange={this.onExpectationChanged.bind(this, num)}
+            value={test.expected}
+          />
+        </td>
+        <td>{result ? <Value value={result} /> : null}</td>
+      </tr>
+    );
+  }
+
+  public renderResult(test: ITest) {
+    const inputs = test.args;
+    let result = null;
+
+    let parsedExpected;
+    if (test.expected !== null) {
+      parsedExpected = parseLiteral(test.expected);
     }
 
-    public render() {
-        return <table className="TestGrid">
-            <thead>
-                <tr>
-                    <td/>
-                    <td>ARG 1</td>
-                    <td>Expected Result</td>
-                    <td>Actual Result</td>
-                </tr>
-            </thead>
-            <tbody>
-                {this.props.brick.tests.map(this.renderTest)}
-            </tbody>
-        </table>
+    if (test.args.length === 0 || test.args[0] === '') {
+      return '';
+    } else if (inputs.length === this.props.brick.numArgs) {
+      try {
+        result = Runtime.evaluate(
+          this.props.brick.rootInvocation,
+          test.args.map(parseLiteral),
+          this.props.library,
+          this.props.modules,
+          {}
+        );
+      } catch (e) {
+        result = 'ERROR: ' + e.message;
+      }
+
+      if (result === parsedExpected) {
+        return '=';
+      } else {
+        return result;
+      }
+    }
+  }
+
+  public testPassed(test: ITest, result: string) {
+    if (test.expected === null) {
+      return true;
+    }
+    const parsedExpected = parseLiteral(test.expected);
+    if (result === '=') {
+      return true;
     }
 
-    @autobind
-    public renderTest(test: ITest, num: number) {
-        test = test || this.newTest();
-        let ref;
-        if (num === 0) {
-            ref = (first: HTMLInputElement) => this.firstCell = first
-        }
-        const result = this.renderResult(test);
-        const passed = this.testPassed(test, result);
-        return <tr className={passed ? "TestGrid-passingTestCase" : "TestGrid-failingTestCase"}>
-            <td className="TestGrid-digitColumn">{(num+1) % 10}</td>
-            <td>
-                <input 
-                    className="TestGrid-input"
-                    type="text"
-                    ref={ref}
-                    contentEditable={true}
-                    onChange={this.onArgChanged.bind(this, num, 0)}
-                    value={test.args[0]}/>
-            </td>
-            <td>
-                <input 
-                    className="TestGrid-input"
-                    type="text"
-                    contentEditable={true}
-                    onChange={this.onExpectationChanged.bind(this, num)}
-                    value={test.expected}/>
-            </td>
-            <td>{result ? <Value value={result}/> : null}</td>
-        </tr>
+    if (
+      test.args.length === 0 ||
+      test.args[0] === '' ||
+      parsedExpected === ''
+    ) {
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    public renderResult(test: ITest) {
-        const inputs = test.args;
-        let result = null;
+  @autobind
+  public onArgChanged(
+    row: number,
+    argnum: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const test = this.getTestNum(row);
+    test.args[argnum] = e.target.value;
+    this.props.onTestsChanged(this.props.brick.tests);
+  }
 
-        let parsedExpected;
-        if (test.expected !== null) {
-            parsedExpected = parseLiteral(test.expected);
-        }
+  @autobind
+  public onExpectationChanged(
+    row: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const test = this.getTestNum(row);
+    test.expected = e.target.value;
+    this.props.onTestsChanged(this.props.brick.tests);
+  }
 
-        if (test.args.length === 0 || test.args[0] === "")
-        {
-            return "";
-        } else if (inputs.length === this.props.brick.numArgs) {
-            try {
-                result = Runtime.evaluate(
-                    this.props.brick.rootInvocation,
-                    test.args.map(parseLiteral),
-                    this.props.library,
-                    this.props.modules,
-                    {}
-                );
-            } catch(e) {
-                result = "ERROR: " + e.message;
-            }
-
-            if (result === parsedExpected) {
-                return "=";
-            } else {
-                return result;
-            }
-        }
+  public getTestNum(num: number) {
+    if (this.props.brick.tests === undefined) {
+      this.props.brick.tests = [];
     }
-
-    public testPassed(test: ITest, result: string) {
-        if (test.expected === null) {
-            return true;
-        }
-        const parsedExpected = parseLiteral(test.expected);
-        if (result === "=") {
-            return true;
-        }
-
-        if (test.args.length === 0 || 
-            test.args[0] === "" || 
-            parsedExpected === "")
-        {
-            return true;
-        } else {
-            return false;
-        }
-
+    if (!this.props.brick.tests[num]) {
+      this.props.brick.tests[num] = this.newTest();
     }
+    return this.props.brick.tests[num];
+  }
 
-    @autobind
-    public onArgChanged(row: number, argnum: number, e: React.ChangeEvent<HTMLInputElement>) {
-        const test = this.getTestNum(row);
-        test.args[argnum] = e.target.value;
-        this.props.onTestsChanged(this.props.brick.tests);
-    }
+  public newTest() {
+    return {
+      args: [],
+      expected: ''
+    };
+  }
 
-    @autobind
-    public onExpectationChanged(row: number, e: React.ChangeEvent<HTMLInputElement>) {
-        const test = this.getTestNum(row);
-        test.expected = e.target.value;
-        this.props.onTestsChanged(this.props.brick.tests);
-    }
-
-    public getTestNum(num: number) {
-        if (this.props.brick.tests === undefined) {
-            this.props.brick.tests = [];
-        }
-        if (!this.props.brick.tests[num]) {
-            this.props.brick.tests[num] = this.newTest();
-        }
-        return this.props.brick.tests[num]
-    }
-
-    public newTest() {
-        return {
+  public renderEmptyTests() {
+    const tests = [];
+    for (let i = this.props.brick.tests.length; i < 10; i++) {
+      tests.push(
+        this.renderTest(
+          {
             args: [],
-            expected: ""
-        };
+            expected: ''
+          },
+          i
+        )
+      );
     }
-
-    public renderEmptyTests() {
-        const tests = [];
-        for (let i = this.props.brick.tests.length; i < 10; i++) {
-            tests.push(this.renderTest({
-                args: [],
-                expected: ""
-            }, i));
-        }
-        return tests;
-    }
+    return tests;
+  }
 }

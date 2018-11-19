@@ -1,3 +1,3 @@
-import makeType from "./TowerType";
+import makeType from './TowerType';
 
-export default makeType("cork", [], {});
+export default makeType('cork', [], {});

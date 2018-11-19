@@ -1,13 +1,17 @@
-html, body, #root, .App {
-    height: 100%;
-    width: 100%;
+html,
+body,
+#root,
+.App {
+  height: 100%;
+  width: 100%;
 }
 
 .App {
   margin: 30px;
 }
 
-.App, input[type='text'] {
+.App,
+input[type='text'] {
   font-family: Georgia;
 }
 
@@ -32,6 +36,10 @@ html, body, #root, .App {
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

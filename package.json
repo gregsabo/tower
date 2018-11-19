@@ -7,6 +7,9 @@
     "autobind": "^1.0.3",
     "autobind-decorator": "^2.1.0",
     "classnames": "^2.2.6",
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.5",
+    "prettier": "^1.15.2",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-scripts-ts": "2.16.0"

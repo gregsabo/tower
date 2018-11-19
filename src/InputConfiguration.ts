@@ -1,7 +1,7 @@
 export default class InputConfiguration {
-    public numSubinputs: number;
+  public numSubinputs: number;
 
-    constructor(numSubinputs: number) {
-        this.numSubinputs = numSubinputs;
-    }
+  constructor(numSubinputs: number) {
+    this.numSubinputs = numSubinputs;
+  }
 }
