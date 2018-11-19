@@ -6,7 +6,6 @@ import BrickNamer from "./BrickNamer";
 // import CanSearch from "./CanSearch";
 import Constant from "./Constant";
 import Cork from "./Cork";
-import Executor from "./Executor";
 import InputConfiguration from "./InputConfiguration";
 import InputConfigurator from "./InputConfigurator";
 import Invocation from "./Invocation";
@@ -113,7 +112,6 @@ class App extends React.Component<{}, IState> {
             <div className="App" style={{display: "flex"}}>
                 <div>
                     <InputConfigurator inputs={this.state.inputs} onInputsChanged={this.onInputsChanged}/>
-                    <Executor program={this.currentBrick()} library={this.state.library} modules={this.state.modules}/>
                     <BrickNamer editorMode={this.state.editorMode} name={this.currentBrick().name} onBrickNameChange={this.onBrickNameChange}/>
                     {this.state.editorMode === "test" ? <TestGrid brick={this.currentBrick()} modules={this.state.modules} library={this.state.library} onTestsChanged={this.onTestsChanged}/> : 
                         <Program
