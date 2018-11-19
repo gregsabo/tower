@@ -17,7 +17,12 @@ export interface IGeneratingLibraryBrick {
     name: string;
 }
 
-export type ILibraryBrick = ILibraryBrickWithImplementation | IGeneratingLibraryBrick;
+export interface IModuleLibraryBrick {
+    moduleKey: ModuleKey;
+    brickKey: BrickKey;
+}
+
+export type ILibraryBrick = ILibraryBrickWithImplementation | IGeneratingLibraryBrick | IModuleLibraryBrick;
 
 export type LibraryKey = string;
 export interface ILibrary {

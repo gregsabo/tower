@@ -4,10 +4,11 @@ import "./Executor.css";
 import * as Runtime from "./Runtime";
 import Socket from "./Socket";
 import TowerError from "./TowerError";
+import {ILibrary} from "./Types";
 
 interface IProps {
     program: any;
-    library: any;
+    library: ILibrary;
     modules: any;
 }
 

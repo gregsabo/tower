@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ISocket} from "./Types";
+import {ISocket, ILibrary, IModules} from "./Types";
 import classnames from "classnames";
 import "./SocketComponent.css";
 
@@ -8,8 +8,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 export const SocketComponent: React.SFC<IProps> = (props) => {

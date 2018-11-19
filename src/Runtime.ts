@@ -5,8 +5,9 @@ import Invocation from "./Invocation";
 import LazyValue from "./LazyValue";
 import Socket from "./Socket";
 import TowerError from "./TowerError";
+import { ILibrary, IModules } from "./Types";
 
-export function evaluate(invocation: any, inputs: any[], library: object, modules: object, resultMap: object): any{
+export function evaluate(invocation: any, inputs: any[], library: ILibrary, modules: IModules, resultMap: object): any{
     if (!Invocation.describes(invocation)) {
         return "Empty tower.";
     }
@@ -25,7 +26,7 @@ export function evaluate(invocation: any, inputs: any[], library: object, module
     return returnValue;
 }
 
-function makeLazyArgs(args: any, inputs: any[], library: any, modules: object, resultMap: object) {
+function makeLazyArgs(args: any, inputs: any[], library: ILibrary, modules: IModules, resultMap: object) {
     return args.map((arg: any) => {
         if (Socket.describes(arg)) {
             return arg;

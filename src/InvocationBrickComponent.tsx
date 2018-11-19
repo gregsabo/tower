@@ -1,4 +1,4 @@
-import {IInvocation} from "./Types";
+import {IInvocation, ILibrary, IModules} from "./Types";
 import * as React from "react";
 import Invocation from "./Invocation";
 import {BrickComponent} from "./BrickComponent";
@@ -10,8 +10,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 function renderName(props: IProps) {

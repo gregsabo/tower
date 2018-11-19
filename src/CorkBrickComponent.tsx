@@ -1,6 +1,6 @@
 import * as React from "react";
 import classnames from "classnames";
-import {ICork} from "./Types";
+import {ICork, ILibrary, IModules} from "./Types";
 import "./CorkBrickComponent.css";
 
 interface IProps {
@@ -8,8 +8,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 export const CorkBrickComponent: React.SFC<IProps> = (props) => {

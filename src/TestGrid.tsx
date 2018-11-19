@@ -4,13 +4,13 @@ import * as Runtime from "./Runtime";
 import Value from "./Value";
 import {parseLiteral} from "./Parsing";
 import "./TestGrid.css";
-import {ITest} from "./Types";
+import {ITest, ILibrary, IModules} from "./Types";
 
 interface IProps {
     brick: any;
     onTestsChanged: any;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 export default class TestGrid extends React.Component<IProps> {

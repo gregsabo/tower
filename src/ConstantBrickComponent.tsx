@@ -1,5 +1,5 @@
 import * as React from "react";
-import {IConstant} from "./Types";
+import {IConstant, ILibrary, IModules} from "./Types";
 import Value from "./Value";
 import "./ConstantBrickComponent.css";
 import classnames from "classnames";
@@ -9,8 +9,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 export const ConstantBrickComponent: React.SFC<IProps> = (props) => {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {IArg} from "./Types";
+import {IArg, ILibrary, IModules} from "./Types";
 import "./ArgBrickComponent.css";
 import classnames from "classnames";
 
@@ -8,8 +8,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 export const ArgBrickComponent: React.SFC<IProps> = (props) => {

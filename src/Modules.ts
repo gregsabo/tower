@@ -1,10 +1,11 @@
 import Socket from "./Socket";
+import {ILibrary, IModules, BrickKey, ModuleKey} from "./Types";
 
-export function makeLibraryKey(moduleKey: any, brickKey: any) {
+export function makeLibraryKey(moduleKey: ModuleKey, brickKey: BrickKey) {
     return moduleKey + "::" + brickKey;
 }
 
-export function importModulesIntoLibrary(modules: any, library: any) {
+export function importModulesIntoLibrary(modules: IModules, library: ILibrary) {
     Object.keys(modules).map((moduleKey) => {
         const bricks = modules[moduleKey].bricks;
         Object.keys(bricks).map((brickKey) => {
@@ -16,11 +17,11 @@ export function importModulesIntoLibrary(modules: any, library: any) {
     });
 }
 
-export function getBrickFromModules(moduleKey: string, brickKey: string, modules: any) {
+export function getBrickFromModules(moduleKey: ModuleKey, brickKey: BrickKey, modules: IModules) {
     return modules[moduleKey].bricks[brickKey];
 }
 
-export function maybeLookUpModule(libraryItem: any, modules: object) {
+export function maybeLookUpModule(libraryItem: any, modules: IModules) {
     if (libraryItem.moduleKey && libraryItem.brickKey) {
         return getBrickFromModules(
             libraryItem.moduleKey,
@@ -32,7 +33,7 @@ export function maybeLookUpModule(libraryItem: any, modules: object) {
     }
 }
 
-export function createNewBrick(moduleKey: string, modules: any) {
+export function createNewBrick(moduleKey: ModuleKey, modules: IModules) {
     const newBrickId = String(Math.random());
     modules[moduleKey].bricks[newBrickId] = {
         brickKey: newBrickId,

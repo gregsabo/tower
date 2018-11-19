@@ -2,6 +2,7 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import {BrickComponent} from "./BrickComponent";
 import "./Program.css";
+import {ILibrary, IModules} from "./Types";
 
 interface IProps {
     contents: any;
@@ -9,8 +10,8 @@ interface IProps {
     onCanInserted: any;
     onBrickNameChange: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 const style = {

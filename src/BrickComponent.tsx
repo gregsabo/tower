@@ -9,7 +9,7 @@ import Cork from "./Cork";
 import Invocation from "./Invocation";
 import Socket from "./Socket";
 
-import {IInvocation, ISocket, IConstant, IArg} from "./Types";
+import {IInvocation, ISocket, IConstant, IArg, ILibrary, IModules} from "./Types";
 import { InvocationBrickComponent } from "./InvocationBrickComponent";
 import { SocketComponent } from "./SocketComponent";
 import { ConstantBrickComponent } from "./ConstantBrickComponent";
@@ -21,8 +21,8 @@ interface IProps {
     editorMode: string;
     onCanInserted: any;
     canCursorId: string;
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
 }
 
 function renderCanSearch(props: IProps) {

@@ -2,10 +2,11 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import "./BrickSearch.css";
 import * as Modules from "./Modules";
+import {ILibrary, IModules} from "./Types";
 
 interface IProps {
-    library: any;
-    modules: any;
+    library: ILibrary;
+    modules: IModules;
     onLibraryItemSelected: any;
 }
 
