@@ -10,9 +10,9 @@
     "husky": "^1.1.4",
     "lint-staged": "^8.0.5",
     "prettier": "^1.15.2",
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
-    "react-scripts-ts": "2.16.0"
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts-ts": "2.17.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
