@@ -2,12 +2,12 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import "./BrickSearch.css";
 import * as Modules from "./Modules";
-import {ILibrary, IModules} from "./Types";
+import {ILibrary, IModules, LibraryKey} from "./Types";
 
 interface IProps {
     library: ILibrary;
     modules: IModules;
-    onLibraryItemSelected: any;
+    onLibraryItemSelected: (libraryKey: LibraryKey) => void;
 }
 
 interface IState {
@@ -15,7 +15,7 @@ interface IState {
     selectedId: string;
 }
 
-function keyValues(inObject: any) {
+function keyValues(inObject: object) {
     const outArray = [];
     for (const key in inObject) {
         if (inObject.hasOwnProperty(key)) {
@@ -26,16 +26,21 @@ function keyValues(inObject: any) {
 }
 
 class BrickSearch extends React.Component<IProps, IState> {
-    public inputBox: any;
+    public inputBox = React.createRef<HTMLInputElement>();
+
+    constructor(props: any){
+        super(props);
+        this.state = { filter: "", selectedId: "" };
+    }
 
     public render() {
-        const onKeyUp = this.onKeyUp.bind(this);
         return <div className="BrickSearch">
             <input
                 type="text"
                 ref={this.inputBox}
                 placeholder="Search the Library"
-                onKeyUp={onKeyUp}
+                onChange={this.onChange}
+                onKeyDown={this.onKeyDown}
                 autoFocus={true}
             />
             <div className="BrickSearch-library">
@@ -44,35 +49,35 @@ class BrickSearch extends React.Component<IProps, IState> {
         </div>;
     }
 
-    public onKeyUp(e: any) {
-        const selected = this.filteredLibrary()[0];
-        // TODO: what's the right code here?
-        if (e.nativeEvent.code === "Enter" && this.state.selectedId) {
-            return this.props.onLibraryItemSelected(this.state.selectedId);
-        }
+    @autobind
+    public onChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const newFilter = e.target.value;
+
+        const selected = this.filteredLibrary(newFilter)[0];
         if (selected && selected.length > 0) {
             this.setState({
-                filter: e.target.value,
                 selectedId: selected[0]
             });
-        } else {
-            this.setState({ filter: e.target.value });
+        }
+        this.setState({filter: newFilter});
+    }
+
+    @autobind
+    public onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === "Enter" && this.state.selectedId) {
+            return this.props.onLibraryItemSelected(this.state.selectedId);
         }
     }
 
-    public filteredLibrary() {
-        if (this.state === null || this.state.filter === null) {
-            return keyValues(this.props.library);
-        }
-
+    public filteredLibrary(filter: string) {
         return keyValues(this.props.library).filter(([_, value]: any) => {
             const name = this.maybeLookupModule(value).name;
-            return name.toLowerCase().indexOf(this.state.filter.toLowerCase()) > -1;
+            return name.toLowerCase().indexOf(filter.toLowerCase()) > -1;
         });
     }
 
     public renderLibrary() {
-        return this.filteredLibrary().map((keyval: any) => {
+        return this.filteredLibrary(this.state.filter).map((keyval: any) => {
             return this.renderLibraryItem(keyval[1], keyval[0]);
         });
     }
