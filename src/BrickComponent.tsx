@@ -9,7 +9,7 @@ import Cork from "./Cork";
 import Invocation from "./Invocation";
 import Socket from "./Socket";
 
-import {IInvocation, ISocket, IConstant, IArg, ILibrary, IModules} from "./Types";
+import {IInvocation, ISocket, IConstant, IArg, ILibrary, IModules, EditorMode} from "./Types";
 import { InvocationBrickComponent } from "./InvocationBrickComponent";
 import { SocketComponent } from "./SocketComponent";
 import { ConstantBrickComponent } from "./ConstantBrickComponent";
@@ -18,7 +18,7 @@ import { CorkBrickComponent } from "./CorkBrickComponent";
 
 interface IProps {
     contents: IInvocation|ISocket|IConstant|IArg;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     canCursorId: string;
     library: ILibrary;

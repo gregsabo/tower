@@ -2,11 +2,11 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import {BrickComponent} from "./BrickComponent";
 import "./Program.css";
-import {ILibrary, IModules} from "./Types";
+import {ILibrary, IModules, EditorMode} from "./Types";
 
 interface IProps {
     contents: any;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     onBrickNameChange: any;
     canCursorId: string;

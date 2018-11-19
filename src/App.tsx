@@ -17,7 +17,7 @@ import Program from "./Program";
 import Socket from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
-import {ITest, ILibrary, IModules, LibraryKey, ISocket, IInvocation, UniqueId} from "./Types"
+import {ITest, ILibrary, IModules, LibraryKey, ISocket, IInvocation, UniqueId, EditorMode} from "./Types"
 
 const CAPITALIZE_SENTENCE = Invocation.create({
     args: [
@@ -46,7 +46,7 @@ const CAPITALIZE_SENTENCE = Invocation.create({
 interface IState {
     highlightedLibraryItemId: string;
     canCursorId: string;
-    editorMode: string;
+    editorMode: EditorMode;
     inputs: InputConfiguration[];
     library: ILibrary;
     modules: IModules;

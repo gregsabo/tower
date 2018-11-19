@@ -1,11 +1,11 @@
 import * as React from "react";
-import {ISocket, ILibrary, IModules} from "./Types";
+import {ISocket, ILibrary, IModules, EditorMode} from "./Types";
 import classnames from "classnames";
 import "./SocketComponent.css";
 
 interface IProps {
     contents: ISocket;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     canCursorId: string;
     library: ILibrary;

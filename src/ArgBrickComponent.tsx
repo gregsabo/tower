@@ -1,11 +1,11 @@
 import * as React from "react";
-import {IArg, ILibrary, IModules} from "./Types";
+import {IArg, ILibrary, IModules, EditorMode} from "./Types";
 import "./ArgBrickComponent.css";
 import classnames from "classnames";
 
 interface IProps {
     contents: IArg;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     canCursorId: string;
     library: ILibrary;

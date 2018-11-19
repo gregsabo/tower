@@ -82,3 +82,5 @@ export interface IModule {
 export interface IModules {
     [key: string]: IModule
 }
+
+export type EditorMode = "cursor" | "insert" | "constant" | "test" | "naming";

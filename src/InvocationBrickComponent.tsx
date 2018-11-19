@@ -1,4 +1,4 @@
-import {IInvocation, ILibrary, IModules} from "./Types";
+import {IInvocation, ILibrary, IModules, EditorMode} from "./Types";
 import * as React from "react";
 import Invocation from "./Invocation";
 import {BrickComponent} from "./BrickComponent";
@@ -7,7 +7,7 @@ import "./InvocationBrickComponent.css";
 
 interface IProps {
     contents: IInvocation;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     canCursorId: string;
     library: ILibrary;

@@ -1,11 +1,12 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import "./BrickNamer.css";
+import { EditorMode } from "./Types";
 
 interface IProps {
     name: string;
     onBrickNameChange: (value: string) => any;
-    editorMode: string;
+    editorMode: EditorMode;
 }
 
 export default class BrickNamer extends React.Component<IProps> {

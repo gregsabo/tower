@@ -1,11 +1,11 @@
 import * as React from "react";
 import classnames from "classnames";
-import {ICork, ILibrary, IModules} from "./Types";
+import {ICork, ILibrary, IModules, EditorMode} from "./Types";
 import "./CorkBrickComponent.css";
 
 interface IProps {
     contents: ICork;
-    editorMode: string;
+    editorMode: EditorMode;
     onCanInserted: any;
     canCursorId: string;
     library: ILibrary;
