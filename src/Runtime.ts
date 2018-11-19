@@ -5,9 +5,9 @@ import Invocation from "./Invocation";
 import LazyValue from "./LazyValue";
 import Socket from "./Socket";
 import TowerError from "./TowerError";
-import { ILibrary, IModules } from "./Types";
+import { IInvocation, ILibrary, IModules, TowerPrimitive } from "./Types";
 
-export function evaluate(invocation: any, inputs: any[], library: ILibrary, modules: IModules, resultMap: object): any{
+export function evaluate(invocation: IInvocation, inputs: TowerPrimitive[]|IInvocation[], library: ILibrary, modules: IModules, resultMap: object): any {
     if (!Invocation.describes(invocation)) {
         return "Empty tower.";
     }
@@ -46,7 +46,7 @@ function makeLazyArgs(args: any, inputs: any[], library: ILibrary, modules: IMod
     });
 }
 
-function isInvocationGettingCorked(invocation: any) {
+function isInvocationGettingCorked(invocation: IInvocation) {
     for (const arg of invocation.args) {
         if (Cork.describes(arg)) {
             return true;
