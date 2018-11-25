@@ -24,6 +24,8 @@ import {
   UniqueId,
   EditorMode
 } from "./Types";
+import { Sky } from "./Sky";
+import SkyComponent from "./SkyComponent";
 
 const CAPITALIZE_SENTENCE = Invocation.create({
   args: [
@@ -54,6 +56,7 @@ interface IState {
   modules: IModules;
   currentModuleId: string;
   currentBrickId: string;
+  sky: Sky;
 }
 const log = console.log;
 
@@ -95,7 +98,8 @@ class App extends React.Component<{}, IState> {
       highlightedLibraryItemId: "string",
       inputs: [new InputConfiguration(0)],
       library: Library,
-      modules
+      modules,
+      sky: new Sky()
     });
 
     this.undoManager.remember(modules);
@@ -124,14 +128,22 @@ class App extends React.Component<{}, IState> {
               onTestsChanged={this.onTestsChanged}
             />
           ) : (
-            <Program
-              contents={this.currentBrick()}
-              editorMode={this.state.editorMode}
-              library={this.state.library}
-              modules={this.state.modules}
-              onCanInserted={this.onCanInserted}
-              canCursorId={this.state.canCursorId}
-            />
+            <div>
+              <SkyComponent
+                contents={this.state.sky.peek()}
+                editorMode={this.state.editorMode}
+                library={this.state.library}
+                modules={this.state.modules}
+              />
+              <Program
+                contents={this.currentBrick()}
+                editorMode={this.state.editorMode}
+                library={this.state.library}
+                modules={this.state.modules}
+                onCanInserted={this.onCanInserted}
+                canCursorId={this.state.canCursorId}
+              />
+            </div>
           )}
         </div>
       </div>

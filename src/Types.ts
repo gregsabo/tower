@@ -66,6 +66,10 @@ type TowerPrimitive = string | boolean | number | ITowerPrimitiveArray;
 
 interface ITowerPrimitiveArray extends Array<TowerPrimitive> {}
 
+export interface IHasUniqueId {
+  uniqueId: UniqueId;
+}
+
 export interface IBrick {
   rootInvocation: IInvocation;
   brickKey: BrickKey;
@@ -83,6 +87,8 @@ export interface ICork {
   uniqueId: UniqueId;
 }
 
+export type Placeable = IInvocation | IArg | ICork | IConstant;
+
 export interface IModule {
   bricks: {
     [key: string]: IBrick;
@@ -93,4 +99,4 @@ export interface IModules {
   [key: string]: IModule;
 }
 
-export type EditorMode = 'cursor' | 'insert' | 'constant' | 'test' | 'naming';
+export type EditorMode = "cursor" | "insert" | "constant" | "test" | "naming";

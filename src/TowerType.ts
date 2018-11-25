@@ -1,3 +1,5 @@
+import { makeUniqueId } from "./MakeUniqueId";
+
 export default function makeType(name: string, fields: string[], methods: any) {
   methods.create = (obj: any) => {
     if (!obj) {
@@ -10,7 +12,7 @@ export default function makeType(name: string, fields: string[], methods: any) {
         );
       }
     }
-    (obj.types = [name]), (obj.uniqueId = String(Math.random()));
+    (obj.types = [name]), (obj.uniqueId = makeUniqueId);
     return obj;
   };
 

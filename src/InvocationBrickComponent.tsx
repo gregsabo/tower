@@ -1,8 +1,8 @@
-import classnames from 'classnames';
-import * as React from 'react';
-import { BrickComponent } from './BrickComponent';
-import Invocation from './Invocation';
-import './InvocationBrickComponent.css';
+import classnames from "classnames";
+import * as React from "react";
+import { BrickComponent } from "./BrickComponent";
+import Invocation from "./Invocation";
+import "./InvocationBrickComponent.css";
 import {
   EditorMode,
   IInvocation,
@@ -10,13 +10,13 @@ import {
   IModules,
   LibraryKey,
   UniqueId
-} from './Types';
+} from "./Types";
 
 interface IProps {
   contents: IInvocation;
   editorMode: EditorMode;
-  onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
-  canCursorId: string;
+  onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
+  canCursorId?: string;
   library: ILibrary;
   modules: IModules;
 }
@@ -46,7 +46,7 @@ function renderArgs(props: IProps) {
 }
 
 function selectable(selected: boolean, className: string) {
-  return classnames(className, { 'is-selected': selected });
+  return classnames(className, { "is-selected": selected });
 }
 
 export const InvocationBrickComponent: React.SFC<IProps> = props => {
@@ -56,14 +56,14 @@ export const InvocationBrickComponent: React.SFC<IProps> = props => {
   );
 
   return (
-    <div className={s('InvocationBrickComponent')}>
+    <div className={s("InvocationBrickComponent")}>
       <div className="InvocationBrickComponent-argList">
         {renderArgs(props)}
       </div>
-      <div className={s('InvocationBrickComponent-top')} />
-      <div className={s('InvocationBrickComponent-side')}>
-        <div className={s('InvocationBrickComponent-topFront')} />
-        <div className={s('InvocationBrickComponent-name')}>
+      <div className={s("InvocationBrickComponent-top")} />
+      <div className={s("InvocationBrickComponent-side")}>
+        <div className={s("InvocationBrickComponent-topFront")} />
+        <div className={s("InvocationBrickComponent-name")}>
           {renderName(props)}
         </div>
       </div>

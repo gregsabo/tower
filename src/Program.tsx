@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { BrickComponent } from './BrickComponent';
-import './Program.css';
+import * as React from "react";
+import { BrickComponent } from "./BrickComponent";
+import "./Program.css";
 import {
   ILibrary,
   IModules,
@@ -8,7 +8,7 @@ import {
   UniqueId,
   LibraryKey,
   IBrick
-} from './Types';
+} from "./Types";
 
 interface IProps {
   contents: IBrick;
@@ -20,8 +20,8 @@ interface IProps {
 }
 
 const style = {
-  display: 'flex',
-  marginTop: '50px'
+  display: "flex",
+  marginTop: "50px"
 };
 
 class Program extends React.Component<IProps, {}> {

@@ -5,6 +5,7 @@ import Socket from "./Socket";
 import History from "./History";
 import Constant from "./Constant";
 import App from "./App";
+import { copyTowerObject } from "./CopyTowerObject";
 
 const log = console.log;
 
@@ -229,6 +230,22 @@ export default class KeyboardController {
     });
   }
 
+  public copyToSky() {
+    const result = findById(
+      this.app.currentBrick(),
+      this.app.state.canCursorId
+    );
+    if (result === false) {
+      console.log("Could not find brick");
+      return;
+    }
+    if (result.invocation.types.indexOf("invocation") === -1) {
+      return;
+    }
+    this.app.state.sky.moveIn(copyTowerObject(result.invocation));
+    this.app.setState({});
+  }
+
   private onKeyDown(e: KeyboardEvent) {
     if (e.metaKey) {
       // Don't interfere with browser shortcuts
@@ -285,6 +302,9 @@ export default class KeyboardController {
         break;
       case "KeyL":
         this.moveCursorTo(this.findCanToRightOfCursor());
+        break;
+      case "KeyC":
+        this.copyToSky();
         break;
       default:
         return true;
