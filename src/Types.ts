@@ -34,20 +34,13 @@ export interface ILibrary {
 
 export type InvocationKeyType = UniqueId;
 
-export interface IInvocation {
-  args: IInvocation[];
+export interface IInvocation extends ITowerType {
+  args: Placeable[];
   implementationKey: ImplementationKey;
-  uniqueId: InvocationKeyType;
-  types: string[];
 }
 
 export interface ISocket {
   uniqueId: InvocationKeyType;
-}
-
-export interface IConstant {
-  uniqueId: InvocationKeyType;
-  value: TowerPrimitive;
 }
 
 export type ModuleKey = string;
@@ -66,12 +59,13 @@ type TowerPrimitive = string | boolean | number | ITowerPrimitiveArray;
 
 interface ITowerPrimitiveArray extends Array<TowerPrimitive> {}
 
-export interface IHasUniqueId {
+export interface ITowerType {
   uniqueId: UniqueId;
+  types: string[];
 }
 
 export interface IBrick {
-  rootInvocation: IInvocation;
+  rootInvocation: Placeable;
   brickKey: BrickKey;
   moduleKey: ModuleKey;
   name: string;
@@ -79,12 +73,12 @@ export interface IBrick {
   tests: ITest[];
 }
 
-export interface IArg {
-  uniqueId: UniqueId;
-}
+export interface IArg extends ITowerType {}
 
-export interface ICork {
-  uniqueId: UniqueId;
+export interface ICork extends ITowerType {}
+
+export interface IConstant extends ITowerType {
+  value: TowerPrimitive;
 }
 
 export type Placeable = IInvocation | IArg | ICork | IConstant;

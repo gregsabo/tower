@@ -1,7 +1,7 @@
-import { UniqueId, IBrick, IInvocation } from './Types';
+import { UniqueId, IBrick, IInvocation, Placeable } from "./Types";
 
 export interface ITraversalResult {
-  invocation: IInvocation;
+  invocation: Placeable;
   path: IInvocation[];
 }
 
@@ -12,7 +12,7 @@ export function findById(program: IBrick, uniqueId: UniqueId) {
       path: []
     };
   }
-  return recurseFind(program.rootInvocation, uniqueId, []);
+  return recurseFind(program.rootInvocation as IInvocation, uniqueId, []);
 }
 
 function recurseFind(
@@ -30,7 +30,11 @@ function recurseFind(
         path: path.concat([program])
       };
     }
-    const found = recurseFind(arg, uniqueId, path.concat([program]));
+    const found = recurseFind(
+      arg as IInvocation,
+      uniqueId,
+      path.concat([program])
+    );
     if (found) {
       return found;
     }

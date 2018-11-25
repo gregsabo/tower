@@ -1,9 +1,9 @@
-import * as Modules from './Modules';
-import * as Runtime from './Runtime';
-import makeType from './TowerType';
-import { IInvocation, ILibrary, IModules } from './Types';
+import * as Modules from "./Modules";
+import * as Runtime from "./Runtime";
+import makeType from "./TowerType";
+import { IInvocation, ILibrary, IModules } from "./Types";
 
-const Invocation = makeType('invocation', ['args', 'implementationKey'], {
+const Invocation = makeType("invocation", ["args", "implementationKey"], {
   invoke: (
     self: IInvocation,
     args: IInvocation[],
@@ -61,6 +61,11 @@ const Invocation = makeType('invocation', ['args', 'implementationKey'], {
 const oldCreate = Invocation.create;
 Invocation.create = (...args: IInvocation[]): IInvocation => {
   return oldCreate(...args) as IInvocation;
+};
+
+const oldDescribes = Invocation.describes;
+Invocation.describes = (item: any): item is IInvocation => {
+  return oldDescribes(item);
 };
 
 export default Invocation;

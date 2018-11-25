@@ -241,7 +241,7 @@ class App extends React.Component<{}, IState> {
       return this.modulesChanged();
     }
     this.recurseFindAndReplaceById(
-      this.currentBrick().rootInvocation,
+      this.currentBrick().rootInvocation as IInvocation,
       canId,
       invocation
     );
@@ -257,7 +257,7 @@ class App extends React.Component<{}, IState> {
     needle: UniqueId,
     invocation: IInvocation
   ) {
-    if (program.args === undefined) {
+    if (!Invocation.describes(program)) {
       return false;
     }
     for (let i = 0; i < program.args.length; i++) {
@@ -266,7 +266,11 @@ class App extends React.Component<{}, IState> {
         program.args[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplaceById(program.args[i], needle, invocation);
+      this.recurseFindAndReplaceById(
+        program.args[i] as IInvocation,
+        needle,
+        invocation
+      );
     }
     return false;
   }
@@ -285,7 +289,11 @@ class App extends React.Component<{}, IState> {
         program.args[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplace(program.args[i], needle, invocation);
+      this.recurseFindAndReplace(
+        program.args[i] as IInvocation,
+        needle,
+        invocation
+      );
     }
     return false;
   }

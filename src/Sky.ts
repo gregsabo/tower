@@ -31,4 +31,8 @@ export class Sky {
     this.memory[0] = a;
     return old;
   }
+
+  public clear() {
+    this.memory = [];
+  }
 }

@@ -1,5 +1,5 @@
 import Invocation from "./Invocation";
-import { IInvocation } from "./Types";
+import { Placeable, IInvocation } from "./Types";
 import { findById, ITraversalResult } from "./ProgramTraversal";
 import Socket from "./Socket";
 import History from "./History";
@@ -34,8 +34,9 @@ export default class KeyboardController {
       log("No result found. Assuming bottom.");
       return this.app.currentBrick().rootInvocation.uniqueId;
     }
-    if (result.invocation.args && result.invocation.args.length > 0) {
-      return result.invocation.args[0].uniqueId;
+    const invocation = result.invocation as IInvocation;
+    if (invocation.args && invocation.args.length > 0) {
+      return invocation.args[0].uniqueId;
     } else {
       return null;
     }
@@ -138,7 +139,7 @@ export default class KeyboardController {
     this.app.modulesChanged();
   }
 
-  public replaceResult(result: ITraversalResult, value: IInvocation) {
+  public replaceResult(result: ITraversalResult, value: Placeable) {
     const parent = result.path[result.path.length - 1];
     if (parent) {
       const index = parent.args.indexOf(result.invocation);
@@ -236,13 +237,31 @@ export default class KeyboardController {
       this.app.state.canCursorId
     );
     if (result === false) {
-      console.log("Could not find brick");
-      return;
-    }
-    if (result.invocation.types.indexOf("invocation") === -1) {
+      console.log("Could not find brick.");
       return;
     }
     this.app.state.sky.moveIn(copyTowerObject(result.invocation));
+    this.app.setState({});
+  }
+
+  public copyFromSky() {
+    const result = findById(
+      this.app.currentBrick(),
+      this.app.state.canCursorId
+    );
+    const skyItem = this.app.state.sky.peek();
+    if (skyItem === null) {
+      console.log("Nothing in the sky to copy.");
+      return;
+    }
+    if (result === false) {
+      return;
+    }
+    this.replaceResult(result, copyTowerObject(skyItem));
+  }
+
+  public clearSky() {
+    this.app.state.sky.clear();
     this.app.setState({});
   }
 
@@ -305,6 +324,12 @@ export default class KeyboardController {
         break;
       case "KeyC":
         this.copyToSky();
+        break;
+      case "KeyV":
+        this.copyFromSky();
+        break;
+      case "KeyF":
+        this.clearSky();
         break;
       default:
         return true;
