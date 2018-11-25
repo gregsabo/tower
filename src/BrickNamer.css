@@ -1,0 +1,16 @@
+.BrickNamer {
+  border: none;
+  margin: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 3px;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.BrickNamer:focus {
+  border: 1px solid grey;
+  font-weight: normal;
+  text-decoration: none;
+}

@@ -12,7 +12,7 @@ export default function makeType(name: string, fields: string[], methods: any) {
         );
       }
     }
-    (obj.types = [name]), (obj.uniqueId = makeUniqueId);
+    (obj.types = [name]), (obj.uniqueId = makeUniqueId());
     return obj;
   };
 

@@ -1,7 +1,7 @@
-import autobind from 'autobind-decorator';
-import * as React from 'react';
-import './BrickNamer.css';
-import { EditorMode } from './Types';
+import autobind from "autobind-decorator";
+import * as React from "react";
+import "./BrickNamer.css";
+import { EditorMode } from "./Types";
 
 interface IProps {
   name: string;
@@ -15,7 +15,7 @@ export default class BrickNamer extends React.Component<IProps> {
   public render() {
     return (
       <input
-        className="App-brickNameInput"
+        className="BrickNamer"
         placeholder="Untitled Brick"
         onChange={this.handleChange}
         value={this.props.name}
@@ -27,14 +27,14 @@ export default class BrickNamer extends React.Component<IProps> {
 
   public componentDidUpdate(oldProps: IProps) {
     if (
-      this.props.editorMode === 'naming' &&
+      this.props.editorMode === "naming" &&
       this.props.editorMode !== oldProps.editorMode &&
       this.input
     ) {
       this.input.focus();
     }
     if (
-      this.props.editorMode !== 'naming' &&
+      this.props.editorMode !== "naming" &&
       this.props.editorMode !== oldProps.editorMode &&
       this.input
     ) {
