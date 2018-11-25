@@ -14,7 +14,7 @@ interface IProps {
 export default class SkyComponent extends React.Component<IProps> {
   public render() {
     if (this.props.contents === null) {
-      return <div>Sky is empty.</div>;
+      return <div />;
     } else {
       return (
         <BrickComponent
