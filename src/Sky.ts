@@ -1,14 +1,14 @@
-import { Placeable } from "./Types";
+import { Brick } from "./Brick";
 
 export class Sky {
   public capacity: number = 5;
-  private memory: Placeable[] = [];
+  private memory: Brick[] = [];
 
   constructor(capacity = 5) {
     this.capacity = capacity;
   }
 
-  public moveIn(a: Placeable) {
+  public moveIn(a: Brick) {
     this.memory.unshift(a);
     while (this.memory.length > this.capacity) {
       this.memory.pop();
@@ -26,7 +26,7 @@ export class Sky {
     return this.memory[0];
   }
 
-  public swap(a: Placeable) {
+  public swap(a: Brick) {
     const old = this.memory[0];
     this.memory[0] = a;
     return old;

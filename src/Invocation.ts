@@ -1,28 +1,52 @@
 import * as Modules from "./Modules";
 import * as Runtime from "./Runtime";
-import makeType from "./TowerType";
-import { IInvocation, ILibrary, IModules } from "./Types";
+import { ILibrary, IModules, ImplementationKey, UniqueId } from "./Types";
+import { Brick } from "./Brick";
+import { deserializeBrick } from "./Deserialization";
 
-const Invocation = makeType("invocation", ["args", "implementationKey"], {
-  invoke: (
-    self: IInvocation,
-    args: IInvocation[],
-    library: ILibrary,
-    modules: IModules
-  ) => {
-    return Invocation.implementation(self, library, modules)(...args);
-  },
+export class Invocation extends Brick {
+  public static fromJSON(inJson: any): Invocation {
+    return new Invocation({
+      ...inJson,
+      ...{ args: inJson.args.map(deserializeBrick) }
+    });
+  }
 
-  getName: (self: IInvocation, library: ILibrary, modules: IModules) => {
-    return Invocation.libraryFunction(self, library, modules).name;
-  },
+  public args: Brick[];
+  public implementationKey: ImplementationKey;
 
-  implementation: (self: IInvocation, library: ILibrary, modules: IModules) => {
-    const libraryFunction = Invocation.libraryFunction(self, library, modules);
-    if (libraryFunction.rootInvocation) {
-      return (...args: IInvocation[]) => {
+  constructor(props: {
+    uniqueId?: UniqueId;
+    args: Brick[];
+    implementationKey: ImplementationKey;
+  }) {
+    super(props.uniqueId);
+    this.args = props.args;
+    this.implementationKey = props.implementationKey;
+  }
+
+  public toJSON() {
+    const json = super.toJSON();
+    json.types.push("invocation");
+    json.args = this.args.map(item => item.toJSON());
+    json.implementationKey = this.implementationKey;
+    return json;
+  }
+
+  public invoke(args: Invocation[], library: ILibrary, modules: IModules) {
+    return this.implementation(library, modules)(...args);
+  }
+
+  public getName(library: ILibrary, modules: IModules) {
+    return this.libraryFunction(library, modules).name;
+  }
+
+  public implementation(library: ILibrary, modules: IModules) {
+    const libraryFunction = this.libraryFunction(library, modules);
+    if (libraryFunction.rootBrick) {
+      return (...args: Brick[]) => {
         return Runtime.evaluate(
-          libraryFunction.rootInvocation,
+          libraryFunction.rootBrick,
           args,
           library,
           modules,
@@ -32,11 +56,11 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
     } else {
       return libraryFunction.implementation;
     }
-  },
+  }
 
-  maybeLookupModule: (item: any, modules: IModules) => {
+  public maybeLookupModule(item: any, modules: IModules) {
     if (item.moduleKey && item.brickKey) {
-      return Modules.getBrickFromModules(
+      return Modules.getTowerFromModules(
         item.moduleKey,
         item.brickKey,
         modules
@@ -44,28 +68,9 @@ const Invocation = makeType("invocation", ["args", "implementationKey"], {
     } else {
       return item;
     }
-  },
-
-  libraryFunction: (
-    self: IInvocation,
-    library: ILibrary,
-    modules: IModules
-  ) => {
-    return Invocation.maybeLookupModule(
-      library[self.implementationKey],
-      modules
-    );
   }
-});
 
-const oldCreate = Invocation.create;
-Invocation.create = (...args: IInvocation[]): IInvocation => {
-  return oldCreate(...args) as IInvocation;
-};
-
-const oldDescribes = Invocation.describes;
-Invocation.describes = (item: any): item is IInvocation => {
-  return oldDescribes(item);
-};
-
-export default Invocation;
+  public libraryFunction(library: ILibrary, modules: IModules) {
+    return this.maybeLookupModule(library[this.implementationKey], modules);
+  }
+}

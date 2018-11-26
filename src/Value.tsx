@@ -1,4 +1,4 @@
-import Socket from "./Socket";
+import { Socket } from "./Socket";
 import * as React from "react";
 import { TowerPrimitive } from "./Types";
 
@@ -12,7 +12,7 @@ export default function Value(props: IProps) {
 }
 
 function renderResultString(result: TowerPrimitive) {
-  if (Socket.describes(result)) {
+  if (result instanceof Socket) {
     return "<unfilled socket>";
   } else if (result instanceof Error) {
     return `Error: ${result.message}`;

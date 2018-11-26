@@ -1,11 +1,11 @@
-import Invocation from "./Invocation";
-import { Placeable, IInvocation } from "./Types";
+import { Invocation } from "./Invocation";
 import { findById, ITraversalResult } from "./ProgramTraversal";
-import Socket from "./Socket";
+import { Socket } from "./Socket";
 import History from "./History";
-import Constant from "./Constant";
+import { Constant } from "./Constant";
 import App from "./App";
 import { copyTowerObject } from "./CopyTowerObject";
+import { Brick } from "./Brick";
 
 const log = console.log;
 
@@ -27,16 +27,16 @@ export default class KeyboardController {
 
   public findCanAboveCursor() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (!result) {
       log("No result found. Assuming bottom.");
-      return this.app.currentBrick().rootInvocation.uniqueId;
+      return this.app.currentTower().rootBrick.uniqueId;
     }
-    const invocation = result.invocation as IInvocation;
-    if (invocation.args && invocation.args.length > 0) {
-      return invocation.args[0].uniqueId;
+    const brick = result.brick;
+    if (brick instanceof Invocation && brick.args.length > 0) {
+      return brick.args[0].uniqueId;
     } else {
       return null;
     }
@@ -44,13 +44,13 @@ export default class KeyboardController {
 
   public findCanBelowCursor() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     console.log("Trying to find below cursor", result);
     if (!result) {
       log("No result found. Assuming bottom.");
-      return this.app.currentBrick().rootInvocation.uniqueId;
+      return this.app.currentTower().rootBrick.uniqueId;
     }
     if (result.path.length === 0) {
       log("Bottom of tower. Cannot go down.");
@@ -61,19 +61,19 @@ export default class KeyboardController {
 
   public findCanToLeftOfCursor() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (!result) {
       log("No result found. Assuming bottom.");
-      return this.app.currentBrick().rootInvocation.uniqueId;
+      return this.app.currentTower().rootBrick.uniqueId;
     }
     if (result.path.length === 0) {
       log("Bottom of tower. Cannot go down.");
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.args.indexOf(result.invocation);
+    const index = parent.args.indexOf(result.brick);
     if (index === 0) {
       // just move down.
       return parent.uniqueId;
@@ -83,19 +83,19 @@ export default class KeyboardController {
 
   public findCanToRightOfCursor() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (!result) {
       log("No result found. Assuming bottom.");
-      return this.app.currentBrick().rootInvocation.uniqueId;
+      return this.app.currentTower().rootBrick.uniqueId;
     }
     if (result.path.length === 0) {
       log("Bottom of tower. Cannot go down.");
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.args.indexOf(result.invocation);
+    const index = parent.args.indexOf(result.brick);
     if (index + 1 === parent.args.length) {
       // just move down.
       return parent.uniqueId;
@@ -126,49 +126,48 @@ export default class KeyboardController {
 
   public deleteSelectedCan() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (!result) {
       throw new Error("Couldn't find can to delete.");
     }
-    this.replaceResult(result, Socket.create({}));
+    this.replaceResult(result, new Socket());
     this.app.setState({
       editorMode: "cursor"
     });
     this.app.modulesChanged();
   }
 
-  public replaceResult(result: ITraversalResult, value: Placeable) {
+  public replaceResult(result: ITraversalResult, value: Brick) {
     const parent = result.path[result.path.length - 1];
     if (parent) {
-      const index = parent.args.indexOf(result.invocation);
+      const index = parent.args.indexOf(result.brick);
       parent.args[index] = value;
       this.app.setState({
         canCursorId: parent.args[index].uniqueId
       });
     } else {
-      this.app.currentBrick().rootInvocation = value;
+      this.app.currentTower().rootBrick = value;
       this.app.setState({
-        canCursorId: this.app.currentBrick().rootInvocation.uniqueId
+        canCursorId: this.app.currentTower().rootBrick.uniqueId
       });
     }
   }
 
   public visitSelectedBrick() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (result === false) {
       console.log("Could not find brick");
       return;
     }
-    if (result.invocation.types.indexOf("invocation") === -1) {
+    if (!(result.brick instanceof Invocation)) {
       return;
     }
-    const brick = Invocation.libraryFunction(
-      result.invocation,
+    const brick = result.brick.libraryFunction(
       this.app.state.library,
       this.app.state.modules
     );
@@ -206,15 +205,15 @@ export default class KeyboardController {
       editorMode: "constant"
     });
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (result === false) {
       return;
     }
     let constant;
-    if (!Constant.describes(result.invocation)) {
-      constant = Constant.create({});
+    if (!(result.brick instanceof Constant)) {
+      constant = new Constant({ value: "" });
       this.replaceResult(result, constant);
     }
   }
@@ -233,20 +232,20 @@ export default class KeyboardController {
 
   public copyToSky() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     if (result === false) {
       console.log("Could not find brick.");
       return;
     }
-    this.app.state.sky.moveIn(copyTowerObject(result.invocation));
+    this.app.state.sky.moveIn(copyTowerObject(result.brick));
     this.app.setState({});
   }
 
   public copyFromSky() {
     const result = findById(
-      this.app.currentBrick(),
+      this.app.currentTower(),
       this.app.state.canCursorId
     );
     const skyItem = this.app.state.sky.peek();

@@ -1,7 +1,7 @@
-import autobind from 'autobind-decorator';
-import * as React from 'react';
-import './BrickSearch.css';
-import * as Modules from './Modules';
+import autobind from "autobind-decorator";
+import * as React from "react";
+import "./BrickSearch.css";
+import * as Modules from "./Modules";
 import {
   ILibrary,
   ILibraryBrick,
@@ -9,7 +9,7 @@ import {
   IModuleLibraryBrick,
   IModules,
   LibraryKey
-} from './Types';
+} from "./Types";
 
 interface IProps {
   library: ILibrary;
@@ -37,7 +37,7 @@ class BrickSearch extends React.Component<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
-    this.state = { filter: '', selectedId: '' };
+    this.state = { filter: "", selectedId: "" };
   }
 
   public render() {
@@ -71,7 +71,7 @@ class BrickSearch extends React.Component<IProps, IState> {
 
   @autobind
   public onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && this.state.selectedId) {
+    if (e.key === "Enter" && this.state.selectedId) {
       return this.props.onLibraryItemSelected(this.state.selectedId);
     }
   }
@@ -95,9 +95,9 @@ class BrickSearch extends React.Component<IProps, IState> {
 
   @autobind
   public renderLibraryItem(libraryItem: ILibraryBrick, key: LibraryKey) {
-    let className = '';
+    let className = "";
     if (this.state && key === this.state.selectedId) {
-      className = 'BrickSearch-libraryItem--selected';
+      className = "BrickSearch-libraryItem--selected";
     }
     return (
       <div key={key} className={className}>
@@ -109,7 +109,7 @@ class BrickSearch extends React.Component<IProps, IState> {
   public lookupBrickName(item: ILibraryBrick) {
     const moduleItem = item as IModuleLibraryBrick;
     if (moduleItem.moduleKey && moduleItem.brickKey) {
-      return Modules.getBrickFromModules(
+      return Modules.getTowerFromModules(
         moduleItem.moduleKey,
         moduleItem.brickKey,
         this.props.modules

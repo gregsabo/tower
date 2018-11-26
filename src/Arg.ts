@@ -1,3 +1,13 @@
-import makeType from './TowerType';
+import { Brick } from "./Brick";
 
-export default makeType('arg', [], {});
+export class Arg extends Brick {
+  public static fromJSON(inJson: any): Arg {
+    return new Arg(inJson);
+  }
+
+  public toJSON() {
+    const json = super.toJSON();
+    json.types.push("arg");
+    return json;
+  }
+}

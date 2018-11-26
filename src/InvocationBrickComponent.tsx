@@ -1,19 +1,13 @@
 import classnames from "classnames";
 import * as React from "react";
 import { BrickComponent } from "./BrickComponent";
-import Invocation from "./Invocation";
+import { Invocation } from "./Invocation";
 import "./InvocationBrickComponent.css";
-import {
-  EditorMode,
-  IInvocation,
-  ILibrary,
-  IModules,
-  LibraryKey,
-  UniqueId
-} from "./Types";
+import { EditorMode, ILibrary, IModules, LibraryKey, UniqueId } from "./Types";
+import { Brick } from "./Brick";
 
 interface IProps {
-  contents: IInvocation;
+  contents: Invocation;
   editorMode: EditorMode;
   onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
   canCursorId?: string;
@@ -22,14 +16,14 @@ interface IProps {
 }
 
 function renderName(props: IProps) {
-  return Invocation.getName(props.contents, props.library, props.modules);
+  return props.contents.getName(props.library, props.modules);
 }
 
 function renderArgs(props: IProps) {
   if (!props.contents.args) {
     return null;
   }
-  return props.contents.args.map((item: IInvocation, i: number) => {
+  return props.contents.args.map((item: Brick, i: number) => {
     return (
       <span key={i} className="InvocationBrickComponent-arg">
         <BrickComponent

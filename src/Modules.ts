@@ -1,13 +1,13 @@
-import Socket from './Socket';
-import { ILibrary, IModules, BrickKey, ModuleKey } from './Types';
+import { Socket } from "./Socket";
+import { IModules, BrickKey, ModuleKey } from "./Types";
 
 export function makeLibraryKey(moduleKey: ModuleKey, brickKey: BrickKey) {
-  return moduleKey + '::' + brickKey;
+  return moduleKey + "::" + brickKey;
 }
 
-export function importModulesIntoLibrary(modules: IModules, library: ILibrary) {
+export function importModulesIntoLibrary(modules: IModules, library: any) {
   Object.keys(modules).map(moduleKey => {
-    const bricks = modules[moduleKey].bricks;
+    const bricks = modules[moduleKey].towers;
     Object.keys(bricks).map(brickKey => {
       library[makeLibraryKey(moduleKey, brickKey)] = {
         brickKey,
@@ -17,17 +17,17 @@ export function importModulesIntoLibrary(modules: IModules, library: ILibrary) {
   });
 }
 
-export function getBrickFromModules(
+export function getTowerFromModules(
   moduleKey: ModuleKey,
   brickKey: BrickKey,
   modules: IModules
 ) {
-  return modules[moduleKey].bricks[brickKey];
+  return modules[moduleKey].towers[brickKey];
 }
 
 export function maybeLookUpModule(libraryItem: any, modules: IModules) {
   if (libraryItem.moduleKey && libraryItem.brickKey) {
-    return getBrickFromModules(
+    return getTowerFromModules(
       libraryItem.moduleKey,
       libraryItem.brickKey,
       modules
@@ -39,12 +39,12 @@ export function maybeLookUpModule(libraryItem: any, modules: IModules) {
 
 export function createNewBrick(moduleKey: ModuleKey, modules: IModules) {
   const newBrickId = String(Math.random());
-  modules[moduleKey].bricks[newBrickId] = {
+  modules[moduleKey].towers[newBrickId] = {
     brickKey: newBrickId,
     moduleKey,
     name: `New Brick ${newBrickId}`,
     numArgs: 1,
-    rootInvocation: Socket.create({}),
+    rootBrick: new Socket(),
     tests: []
   };
   return makeLibraryKey(moduleKey, newBrickId);

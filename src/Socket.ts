@@ -1,11 +1,13 @@
-import makeType from './TowerType';
-import { ISocket } from './Types';
+import { Brick } from "./Brick";
 
-const Socket = makeType('socket', [], {});
+export class Socket extends Brick {
+  public static fromJSON(inJson: any): Socket {
+    return new Socket(inJson);
+  }
 
-const oldCreate = Socket.create;
-Socket.create = (...args: any[]): ISocket => {
-  return oldCreate(...args) as ISocket;
-};
-
-export default Socket;
+  public toJSON() {
+    const json = super.toJSON();
+    json.types.push("socket");
+    return json;
+  }
+}

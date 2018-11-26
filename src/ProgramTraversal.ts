@@ -1,40 +1,41 @@
-import { UniqueId, IBrick, IInvocation, Placeable } from "./Types";
+import { UniqueId, ITower } from "./Types";
+import { Brick } from "./Brick";
+import { Invocation } from "./Invocation";
 
 export interface ITraversalResult {
-  invocation: Placeable;
-  path: IInvocation[];
+  brick: Brick;
+  path: Invocation[];
 }
 
-export function findById(program: IBrick, uniqueId: UniqueId) {
-  if (program.rootInvocation.uniqueId === uniqueId) {
+export function findById(
+  program: ITower,
+  uniqueId: UniqueId
+): ITraversalResult | false {
+  if (program.rootBrick.uniqueId === uniqueId) {
     return {
-      invocation: program.rootInvocation,
+      brick: program.rootBrick,
       path: []
     };
   }
-  return recurseFind(program.rootInvocation as IInvocation, uniqueId, []);
+  return recurseFind(program.rootBrick, uniqueId, []);
 }
 
 function recurseFind(
-  program: IInvocation,
+  brick: Brick,
   uniqueId: UniqueId,
-  path: IInvocation[]
+  path: Invocation[]
 ): ITraversalResult | false {
-  if (program.args === undefined) {
+  if (!(brick instanceof Invocation)) {
     return false;
   }
-  for (const arg of program.args) {
+  for (const arg of brick.args) {
     if (arg.uniqueId === uniqueId) {
       return {
-        invocation: arg,
-        path: path.concat([program])
+        brick: arg,
+        path: path.concat([brick])
       };
     }
-    const found = recurseFind(
-      arg as IInvocation,
-      uniqueId,
-      path.concat([program])
-    );
+    const found = recurseFind(arg, uniqueId, path.concat([brick]));
     if (found) {
       return found;
     }

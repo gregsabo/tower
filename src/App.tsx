@@ -1,48 +1,41 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import "./App.css";
-import Arg from "./Arg";
+import { Arg } from "./Arg";
 import BrickNamer from "./BrickNamer";
-import Constant from "./Constant";
-import Cork from "./Cork";
+import { Constant } from "./Constant";
+import { Cork } from "./Cork";
 import InputConfiguration from "./InputConfiguration";
-import Invocation from "./Invocation";
+import { Invocation } from "./Invocation";
 import KeyboardController from "./KeyboardController";
 import Library from "./Library";
 import * as Modules from "./Modules";
 import Program from "./Program";
-import Socket from "./Socket";
+import { Socket } from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
-import {
-  ITest,
-  ILibrary,
-  IModules,
-  LibraryKey,
-  ISocket,
-  IInvocation,
-  UniqueId,
-  EditorMode
-} from "./Types";
+import { ITest, IModules, LibraryKey, UniqueId, EditorMode } from "./Types";
 import { Sky } from "./Sky";
 import SkyComponent from "./SkyComponent";
+import { Brick } from "./Brick";
+import { deserializeModules } from "./Deserialization";
 
-const CAPITALIZE_SENTENCE = Invocation.create({
+const CAPITALIZE_SENTENCE = new Invocation({
   args: [
-    Invocation.create({
+    new Invocation({
       args: [
-        Invocation.create({
-          args: [Arg.create({})],
+        new Invocation({
+          args: [new Arg()],
           implementationKey: "split"
         }),
-        Invocation.create({
-          args: [Cork.create({})],
+        new Invocation({
+          args: [new Cork()],
           implementationKey: "capitalize"
         })
       ],
       implementationKey: "map"
     }),
-    Constant.create({ value: " " })
+    new Constant({ value: " " })
   ],
   implementationKey: "join"
 });
@@ -52,7 +45,7 @@ interface IState {
   canCursorId: string;
   editorMode: EditorMode;
   inputs: InputConfiguration[];
-  library: ILibrary;
+  library: any;
   modules: IModules;
   currentModuleId: string;
   currentBrickId: string;
@@ -69,22 +62,22 @@ class App extends React.Component<{}, IState> {
     this.undoManager = new UndoManager(10);
     let modules = {
       basic: {
-        bricks: {
+        name: "Starter Module",
+        towers: {
           sentence_cap: {
             brickKey: "sentence_cap",
             moduleKey: "basic",
             name: "Sentence Capitalization",
             numArgs: 1,
-            rootInvocation: CAPITALIZE_SENTENCE,
+            rootBrick: CAPITALIZE_SENTENCE,
             tests: []
           }
-        },
-        name: "Starter Module"
+        }
       }
     };
 
     if (window.localStorage.modules) {
-      modules = JSON.parse(window.localStorage.modules);
+      modules = deserializeModules(JSON.parse(window.localStorage.modules));
     }
 
     Modules.importModulesIntoLibrary(modules, Library);
@@ -117,12 +110,12 @@ class App extends React.Component<{}, IState> {
         <div>
           <BrickNamer
             editorMode={this.state.editorMode}
-            name={this.currentBrick().name}
+            name={this.currentTower().name}
             onBrickNameChange={this.onBrickNameChange}
           />
           {this.state.editorMode === "test" ? (
             <TestGrid
-              brick={this.currentBrick()}
+              brick={this.currentTower()}
               modules={this.state.modules}
               library={this.state.library}
               onTestsChanged={this.onTestsChanged}
@@ -136,7 +129,7 @@ class App extends React.Component<{}, IState> {
                 modules={this.state.modules}
               />
               <Program
-                contents={this.currentBrick()}
+                contents={this.currentTower()}
                 editorMode={this.state.editorMode}
                 library={this.state.library}
                 modules={this.state.modules}
@@ -150,8 +143,8 @@ class App extends React.Component<{}, IState> {
     );
   }
 
-  public currentBrick() {
-    return Modules.getBrickFromModules(
+  public currentTower() {
+    return Modules.getTowerFromModules(
       this.state.currentModuleId,
       this.state.currentBrickId,
       this.state.modules
@@ -160,13 +153,13 @@ class App extends React.Component<{}, IState> {
 
   @autobind
   public onBrickNameChange(newName: string) {
-    this.currentBrick().name = newName;
+    this.currentTower().name = newName;
     this.setState({});
   }
 
   @autobind
   public onTestsChanged(tests: ITest[]) {
-    this.currentBrick().tests = tests;
+    this.currentTower().tests = tests;
     this.modulesChanged();
   }
 
@@ -192,9 +185,9 @@ class App extends React.Component<{}, IState> {
     }
     const args = [];
     for (let i = 0; i < libraryItem.numArgs; i++) {
-      args.push(Socket.create({}));
+      args.push(new Socket());
     }
-    return Invocation.create({
+    return new Invocation({
       args,
       implementationKey: itemId
     });
@@ -230,10 +223,10 @@ class App extends React.Component<{}, IState> {
   @autobind
   public onCanInserted(canId: UniqueId, selectedLibraryItem: LibraryKey) {
     const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
-    const rootInvocation = this.currentBrick().rootInvocation;
-    if (rootInvocation.uniqueId === canId) {
+    const rootBrick = this.currentTower().rootBrick;
+    if (rootBrick.uniqueId === canId) {
       // it's the root, replace it.
-      this.currentBrick().rootInvocation = invocation;
+      this.currentTower().rootBrick = invocation;
       this.setState({
         canCursorId: invocation.uniqueId,
         editorMode: "cursor"
@@ -241,7 +234,7 @@ class App extends React.Component<{}, IState> {
       return this.modulesChanged();
     }
     this.recurseFindAndReplaceById(
-      this.currentBrick().rootInvocation as IInvocation,
+      this.currentTower().rootBrick,
       canId,
       invocation
     );
@@ -253,11 +246,11 @@ class App extends React.Component<{}, IState> {
   }
 
   public recurseFindAndReplaceById(
-    program: IInvocation,
+    program: Brick,
     needle: UniqueId,
-    invocation: IInvocation
+    invocation: Invocation
   ) {
-    if (!Invocation.describes(program)) {
+    if (!(program instanceof Invocation)) {
       return false;
     }
     for (let i = 0; i < program.args.length; i++) {
@@ -266,21 +259,17 @@ class App extends React.Component<{}, IState> {
         program.args[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplaceById(
-        program.args[i] as IInvocation,
-        needle,
-        invocation
-      );
+      this.recurseFindAndReplaceById(program.args[i], needle, invocation);
     }
     return false;
   }
 
   public recurseFindAndReplace(
-    program: IInvocation,
-    needle: IInvocation | ISocket,
-    invocation: IInvocation
+    program: Brick,
+    needle: Brick,
+    invocation: Brick
   ) {
-    if (program.args === undefined) {
+    if (!(program instanceof Invocation)) {
       return false;
     }
     for (let i = 0; i < program.args.length; i++) {
@@ -289,11 +278,7 @@ class App extends React.Component<{}, IState> {
         program.args[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplace(
-        program.args[i] as IInvocation,
-        needle,
-        invocation
-      );
+      this.recurseFindAndReplace(program.args[i], needle, invocation);
     }
     return false;
   }

@@ -1,24 +1,16 @@
 import { makeUniqueId } from "./MakeUniqueId";
-import { ITowerType } from "./Types";
+import { TowerType } from "./TowerType";
+import { deserializeBrick } from "./Deserialization";
 
-export const copyTowerObject = (inObject: ITowerType) => {
-  if (typeof inObject === "string") {
-    return inObject;
-  }
-  const newObject: ITowerType = {
-    types: inObject.types,
-    uniqueId: makeUniqueId()
-  };
-  Object.keys(inObject).forEach(key => {
-    if (key === "uniqueId") {
-      return;
-    } else if (inObject[key].uniqueId) {
-      newObject[key] = copyTowerObject(inObject[key]);
-    } else if (Array.isArray(inObject[key])) {
-      newObject[key] = inObject[key].map(copyTowerObject);
-    } else {
-      newObject[key] = inObject[key];
-    }
-  });
-  return newObject;
+export const copyTowerObject = (inObject: TowerType) => {
+  const asJson = inObject.toJSON();
+  clearUniqueIds(asJson);
+  return deserializeBrick(asJson);
 };
+
+function clearUniqueIds(inObject: any) {
+  inObject.uniqueId = makeUniqueId();
+  if (inObject.args) {
+    inObject.args.forEach(clearUniqueIds);
+  }
+}

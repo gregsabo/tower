@@ -1,5 +1,5 @@
-import Socket from './Socket';
-import TowerError from './TowerError';
+import { Socket } from "./Socket";
+import TowerError from "./TowerError";
 
 export default class LazyValue {
   public static wrap(value: any) {
@@ -19,7 +19,7 @@ export default class LazyValue {
     this.value = null;
     this.evaluationFunction = evaluationFunction;
     if (this.evaluationFunction === undefined) {
-      throw new Error('Got undefined evaluation function.');
+      throw new Error("Got undefined evaluation function.");
     }
     this.evaluated = false;
   }
@@ -29,8 +29,8 @@ export default class LazyValue {
       this.value = this.evaluationFunction();
       this.evaluated = true;
     }
-    if (Socket.describes(this.value)) {
-      throw new TowerError('Empty socket.');
+    if (this.value instanceof Socket) {
+      throw new TowerError("Empty socket.");
     }
     if (this.value instanceof TowerError) {
       throw this.value;

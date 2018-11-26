@@ -1,17 +1,11 @@
 import * as React from "react";
-import {
-  IArg,
-  ILibrary,
-  IModules,
-  EditorMode,
-  UniqueId,
-  LibraryKey
-} from "./Types";
+import { ILibrary, IModules, EditorMode, UniqueId, LibraryKey } from "./Types";
 import "./ArgBrickComponent.css";
 import classnames from "classnames";
+import { Arg } from "./Arg";
 
 interface IProps {
-  contents: IArg;
+  contents: Arg;
   editorMode: EditorMode;
   onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
   canCursorId?: string;

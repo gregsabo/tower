@@ -1,11 +1,12 @@
 // import autobind from 'autobind-decorator';
 import * as React from "react";
 import "./SkyComponent.css";
-import { Placeable, EditorMode, ILibrary, IModules } from "./Types";
+import { EditorMode, ILibrary, IModules } from "./Types";
 import { BrickComponent } from "./BrickComponent";
+import { Brick } from "./Brick";
 
 interface IProps {
-  contents: Placeable | null;
+  contents: Brick | null;
   editorMode: EditorMode;
   library: ILibrary;
   modules: IModules;

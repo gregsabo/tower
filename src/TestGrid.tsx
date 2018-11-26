@@ -1,10 +1,10 @@
-import autobind from 'autobind-decorator';
-import * as React from 'react';
-import * as Runtime from './Runtime';
-import Value from './Value';
-import { parseLiteral } from './Parsing';
-import './TestGrid.css';
-import { ITest, ILibrary, IModules } from './Types';
+import autobind from "autobind-decorator";
+import * as React from "react";
+import * as Runtime from "./Runtime";
+import Value from "./Value";
+import { parseLiteral } from "./Parsing";
+import "./TestGrid.css";
+import { ITest, ILibrary, IModules } from "./Types";
 
 interface IProps {
   brick: any;
@@ -17,7 +17,7 @@ export default class TestGrid extends React.Component<IProps> {
   private firstCell?: HTMLInputElement;
 
   public componentDidMount() {
-    console.log('Testgrid mounted', this.firstCell);
+    console.log("Testgrid mounted", this.firstCell);
     if (this.props.brick.tests.length === 0) {
       for (let i = 0; i < 10; i++) {
         this.props.brick.tests.push(this.newTest());
@@ -58,7 +58,7 @@ export default class TestGrid extends React.Component<IProps> {
     return (
       <tr
         className={
-          passed ? 'TestGrid-passingTestCase' : 'TestGrid-failingTestCase'
+          passed ? "TestGrid-passingTestCase" : "TestGrid-failingTestCase"
         }
       >
         <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
@@ -95,23 +95,23 @@ export default class TestGrid extends React.Component<IProps> {
       parsedExpected = parseLiteral(test.expected);
     }
 
-    if (test.args.length === 0 || test.args[0] === '') {
-      return '';
+    if (test.args.length === 0 || test.args[0] === "") {
+      return "";
     } else if (inputs.length === this.props.brick.numArgs) {
       try {
         result = Runtime.evaluate(
-          this.props.brick.rootInvocation,
+          this.props.brick.rootBrick,
           test.args.map(parseLiteral),
           this.props.library,
           this.props.modules,
           {}
         );
       } catch (e) {
-        result = 'ERROR: ' + e.message;
+        result = "ERROR: " + e.message;
       }
 
       if (result === parsedExpected) {
-        return '=';
+        return "=";
       } else {
         return result;
       }
@@ -123,14 +123,14 @@ export default class TestGrid extends React.Component<IProps> {
       return true;
     }
     const parsedExpected = parseLiteral(test.expected);
-    if (result === '=') {
+    if (result === "=") {
       return true;
     }
 
     if (
       test.args.length === 0 ||
-      test.args[0] === '' ||
-      parsedExpected === ''
+      test.args[0] === "" ||
+      parsedExpected === ""
     ) {
       return true;
     } else {
@@ -172,7 +172,7 @@ export default class TestGrid extends React.Component<IProps> {
   public newTest() {
     return {
       args: [],
-      expected: ''
+      expected: ""
     };
   }
 
@@ -183,7 +183,7 @@ export default class TestGrid extends React.Component<IProps> {
         this.renderTest(
           {
             args: [],
-            expected: ''
+            expected: ""
           },
           i
         )

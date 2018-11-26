@@ -1,3 +1,5 @@
+import { Brick } from "./Brick";
+
 export interface ITest {
   args: string[];
   expected: string;
@@ -34,38 +36,24 @@ export interface ILibrary {
 
 export type InvocationKeyType = UniqueId;
 
-export interface IInvocation extends ITowerType {
-  args: Placeable[];
-  implementationKey: ImplementationKey;
-}
-
-export interface ISocket {
-  uniqueId: InvocationKeyType;
-}
-
 export type ModuleKey = string;
 export type BrickKey = string;
 export type UniqueId = string;
 export type ImplementationKey = string;
-export type TowerPrimitive =
-  | string
-  | boolean
-  | number
-  | string[]
-  | boolean[]
-  | number[];
 
-type TowerPrimitive = string | boolean | number | ITowerPrimitiveArray;
+export type TowerPrimitive = string | boolean | number | ITowerPrimitiveArray;
 
 interface ITowerPrimitiveArray extends Array<TowerPrimitive> {}
 
-export interface ITowerType {
-  uniqueId: UniqueId;
-  types: string[];
-}
+export type BrickTypeName =
+  | "arg"
+  | "cork"
+  | "invocation"
+  | "constant"
+  | "socket";
 
-export interface IBrick {
-  rootInvocation: Placeable;
+export interface ITower {
+  rootBrick: Brick;
   brickKey: BrickKey;
   moduleKey: ModuleKey;
   name: string;
@@ -73,19 +61,9 @@ export interface IBrick {
   tests: ITest[];
 }
 
-export interface IArg extends ITowerType {}
-
-export interface ICork extends ITowerType {}
-
-export interface IConstant extends ITowerType {
-  value: TowerPrimitive;
-}
-
-export type Placeable = IInvocation | IArg | ICork | IConstant;
-
 export interface IModule {
-  bricks: {
-    [key: string]: IBrick;
+  towers: {
+    [key: string]: ITower;
   };
 }
 

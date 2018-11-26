@@ -7,11 +7,11 @@ import {
   EditorMode,
   UniqueId,
   LibraryKey,
-  IBrick
+  ITower
 } from "./Types";
 
 interface IProps {
-  contents: IBrick;
+  contents: ITower;
   editorMode: EditorMode;
   onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
   canCursorId: string;
@@ -30,7 +30,7 @@ class Program extends React.Component<IProps, {}> {
       <div>
         <div style={style}>
           <BrickComponent
-            contents={this.props.contents.rootInvocation}
+            contents={this.props.contents.rootBrick}
             editorMode={this.props.editorMode}
             onCanInserted={this.props.onCanInserted}
             canCursorId={this.props.canCursorId}
