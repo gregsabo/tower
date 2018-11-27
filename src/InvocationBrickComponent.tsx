@@ -19,11 +19,12 @@ function renderName(props: IProps) {
   return props.contents.getName(props.library, props.modules);
 }
 
-function renderArgs(props: IProps) {
+function renderInputs(props: IProps) {
   if (!props.contents.inputs) {
     return null;
   }
-  return props.contents.inputs.map((item: Brick, i: number) => {
+  const inputs = props.contents.getOrderedInputs(props.library, props.modules);
+  return inputs.map((item: Brick, i: number) => {
     return (
       <span key={i} className="InvocationBrickComponent-input">
         <BrickComponent
@@ -52,7 +53,7 @@ export const InvocationBrickComponent: React.SFC<IProps> = props => {
   return (
     <div className={s("InvocationBrickComponent")}>
       <div className="InvocationBrickComponent-inputList">
-        {renderArgs(props)}
+        {renderInputs(props)}
       </div>
       <div className={s("InvocationBrickComponent-top")} />
       <div className={s("InvocationBrickComponent-side")}>

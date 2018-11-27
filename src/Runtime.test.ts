@@ -6,7 +6,7 @@ import { Constant } from "./Constant";
 
 it("adds two", () => {
   const invocation = new Invocation({
-    inputs: [new Input(), new Constant({ value: 2 })],
+    inputs: { a: new Input(), b: new Constant({ value: 2 }) },
     implementationKey: "add"
   });
   const modules = {
@@ -16,7 +16,10 @@ it("adds two", () => {
           brickKey: "addsTwo",
           moduleKey: "basic",
           name: "Adds two",
-          numInputs: 1,
+          inputs: [
+            { key: "a", displayName: "a" },
+            { key: "b", displayName: "b" }
+          ],
           rootBrick: invocation,
           tests: []
         }

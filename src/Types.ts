@@ -5,17 +5,19 @@ export interface ITest {
   expected: string;
 }
 
+export interface IInputConfiguration {
+  key: string;
+  displayName: string;
+}
+
 export interface ILibraryBrickWithImplementation {
   implementation: any;
-  numInputs: number;
-  isEager?: boolean;
-  isLazy?: boolean;
+  inputs: IInputConfiguration[];
   name: string;
 }
 
 export interface IGeneratingLibraryBrick {
   invocationGenerator: () => ILibraryBrickWithImplementation;
-  isEager?: boolean;
   name: string;
 }
 
@@ -57,7 +59,7 @@ export interface ITower {
   brickKey: BrickKey;
   moduleKey: ModuleKey;
   name: string;
-  numInputs: number;
+  inputs: IInputConfiguration[];
   tests: ITest[];
 }
 

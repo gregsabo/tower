@@ -6,20 +6,35 @@ import LazyValue from "./LazyValue";
 const Library = {
   add: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
-    isEager: true,
     name: "add",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ]
   },
   and: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() && b.get(),
-    isEager: true,
     name: "and",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ]
   },
-  arg: {
+  input: {
     invocationGenerator: () => new Input(),
-    isEager: true,
-    name: "arg"
+    name: "input"
   },
   capitalize: {
     implementation: (lazyA: LazyValue) => {
@@ -30,28 +45,47 @@ const Library = {
         return a[0].toUpperCase() + a.slice(1);
       }
     },
-    isEager: true,
-    name: "capitalize",
-    numInputs: 1
+    inputs: [
+      {
+        key: "a",
+        displayName: "input string"
+      }
+    ],
+    name: "capitalize"
   },
   concat: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
-    isEager: true,
-    name: "concat",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "concat"
   },
   cork: {
     invocationGenerator: () => new Cork(),
-    isEager: true,
     name: "cork"
   },
   equals: {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() === b.get();
     },
-    isEager: true,
-    name: "equals?",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "equals?"
   },
   ifThenElse: {
     implementation: (
@@ -65,47 +99,98 @@ const Library = {
         return ifFalse.get();
       }
     },
-    isLazy: true,
-    name: "if",
-    numInputs: 3
+    inputs: [
+      {
+        key: "if",
+        displayName: "if"
+      },
+      {
+        key: "then",
+        displayName: "then"
+      },
+      {
+        key: "else",
+        displayName: "else"
+      }
+    ],
+    name: "if"
   },
   join: {
     implementation: (a: LazyValue, b: LazyValue) => a.get().join(b.get()),
-    isEager: true,
-    name: "join",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "list"
+      },
+      {
+        key: "b",
+        displayName: "connector"
+      }
+    ],
+    name: "join"
   },
   lessOrEquals: {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() <= b.get();
     },
-    isEager: true,
-    name: "less than or equal?",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "less than or equal?"
   },
   map: {
     implementation: (a: LazyValue, func: LazyValue) => a.get().map(func.get()),
-    isEager: true,
-    name: "map",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "list"
+      },
+      {
+        key: "b",
+        displayName: "corked brick"
+      }
+    ],
+    name: "map"
   },
-  mo: {
+  mod: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() % b.get(),
-    isEager: true,
-    name: "modulo",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "modulo"
   },
   multiply: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() * b.get(),
-    isEager: true,
-    name: "multiply",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "multiply"
   },
   newBrick: {
     implementation: () => new Error("Uninitialized brick"),
-    isEager: true,
-    name: "newBrick",
-    numInputs: 0
+    inputs: [],
+    name: "newBrick"
   },
   numberLiteral: {
     invocationGenerator: () => {
@@ -119,7 +204,6 @@ const Library = {
       }
       return new Constant({ value: given });
     },
-    isEager: true,
     name: "number"
   },
   range: {
@@ -131,27 +215,42 @@ const Library = {
       }
       return outArray;
     },
-    isEager: true,
-    name: "range",
-    numInputs: 1
+    inputs: [
+      {
+        key: "max",
+        displayName: "max"
+      }
+    ],
+    name: "range"
   },
   split: {
     implementation: (a: LazyValue) => a.get().split(" "),
-    isEager: true,
-    name: "split",
-    numInputs: 1
+    inputs: [
+      {
+        key: "a",
+        displayName: "input string"
+      }
+    ],
+    name: "split"
   },
   stringLiteral: {
     invocationGenerator: () =>
       new Constant({ value: window.prompt("Enter the string.") || "" }),
-    isEager: true,
     name: "string"
   },
   subtract: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() - b.get(),
-    isEager: true,
-    name: "subtract",
-    numInputs: 2
+    inputs: [
+      {
+        key: "a",
+        displayName: "a"
+      },
+      {
+        key: "b",
+        displayName: "b"
+      }
+    ],
+    name: "subtract"
   }
 };
 

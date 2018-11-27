@@ -35,8 +35,12 @@ export default class KeyboardController {
       return this.app.currentTower().rootBrick.uniqueId;
     }
     const brick = result.brick;
-    if (brick instanceof Invocation && brick.inputs.length > 0) {
-      return brick.inputs[0].uniqueId;
+    if (brick instanceof Invocation && Object.keys(brick.inputs).length > 0) {
+      const orderedInputs = brick.getOrderedInputs(
+        this.app.state.library,
+        this.app.state.modules
+      );
+      return orderedInputs[0].uniqueId;
     } else {
       return null;
     }
@@ -73,12 +77,16 @@ export default class KeyboardController {
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.inputs.indexOf(result.brick);
+    const orderedInputs = parent.getOrderedInputs(
+      this.app.state.library,
+      this.app.state.modules
+    );
+    const index = orderedInputs.indexOf(result.brick);
     if (index === 0) {
       // just move down.
       return parent.uniqueId;
     }
-    return parent.inputs[index - 1].uniqueId;
+    return orderedInputs[index - 1].uniqueId;
   }
 
   public findCanToRightOfCursor() {
@@ -95,12 +103,16 @@ export default class KeyboardController {
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.inputs.indexOf(result.brick);
-    if (index + 1 === parent.inputs.length) {
+    const orderedInputs = parent.getOrderedInputs(
+      this.app.state.library,
+      this.app.state.modules
+    );
+    const index = orderedInputs.indexOf(result.brick);
+    if (index + 1 === orderedInputs.length) {
       // just move down.
       return parent.uniqueId;
     }
-    return parent.inputs[index + 1].uniqueId;
+    return orderedInputs[index + 1].uniqueId;
   }
 
   public moveCursorTo(uniqueId: string | null) {
@@ -139,13 +151,28 @@ export default class KeyboardController {
     this.app.modulesChanged();
   }
 
+  public keyOf(inObject: any, value: any) {
+    for (const key in inObject) {
+      if (!inObject.hasOwnProperty(key)) {
+        continue;
+      }
+      if (inObject[key] === value) {
+        return key;
+      }
+    }
+    return null;
+  }
+
   public replaceResult(result: ITraversalResult, value: Brick) {
     const parent = result.path[result.path.length - 1];
     if (parent) {
-      const index = parent.inputs.indexOf(result.brick);
-      parent.inputs[index] = value;
+      const key = this.keyOf(parent.inputs, result.brick);
+      if (key === null) {
+        throw new Error("Couldn't find this brick in its parent.");
+      }
+      parent.inputs[key] = value;
       this.app.setState({
-        canCursorId: parent.inputs[index].uniqueId
+        canCursorId: parent.inputs[key].uniqueId
       });
     } else {
       this.app.currentTower().rootBrick = value;

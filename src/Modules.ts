@@ -37,13 +37,13 @@ export function maybeLookUpModule(libraryItem: any, modules: IModules) {
   }
 }
 
-export function createNewBrick(moduleKey: ModuleKey, modules: IModules) {
+export function createNewTower(moduleKey: ModuleKey, modules: IModules) {
   const newBrickId = String(Math.random());
   modules[moduleKey].towers[newBrickId] = {
     brickKey: newBrickId,
     moduleKey,
-    name: `New Brick ${newBrickId}`,
-    numInputs: 1,
+    name: `New Tower ${newBrickId}`,
+    inputs: [],
     rootBrick: new Socket(),
     tests: []
   };

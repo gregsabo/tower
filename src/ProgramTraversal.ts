@@ -28,14 +28,18 @@ function recurseFind(
   if (!(brick instanceof Invocation)) {
     return false;
   }
-  for (const arg of brick.inputs) {
-    if (arg.uniqueId === uniqueId) {
+  for (const key in brick.inputs) {
+    if (!brick.inputs.hasOwnProperty(key)) {
+      continue;
+    }
+    const value = brick.inputs[key];
+    if (value.uniqueId === uniqueId) {
       return {
-        brick: arg,
+        brick: value,
         path: path.concat([brick])
       };
     }
-    const found = recurseFind(arg, uniqueId, path.concat([brick]));
+    const found = recurseFind(value, uniqueId, path.concat([brick]));
     if (found) {
       return found;
     }

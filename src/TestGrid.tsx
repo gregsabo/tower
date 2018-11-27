@@ -60,6 +60,7 @@ export default class TestGrid extends React.Component<IProps> {
         className={
           passed ? "TestGrid-passingTestCase" : "TestGrid-failingTestCase"
         }
+        key={num}
       >
         <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
         <td>
@@ -97,7 +98,7 @@ export default class TestGrid extends React.Component<IProps> {
 
     if (test.inputs.length === 0 || test.inputs[0] === "") {
       return "";
-    } else if (inputs.length === this.props.brick.numInputs) {
+    } else if (inputs.length === this.props.brick.inputs.length) {
       try {
         result = Runtime.evaluate(
           this.props.brick.rootBrick,
@@ -171,7 +172,7 @@ export default class TestGrid extends React.Component<IProps> {
 
   public newTest() {
     return {
-      args: [],
+      inputs: [],
       expected: ""
     };
   }

@@ -14,29 +14,36 @@ import Program from "./Program";
 import { Socket } from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
-import { ITest, IModules, LibraryKey, UniqueId, EditorMode } from "./Types";
+import {
+  ITest,
+  IModules,
+  LibraryKey,
+  UniqueId,
+  EditorMode,
+  IInputConfiguration
+} from "./Types";
 import { Sky } from "./Sky";
 import SkyComponent from "./SkyComponent";
 import { Brick } from "./Brick";
 import { deserializeModules } from "./Deserialization";
 
 const CAPITALIZE_SENTENCE = new Invocation({
-  inputs: [
-    new Invocation({
-      inputs: [
-        new Invocation({
+  inputs: {
+    a: new Invocation({
+      inputs: {
+        a: new Invocation({
           implementationKey: "split",
-          inputs: [new Input()]
+          inputs: { a: new Input() }
         }),
-        new Invocation({
+        b: new Invocation({
           implementationKey: "capitalize",
-          inputs: [new Cork()]
+          inputs: { a: new Cork() }
         })
-      ],
+      },
       implementationKey: "map"
     }),
-    new Constant({ value: " " })
-  ],
+    b: new Constant({ value: " " })
+  },
   implementationKey: "join"
 });
 
@@ -68,7 +75,7 @@ class App extends React.Component<{}, IState> {
             brickKey: "sentence_cap",
             moduleKey: "basic",
             name: "Sentence Capitalization",
-            numInputs: 1,
+            inputs: [{ key: "a", displayName: "sentence" }],
             rootBrick: CAPITALIZE_SENTENCE,
             tests: []
           }
@@ -81,7 +88,6 @@ class App extends React.Component<{}, IState> {
     }
 
     Modules.importModulesIntoLibrary(modules, Library);
-    log("Library is now", Library);
 
     this.setState({
       canCursorId: CAPITALIZE_SENTENCE.uniqueId,
@@ -169,7 +175,7 @@ class App extends React.Component<{}, IState> {
 
   public invocationForLibraryItemId(itemId: string) {
     if (itemId === "newBrick") {
-      itemId = Modules.createNewBrick(
+      itemId = Modules.createNewTower(
         this.state.currentModuleId,
         this.state.modules
       );
@@ -183,10 +189,10 @@ class App extends React.Component<{}, IState> {
     if (libraryItem.invocationGenerator) {
       return libraryItem.invocationGenerator();
     }
-    const inputs = [];
-    for (let i = 0; i < libraryItem.numInputs; i++) {
-      inputs.push(new Socket());
-    }
+    const inputs = {};
+    libraryItem.inputs.forEach((inputConfig: IInputConfiguration) => {
+      inputs[inputConfig.key] = new Socket();
+    });
     return new Invocation({
       implementationKey: itemId,
       inputs
@@ -253,13 +259,16 @@ class App extends React.Component<{}, IState> {
     if (!(program instanceof Invocation)) {
       return false;
     }
-    for (let i = 0; i < program.inputs.length; i++) {
-      if (program.inputs[i].uniqueId === needle) {
-        log("Replacing", program, i, invocation);
-        program.inputs[i] = invocation;
+    for (const key in program.inputs) {
+      if (!program.inputs.hasOwnProperty(key)) {
+        continue;
+      }
+      if (program.inputs[key].uniqueId === needle) {
+        log("Replacing", program, key, invocation);
+        program.inputs[key] = invocation;
         return true;
       }
-      this.recurseFindAndReplaceById(program.inputs[i], needle, invocation);
+      this.recurseFindAndReplaceById(program.inputs[key], needle, invocation);
     }
     return false;
   }
@@ -272,13 +281,16 @@ class App extends React.Component<{}, IState> {
     if (!(program instanceof Invocation)) {
       return false;
     }
-    for (let i = 0; i < program.inputs.length; i++) {
-      if (program.inputs[i].uniqueId === needle.uniqueId) {
-        log("Replacing", program, i, invocation);
-        program.inputs[i] = invocation;
+    for (const key in program.inputs) {
+      if (!program.inputs.hasOwnProperty(key)) {
+        continue;
+      }
+      if (program.inputs[key].uniqueId === needle.uniqueId) {
+        log("Replacing", program, key, invocation);
+        program.inputs[key] = invocation;
         return true;
       }
-      this.recurseFindAndReplace(program.inputs[i], needle, invocation);
+      this.recurseFindAndReplace(program.inputs[key], needle, invocation);
     }
     return false;
   }

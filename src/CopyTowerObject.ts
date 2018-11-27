@@ -11,6 +11,11 @@ export const copyTowerObject = (inObject: TowerType) => {
 function clearUniqueIds(inObject: any) {
   inObject.uniqueId = makeUniqueId();
   if (inObject.inputs) {
-    inObject.inputs.forEach(clearUniqueIds);
+    for (const key in inObject.inputs) {
+      if (!inObject.inputs.hasOwnProperty(key)) {
+        continue;
+      }
+      clearUniqueIds(inObject.inputs[key]);
+    }
   }
 }

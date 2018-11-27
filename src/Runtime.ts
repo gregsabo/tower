@@ -10,7 +10,7 @@ import { Brick } from "./Brick";
 
 export function evaluate(
   brick: Brick,
-  inputs: TowerPrimitive[] | Brick[],
+  towerInputValues: TowerPrimitive[] | Brick[],
   library: any,
   modules: IModules,
   resultMap: object
@@ -19,14 +19,18 @@ export function evaluate(
     return brick;
   }
   const invocation = brick;
-  const lazyArgs = makeLazyArgs(
-    invocation.inputs,
-    inputs,
-    library,
-    modules,
-    resultMap
-  );
-  for (const arg of lazyArgs) {
+  const lazyInputs = invocation
+    .getOrderedInputs(library, modules)
+    .map((input: Brick) => {
+      return makeLazyValue(
+        input,
+        towerInputValues,
+        library,
+        modules,
+        resultMap
+      );
+    });
+  for (const arg of lazyInputs) {
     if (arg instanceof TowerError) {
       return arg;
     }
@@ -35,41 +39,41 @@ export function evaluate(
     }
   }
 
-  const returnValue = invocation.invoke(lazyArgs, library, modules);
+  const returnValue = invocation.invoke(lazyInputs, library, modules);
   resultMap[brick.uniqueId] = returnValue;
   return returnValue;
 }
 
-function makeLazyArgs(
-  args: any,
-  inputs: any[],
+function makeLazyValue(
+  value: any, // the bricks going into me
+  towerInputValues: any, // the inputs for this tower (in case one of these inputs is a Brick)
   library: ILibrary,
   modules: IModules,
   resultMap: object
 ) {
-  return args.map((arg: any) => {
-    if (arg instanceof Socket) {
-      return arg;
-    } else if (arg instanceof Input) {
-      return LazyValue.wrap(inputs[0]);
-    } else if (arg instanceof Invocation) {
-      if (isInvocationGettingCorked(arg)) {
-        return corkInvocation(arg, library, modules);
-      } else {
-        return new LazyValue(() => {
-          return evaluate(arg, inputs, library, modules, resultMap);
-        });
-      }
-    } else if (arg instanceof Constant) {
-      return LazyValue.wrap(arg.value);
+  if (value instanceof Socket) {
+    return value;
+  } else if (value instanceof Input) {
+    return LazyValue.wrap(towerInputValues[0]);
+  } else if (value instanceof Invocation) {
+    if (isInvocationGettingCorked(value)) {
+      return corkInvocation(value, library, modules);
+    } else {
+      return new LazyValue(() => {
+        return evaluate(value, towerInputValues, library, modules, resultMap);
+      });
     }
-  });
+  } else if (value instanceof Constant) {
+    return LazyValue.wrap(value.value);
+  }
 }
 
 function isInvocationGettingCorked(invocation: Invocation) {
-  for (const arg of invocation.inputs) {
-    if (arg instanceof Cork) {
-      return true;
+  for (const key in invocation.inputs) {
+    if (invocation.inputs.hasOwnProperty(key)) {
+      if (invocation.inputs[key] instanceof Cork) {
+        return true;
+      }
     }
   }
   return false;
@@ -82,16 +86,17 @@ function corkInvocation(
 ) {
   const corked = (...inputs: any[]) => {
     let numCorksSeen = 0;
-    const finalArgs = invocation.inputs.map((arg: any, i: number) => {
-      if (arg instanceof Cork) {
+    const orderedInputs = invocation.getOrderedInputs(library, modules);
+    const finalInputs = orderedInputs.map((input: any, i: number) => {
+      if (input instanceof Cork) {
         const result = inputs[i - numCorksSeen];
         numCorksSeen += 1;
         return LazyValue.wrap(result);
       } else {
-        return LazyValue.wrap(arg);
+        return LazyValue.wrap(input);
       }
     });
-    return invocation.invoke(finalArgs, library, modules);
+    return invocation.invoke(finalInputs, library, modules);
   };
   return LazyValue.wrap(corked);
 }
