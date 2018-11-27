@@ -20,12 +20,12 @@ function renderName(props: IProps) {
 }
 
 function renderArgs(props: IProps) {
-  if (!props.contents.args) {
+  if (!props.contents.inputs) {
     return null;
   }
-  return props.contents.args.map((item: Brick, i: number) => {
+  return props.contents.inputs.map((item: Brick, i: number) => {
     return (
-      <span key={i} className="InvocationBrickComponent-arg">
+      <span key={i} className="InvocationBrickComponent-input">
         <BrickComponent
           canCursorId={props.canCursorId}
           contents={item}
@@ -51,7 +51,7 @@ export const InvocationBrickComponent: React.SFC<IProps> = props => {
 
   return (
     <div className={s("InvocationBrickComponent")}>
-      <div className="InvocationBrickComponent-argList">
+      <div className="InvocationBrickComponent-inputList">
         {renderArgs(props)}
       </div>
       <div className={s("InvocationBrickComponent-top")} />

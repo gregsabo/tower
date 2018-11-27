@@ -8,33 +8,33 @@ export class Invocation extends Brick {
   public static fromJSON(inJson: any): Invocation {
     return new Invocation({
       ...inJson,
-      ...{ args: inJson.args.map(deserializeBrick) }
+      ...{ inputs: inJson.inputs.map(deserializeBrick) }
     });
   }
 
-  public args: Brick[];
+  public inputs: Brick[];
   public implementationKey: ImplementationKey;
 
   constructor(props: {
     uniqueId?: UniqueId;
-    args: Brick[];
+    inputs: Brick[];
     implementationKey: ImplementationKey;
   }) {
     super(props.uniqueId);
-    this.args = props.args;
+    this.inputs = props.inputs;
     this.implementationKey = props.implementationKey;
   }
 
   public toJSON() {
     const json = super.toJSON();
     json.types.push("invocation");
-    json.args = this.args.map(item => item.toJSON());
+    json.inputs = this.inputs.map(item => item.toJSON());
     json.implementationKey = this.implementationKey;
     return json;
   }
 
-  public invoke(args: Invocation[], library: ILibrary, modules: IModules) {
-    return this.implementation(library, modules)(...args);
+  public invoke(inputs: Invocation[], library: ILibrary, modules: IModules) {
+    return this.implementation(library, modules)(...inputs);
   }
 
   public getName(library: ILibrary, modules: IModules) {
@@ -44,10 +44,10 @@ export class Invocation extends Brick {
   public implementation(library: ILibrary, modules: IModules) {
     const libraryFunction = this.libraryFunction(library, modules);
     if (libraryFunction.rootBrick) {
-      return (...args: Brick[]) => {
+      return (...inputs: Brick[]) => {
         return Runtime.evaluate(
           libraryFunction.rootBrick,
-          args,
+          inputs,
           library,
           modules,
           {}

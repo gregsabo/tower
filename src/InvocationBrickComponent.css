@@ -58,12 +58,12 @@
   position: relative;
 }
 
-.InvocationBrickComponent-arg {
+.InvocationBrickComponent-input {
   display: flex;
   flex-direction: column-reverse;
 }
 
-.InvocationBrickComponent-argList {
+.InvocationBrickComponent-inputList {
   display: flex;
   justify-content: center;
 }

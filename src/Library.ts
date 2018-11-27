@@ -1,4 +1,4 @@
-import { Arg } from "./Arg";
+import { Input } from "./Input";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
@@ -8,16 +8,16 @@ const Library = {
     implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
     isEager: true,
     name: "add",
-    numArgs: 2
+    numInputs: 2
   },
   and: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() && b.get(),
     isEager: true,
     name: "and",
-    numArgs: 2
+    numInputs: 2
   },
   arg: {
-    invocationGenerator: () => new Arg(),
+    invocationGenerator: () => new Input(),
     isEager: true,
     name: "arg"
   },
@@ -32,13 +32,13 @@ const Library = {
     },
     isEager: true,
     name: "capitalize",
-    numArgs: 1
+    numInputs: 1
   },
   concat: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
     isEager: true,
     name: "concat",
-    numArgs: 2
+    numInputs: 2
   },
   cork: {
     invocationGenerator: () => new Cork(),
@@ -51,7 +51,7 @@ const Library = {
     },
     isEager: true,
     name: "equals?",
-    numArgs: 2
+    numInputs: 2
   },
   ifThenElse: {
     implementation: (
@@ -67,13 +67,13 @@ const Library = {
     },
     isLazy: true,
     name: "if",
-    numArgs: 3
+    numInputs: 3
   },
   join: {
     implementation: (a: LazyValue, b: LazyValue) => a.get().join(b.get()),
     isEager: true,
     name: "join",
-    numArgs: 2
+    numInputs: 2
   },
   lessOrEquals: {
     implementation: (a: LazyValue, b: LazyValue) => {
@@ -81,31 +81,31 @@ const Library = {
     },
     isEager: true,
     name: "less than or equal?",
-    numArgs: 2
+    numInputs: 2
   },
   map: {
     implementation: (a: LazyValue, func: LazyValue) => a.get().map(func.get()),
     isEager: true,
     name: "map",
-    numArgs: 2
+    numInputs: 2
   },
   mo: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() % b.get(),
     isEager: true,
     name: "modulo",
-    numArgs: 2
+    numInputs: 2
   },
   multiply: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() * b.get(),
     isEager: true,
     name: "multiply",
-    numArgs: 2
+    numInputs: 2
   },
   newBrick: {
     implementation: () => new Error("Uninitialized brick"),
     isEager: true,
     name: "newBrick",
-    numArgs: 0
+    numInputs: 0
   },
   numberLiteral: {
     invocationGenerator: () => {
@@ -133,13 +133,13 @@ const Library = {
     },
     isEager: true,
     name: "range",
-    numArgs: 1
+    numInputs: 1
   },
   split: {
     implementation: (a: LazyValue) => a.get().split(" "),
     isEager: true,
     name: "split",
-    numArgs: 1
+    numInputs: 1
   },
   stringLiteral: {
     invocationGenerator: () =>
@@ -151,7 +151,7 @@ const Library = {
     implementation: (a: LazyValue, b: LazyValue) => a.get() - b.get(),
     isEager: true,
     name: "subtract",
-    numArgs: 2
+    numInputs: 2
   }
 };
 

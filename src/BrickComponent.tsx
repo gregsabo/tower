@@ -1,7 +1,7 @@
 // import autobind from "autobind-decorator";
 import * as React from "react";
-import { Arg } from "./Arg";
-import { ArgBrickComponent } from "./ArgBrickComponent";
+import { Input } from "./Input";
+import { InputBrickComponent } from "./InputBrickComponent";
 import "./BrickComponent.css";
 import { BrickSearch } from "./BrickSearch";
 import { Constant } from "./Constant";
@@ -50,8 +50,8 @@ function renderBrick(props: IProps) {
   const contents = props.contents;
   if (contents instanceof Socket) {
     return <SocketComponent {...props} contents={contents} />;
-  } else if (contents instanceof Arg) {
-    return <ArgBrickComponent {...props} contents={contents} />;
+  } else if (contents instanceof Input) {
+    return <InputBrickComponent {...props} contents={contents} />;
   } else if (contents instanceof Cork) {
     return <CorkBrickComponent {...props} contents={contents} />;
   } else if (contents instanceof Constant) {

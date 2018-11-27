@@ -1,13 +1,13 @@
 import { Brick } from "./Brick";
 
 export interface ITest {
-  args: string[];
+  inputs: string[];
   expected: string;
 }
 
 export interface ILibraryBrickWithImplementation {
   implementation: any;
-  numArgs: number;
+  numInputs: number;
   isEager?: boolean;
   isLazy?: boolean;
   name: string;
@@ -46,7 +46,7 @@ export type TowerPrimitive = string | boolean | number | ITowerPrimitiveArray;
 interface ITowerPrimitiveArray extends Array<TowerPrimitive> {}
 
 export type BrickTypeName =
-  | "arg"
+  | "input"
   | "cork"
   | "invocation"
   | "constant"
@@ -57,7 +57,7 @@ export interface ITower {
   brickKey: BrickKey;
   moduleKey: ModuleKey;
   name: string;
-  numArgs: number;
+  numInputs: number;
   tests: ITest[];
 }
 

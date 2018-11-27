@@ -1,12 +1,12 @@
 import { evaluate } from "./Runtime";
 import { Invocation } from "./Invocation";
 import Library from "./Library";
-import { Arg } from "./Arg";
+import { Input } from "./Input";
 import { Constant } from "./Constant";
 
 it("adds two", () => {
   const invocation = new Invocation({
-    args: [new Arg(), new Constant({ value: 2 })],
+    inputs: [new Input(), new Constant({ value: 2 })],
     implementationKey: "add"
   });
   const modules = {
@@ -16,7 +16,7 @@ it("adds two", () => {
           brickKey: "addsTwo",
           moduleKey: "basic",
           name: "Adds two",
-          numArgs: 1,
+          numInputs: 1,
           rootBrick: invocation,
           tests: []
         }

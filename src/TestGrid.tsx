@@ -69,7 +69,7 @@ export default class TestGrid extends React.Component<IProps> {
             ref={ref}
             contentEditable={true}
             onChange={this.onArgChanged.bind(this, num, 0)}
-            value={test.args[0]}
+            value={test.inputs[0]}
           />
         </td>
         <td>
@@ -87,7 +87,7 @@ export default class TestGrid extends React.Component<IProps> {
   }
 
   public renderResult(test: ITest) {
-    const inputs = test.args;
+    const inputs = test.inputs;
     let result = null;
 
     let parsedExpected;
@@ -95,13 +95,13 @@ export default class TestGrid extends React.Component<IProps> {
       parsedExpected = parseLiteral(test.expected);
     }
 
-    if (test.args.length === 0 || test.args[0] === "") {
+    if (test.inputs.length === 0 || test.inputs[0] === "") {
       return "";
-    } else if (inputs.length === this.props.brick.numArgs) {
+    } else if (inputs.length === this.props.brick.numInputs) {
       try {
         result = Runtime.evaluate(
           this.props.brick.rootBrick,
-          test.args.map(parseLiteral),
+          test.inputs.map(parseLiteral),
           this.props.library,
           this.props.modules,
           {}
@@ -128,8 +128,8 @@ export default class TestGrid extends React.Component<IProps> {
     }
 
     if (
-      test.args.length === 0 ||
-      test.args[0] === "" ||
+      test.inputs.length === 0 ||
+      test.inputs[0] === "" ||
       parsedExpected === ""
     ) {
       return true;
@@ -145,7 +145,7 @@ export default class TestGrid extends React.Component<IProps> {
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     const test = this.getTestNum(row);
-    test.args[argnum] = e.target.value;
+    test.inputs[argnum] = e.target.value;
     this.props.onTestsChanged(this.props.brick.tests);
   }
 
@@ -182,7 +182,7 @@ export default class TestGrid extends React.Component<IProps> {
       tests.push(
         this.renderTest(
           {
-            args: [],
+            inputs: [],
             expected: ""
           },
           i

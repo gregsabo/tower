@@ -1,4 +1,4 @@
-import { Arg } from "./Arg";
+import { Input } from "./Input";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import { Invocation } from "./Invocation";
@@ -20,7 +20,7 @@ export function evaluate(
   }
   const invocation = brick;
   const lazyArgs = makeLazyArgs(
-    invocation.args,
+    invocation.inputs,
     inputs,
     library,
     modules,
@@ -50,7 +50,7 @@ function makeLazyArgs(
   return args.map((arg: any) => {
     if (arg instanceof Socket) {
       return arg;
-    } else if (arg instanceof Arg) {
+    } else if (arg instanceof Input) {
       return LazyValue.wrap(inputs[0]);
     } else if (arg instanceof Invocation) {
       if (isInvocationGettingCorked(arg)) {
@@ -67,7 +67,7 @@ function makeLazyArgs(
 }
 
 function isInvocationGettingCorked(invocation: Invocation) {
-  for (const arg of invocation.args) {
+  for (const arg of invocation.inputs) {
     if (arg instanceof Cork) {
       return true;
     }
@@ -80,11 +80,11 @@ function corkInvocation(
   library: ILibrary,
   modules: IModules
 ) {
-  const corked = (...args: any[]) => {
+  const corked = (...inputs: any[]) => {
     let numCorksSeen = 0;
-    const finalArgs = invocation.args.map((arg: any, i: number) => {
+    const finalArgs = invocation.inputs.map((arg: any, i: number) => {
       if (arg instanceof Cork) {
-        const result = args[i - numCorksSeen];
+        const result = inputs[i - numCorksSeen];
         numCorksSeen += 1;
         return LazyValue.wrap(result);
       } else {

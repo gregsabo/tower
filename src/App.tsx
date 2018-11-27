@@ -1,7 +1,7 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import "./App.css";
-import { Arg } from "./Arg";
+import { Input } from "./Input";
 import BrickNamer from "./BrickNamer";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
@@ -21,16 +21,16 @@ import { Brick } from "./Brick";
 import { deserializeModules } from "./Deserialization";
 
 const CAPITALIZE_SENTENCE = new Invocation({
-  args: [
+  inputs: [
     new Invocation({
-      args: [
+      inputs: [
         new Invocation({
-          args: [new Arg()],
-          implementationKey: "split"
+          implementationKey: "split",
+          inputs: [new Input()]
         }),
         new Invocation({
-          args: [new Cork()],
-          implementationKey: "capitalize"
+          implementationKey: "capitalize",
+          inputs: [new Cork()]
         })
       ],
       implementationKey: "map"
@@ -68,7 +68,7 @@ class App extends React.Component<{}, IState> {
             brickKey: "sentence_cap",
             moduleKey: "basic",
             name: "Sentence Capitalization",
-            numArgs: 1,
+            numInputs: 1,
             rootBrick: CAPITALIZE_SENTENCE,
             tests: []
           }
@@ -183,13 +183,13 @@ class App extends React.Component<{}, IState> {
     if (libraryItem.invocationGenerator) {
       return libraryItem.invocationGenerator();
     }
-    const args = [];
-    for (let i = 0; i < libraryItem.numArgs; i++) {
-      args.push(new Socket());
+    const inputs = [];
+    for (let i = 0; i < libraryItem.numInputs; i++) {
+      inputs.push(new Socket());
     }
     return new Invocation({
-      args,
-      implementationKey: itemId
+      implementationKey: itemId,
+      inputs
     });
   }
 
@@ -253,13 +253,13 @@ class App extends React.Component<{}, IState> {
     if (!(program instanceof Invocation)) {
       return false;
     }
-    for (let i = 0; i < program.args.length; i++) {
-      if (program.args[i].uniqueId === needle) {
+    for (let i = 0; i < program.inputs.length; i++) {
+      if (program.inputs[i].uniqueId === needle) {
         log("Replacing", program, i, invocation);
-        program.args[i] = invocation;
+        program.inputs[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplaceById(program.args[i], needle, invocation);
+      this.recurseFindAndReplaceById(program.inputs[i], needle, invocation);
     }
     return false;
   }
@@ -272,13 +272,13 @@ class App extends React.Component<{}, IState> {
     if (!(program instanceof Invocation)) {
       return false;
     }
-    for (let i = 0; i < program.args.length; i++) {
-      if (program.args[i].uniqueId === needle.uniqueId) {
+    for (let i = 0; i < program.inputs.length; i++) {
+      if (program.inputs[i].uniqueId === needle.uniqueId) {
         log("Replacing", program, i, invocation);
-        program.args[i] = invocation;
+        program.inputs[i] = invocation;
         return true;
       }
-      this.recurseFindAndReplace(program.args[i], needle, invocation);
+      this.recurseFindAndReplace(program.inputs[i], needle, invocation);
     }
     return false;
   }

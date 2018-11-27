@@ -1,4 +1,4 @@
-import { Arg } from "./Arg";
+import { Input } from "./Input";
 import { Cork } from "./Cork";
 import { Constant } from "./Constant";
 import { Invocation } from "./Invocation";
@@ -8,8 +8,8 @@ import { Socket } from "./Socket";
 export function deserializeBrick(inJson: any) {
   const finalType = inJson.types[inJson.types.length - 1] as BrickTypeName;
   switch (finalType) {
-    case "arg":
-      return Arg.fromJSON(inJson);
+    case "input":
+      return Input.fromJSON(inJson);
     case "cork":
       return Cork.fromJSON(inJson);
     case "constant":

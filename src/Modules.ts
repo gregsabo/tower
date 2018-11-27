@@ -43,7 +43,7 @@ export function createNewBrick(moduleKey: ModuleKey, modules: IModules) {
     brickKey: newBrickId,
     moduleKey,
     name: `New Brick ${newBrickId}`,
-    numArgs: 1,
+    numInputs: 1,
     rootBrick: new Socket(),
     tests: []
   };

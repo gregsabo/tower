@@ -35,8 +35,8 @@ export default class KeyboardController {
       return this.app.currentTower().rootBrick.uniqueId;
     }
     const brick = result.brick;
-    if (brick instanceof Invocation && brick.args.length > 0) {
-      return brick.args[0].uniqueId;
+    if (brick instanceof Invocation && brick.inputs.length > 0) {
+      return brick.inputs[0].uniqueId;
     } else {
       return null;
     }
@@ -73,12 +73,12 @@ export default class KeyboardController {
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.args.indexOf(result.brick);
+    const index = parent.inputs.indexOf(result.brick);
     if (index === 0) {
       // just move down.
       return parent.uniqueId;
     }
-    return parent.args[index - 1].uniqueId;
+    return parent.inputs[index - 1].uniqueId;
   }
 
   public findCanToRightOfCursor() {
@@ -95,12 +95,12 @@ export default class KeyboardController {
       return null;
     }
     const parent = result.path[result.path.length - 1];
-    const index = parent.args.indexOf(result.brick);
-    if (index + 1 === parent.args.length) {
+    const index = parent.inputs.indexOf(result.brick);
+    if (index + 1 === parent.inputs.length) {
       // just move down.
       return parent.uniqueId;
     }
-    return parent.args[index + 1].uniqueId;
+    return parent.inputs[index + 1].uniqueId;
   }
 
   public moveCursorTo(uniqueId: string | null) {
@@ -142,10 +142,10 @@ export default class KeyboardController {
   public replaceResult(result: ITraversalResult, value: Brick) {
     const parent = result.path[result.path.length - 1];
     if (parent) {
-      const index = parent.args.indexOf(result.brick);
-      parent.args[index] = value;
+      const index = parent.inputs.indexOf(result.brick);
+      parent.inputs[index] = value;
       this.app.setState({
-        canCursorId: parent.args[index].uniqueId
+        canCursorId: parent.inputs[index].uniqueId
       });
     } else {
       this.app.currentTower().rootBrick = value;

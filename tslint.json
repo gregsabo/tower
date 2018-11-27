@@ -4,7 +4,8 @@
     "no-console": false,
     "no-debugger": false,
     "ordered-imports": false,
-    "no-empty-interface": false
+    "no-empty-interface": false,
+    "object-literal-sort-keys": false
   },
   "linterOptions": {
     "exclude": ["config/**/*.js", "node_modules/**/*.ts"]

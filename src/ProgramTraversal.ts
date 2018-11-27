@@ -28,7 +28,7 @@ function recurseFind(
   if (!(brick instanceof Invocation)) {
     return false;
   }
-  for (const arg of brick.args) {
+  for (const arg of brick.inputs) {
     if (arg.uniqueId === uniqueId) {
       return {
         brick: arg,
