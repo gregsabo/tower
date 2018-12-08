@@ -121,23 +121,23 @@ class App extends React.Component<{}, IState> {
               onTestsChanged={this.onTestsChanged}
             />
           ) : (
-            <div>
-              <SkyComponent
-                contents={this.state.sky.peek()}
-                editorMode={this.state.editorMode}
-                library={this.state.library}
-                modules={this.state.modules}
-              />
-              <Program
-                contents={this.currentTower()}
-                editorMode={this.state.editorMode}
-                library={this.state.library}
-                modules={this.state.modules}
-                onCanInserted={this.onCanInserted}
-                canCursorId={this.state.canCursorId}
-              />
-            </div>
-          )}
+              <div>
+                <SkyComponent
+                  contents={this.state.sky.peek()}
+                  editorMode={this.state.editorMode}
+                  library={this.state.library}
+                  modules={this.state.modules}
+                />
+                <Program
+                  contents={this.currentTower()}
+                  editorMode={this.state.editorMode}
+                  library={this.state.library}
+                  modules={this.state.modules}
+                  onCanInserted={this.onCanInserted}
+                  canCursorId={this.state.canCursorId}
+                />
+              </div>
+            )}
         </div>
       </div>
     );
@@ -224,11 +224,16 @@ class App extends React.Component<{}, IState> {
   public onCanInserted(canId: UniqueId, selectedLibraryItem: LibraryKey) {
     const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
     const rootBrick = this.currentTower().rootBrick;
+    let newCursorPosition;
     if (rootBrick.uniqueId === canId) {
       // it's the root, replace it.
       this.currentTower().rootBrick = invocation;
+      // Check if brick has inputs, and if it does, set cursor to first input.
+      // If it doesn't have children, set curser on itself 
+      if (invocation instanceof Invocation && invocation.args.length > 0) { newCursorPosition = invocation.args[0].uniqueId; }
+      else { newCursorPosition = invocation.uniqueId; }
       this.setState({
-        canCursorId: invocation.uniqueId,
+        canCursorId: newCursorPosition,
         editorMode: "cursor"
       });
       return this.modulesChanged();
@@ -238,8 +243,12 @@ class App extends React.Component<{}, IState> {
       canId,
       invocation
     );
+    // Check if brick has inputs, and if it does, set cursor to first input.
+    // If it doesn't have children, set curser on itself 
+    if (invocation instanceof Invocation && invocation.args.length > 0) { newCursorPosition = invocation.args[0].uniqueId; }
+    else { newCursorPosition = invocation.uniqueId; }
     this.setState({
-      canCursorId: invocation.uniqueId,
+      canCursorId: newCursorPosition,
       editorMode: "cursor"
     });
     this.modulesChanged();
