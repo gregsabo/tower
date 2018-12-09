@@ -5,7 +5,8 @@ import {
   IModules,
   ImplementationKey,
   UniqueId,
-  IInputConfiguration
+  IInputConfiguration,
+  IInputValues
 } from "./Types";
 import { Brick } from "./Brick";
 import { deserializeBrick } from "./Deserialization";
@@ -50,8 +51,8 @@ export class Invocation extends Brick {
     return json;
   }
 
-  public invoke(inputs: Invocation[], library: ILibrary, modules: IModules) {
-    return this.implementation(library, modules)(...inputs);
+  public invoke(inputs: IInputValues, library: ILibrary, modules: IModules) {
+    return this.implementation(library, modules)(inputs);
   }
 
   public getName(library: ILibrary, modules: IModules) {
@@ -68,6 +69,9 @@ export class Invocation extends Brick {
   public getOrderedInputs(library: ILibrary, modules: IModules): Brick[] {
     const configs = this.getInputConfiguration(library, modules);
     return configs.map(config => {
+      if (typeof this.inputs[config.key] === "undefined") {
+        throw new Error(`Invocation ${this.implementationKey} didn't get a value for input key '${config.key}'.`);
+      }
       return this.inputs[config.key];
     });
   }
@@ -75,7 +79,7 @@ export class Invocation extends Brick {
   public implementation(library: ILibrary, modules: IModules) {
     const libraryFunction = this.libraryFunction(library, modules);
     if (libraryFunction.rootBrick) {
-      return (...inputs: Brick[]) => {
+      return (inputs: IInputValues) => {
         return Runtime.evaluate(
           libraryFunction.rootBrick,
           inputs,

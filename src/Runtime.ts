@@ -5,12 +5,13 @@ import { Invocation } from "./Invocation";
 import LazyValue from "./LazyValue";
 import { Socket } from "./Socket";
 import TowerError from "./TowerError";
-import { ILibrary, IModules, TowerPrimitive } from "./Types";
+import { ILibrary, IModules, IInputValues } from "./Types";
 import { Brick } from "./Brick";
+import { mapValues } from "lodash";
 
 export function evaluate(
   brick: Brick,
-  towerInputValues: TowerPrimitive[] | Brick[],
+  towerInputValues: IInputValues,
   library: any,
   modules: IModules,
   resultMap: object
@@ -19,18 +20,19 @@ export function evaluate(
     return brick;
   }
   const invocation = brick;
-  const lazyInputs = invocation
-    .getOrderedInputs(library, modules)
-    .map((input: Brick) => {
-      return makeLazyValue(
-        input,
-        towerInputValues,
-        library,
-        modules,
-        resultMap
-      );
-    });
-  for (const arg of lazyInputs) {
+  // lazy inputs: map over the invocation's inputs,
+  // lazifying each. This involves passing down the
+  // input values from the tower as a whole.
+  const lazyInputs = mapValues(invocation.inputs, input => {
+    return makeLazyValue(input, towerInputValues, library, modules, resultMap);
+  });
+
+  for (const key in lazyInputs) {
+    if (!lazyInputs.hasOwnProperty(key)) {
+      continue;
+    }
+    const arg = lazyInputs[key];
+
     if (arg instanceof TowerError) {
       return arg;
     }
@@ -46,7 +48,7 @@ export function evaluate(
 
 function makeLazyValue(
   value: any, // the bricks going into me
-  towerInputValues: any, // the inputs for this tower (in case one of these inputs is a Brick)
+  towerInputValues: IInputValues, // the inputs for this tower (in case one of these inputs is a Brick)
   library: ILibrary,
   modules: IModules,
   resultMap: object
@@ -54,7 +56,7 @@ function makeLazyValue(
   if (value instanceof Socket) {
     return value;
   } else if (value instanceof Input) {
-    return LazyValue.wrap(towerInputValues[0]);
+    return LazyValue.wrap(towerInputValues[value.inputKey]);
   } else if (value instanceof Invocation) {
     if (isInvocationGettingCorked(value)) {
       return corkInvocation(value, library, modules);
@@ -65,6 +67,8 @@ function makeLazyValue(
     }
   } else if (value instanceof Constant) {
     return LazyValue.wrap(value.value);
+  } else {
+    return LazyValue.wrap(value);
   }
 }
 
@@ -84,19 +88,11 @@ function corkInvocation(
   library: ILibrary,
   modules: IModules
 ) {
-  const corked = (...inputs: any[]) => {
-    let numCorksSeen = 0;
-    const orderedInputs = invocation.getOrderedInputs(library, modules);
-    const finalInputs = orderedInputs.map((input: any, i: number) => {
-      if (input instanceof Cork) {
-        const result = inputs[i - numCorksSeen];
-        numCorksSeen += 1;
-        return LazyValue.wrap(result);
-      } else {
-        return LazyValue.wrap(input);
-      }
-    });
-    return invocation.invoke(finalInputs, library, modules);
+  const corked = (newInputs: IInputValues) => {
+    console.log("About to merge", newInputs);
+    const merged = { ...invocation.inputs, ...newInputs };
+    const lazy = mapValues(merged, LazyValue.wrap);
+    return invocation.invoke(lazy, library, modules);
   };
   return LazyValue.wrap(corked);
 }

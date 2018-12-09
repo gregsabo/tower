@@ -4,7 +4,7 @@ import * as Runtime from "./Runtime";
 import Value from "./Value";
 import { parseLiteral } from "./Parsing";
 import "./TestGrid.css";
-import { ITest, ILibrary, IModules } from "./Types";
+import { ITest, ILibrary, IModules, IInputValues } from "./Types";
 
 interface IProps {
   brick: any;
@@ -36,7 +36,7 @@ export default class TestGrid extends React.Component<IProps> {
         <thead>
           <tr>
             <td />
-            <td>ARG 1</td>
+            <td>INPUT 1</td>
             <td>Expected Result</td>
             <td>Actual Result</td>
           </tr>
@@ -87,8 +87,18 @@ export default class TestGrid extends React.Component<IProps> {
     );
   }
 
+  public mapValues(func: any, inObject: object): IInputValues {
+    const outObject = {};
+    for (const key in inObject) {
+      if (!inObject.hasOwnProperty(key)) {
+        continue;
+      }
+      outObject[key] = func(inObject[key]);
+    }
+    return outObject;
+  }
+
   public renderResult(test: ITest) {
-    const inputs = test.inputs;
     let result = null;
 
     let parsedExpected;
@@ -96,20 +106,21 @@ export default class TestGrid extends React.Component<IProps> {
       parsedExpected = parseLiteral(test.expected);
     }
 
-    if (test.inputs.length === 0 || test.inputs[0] === "") {
+    if (Object.keys(test.inputs).length === 0) {
       return "";
-    } else if (inputs.length === this.props.brick.inputs.length) {
-      try {
-        result = Runtime.evaluate(
-          this.props.brick.rootBrick,
-          test.inputs.map(parseLiteral),
-          this.props.library,
-          this.props.modules,
-          {}
-        );
-      } catch (e) {
-        result = "ERROR: " + e.message;
-      }
+    } else {
+      // try {
+      result = Runtime.evaluate(
+        this.props.brick.rootBrick,
+        this.mapValues(parseLiteral, test.inputs),
+        this.props.library,
+        this.props.modules,
+        {}
+      );
+      console.log("Result was", result);
+      // } catch (e) {
+      //   result = "ERROR: " + e.message;
+      // }
 
       if (result === parsedExpected) {
         return "=";
@@ -129,7 +140,7 @@ export default class TestGrid extends React.Component<IProps> {
     }
 
     if (
-      test.inputs.length === 0 ||
+      Object.keys(test.inputs).length === 0 ||
       test.inputs[0] === "" ||
       parsedExpected === ""
     ) {
@@ -183,7 +194,7 @@ export default class TestGrid extends React.Component<IProps> {
       tests.push(
         this.renderTest(
           {
-            inputs: [],
+            inputs: {},
             expected: ""
           },
           i

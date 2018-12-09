@@ -1,7 +1,7 @@
 import { Brick } from "./Brick";
 
 export interface ITest {
-  inputs: string[];
+  inputs: { [key: string]: string };
   expected: string;
 }
 
@@ -74,3 +74,7 @@ export interface IModules {
 }
 
 export type EditorMode = "cursor" | "insert" | "constant" | "test" | "naming";
+
+export interface IInputValues {
+  [key: string]: TowerPrimitive;
+}

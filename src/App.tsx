@@ -33,9 +33,9 @@ const CAPITALIZE_SENTENCE = new Invocation({
       inputs: {
         a: new Invocation({
           implementationKey: "split",
-          inputs: { a: new Input() }
+          inputs: { a: new Input({ inputKey: "a" }) }
         }),
-        b: new Invocation({
+        func: new Invocation({
           implementationKey: "capitalize",
           inputs: { a: new Cork() }
         })

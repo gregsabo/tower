@@ -2,10 +2,13 @@ import { Input } from "./Input";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
+import { makeUniqueId } from "./MakeUniqueId";
 
 const Library = {
   add: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
+    implementation: ({ a, b }: { a: LazyValue; b: LazyValue }) => {
+      return a.get() + b.get();
+    },
     name: "add",
     inputs: [
       {
@@ -33,7 +36,7 @@ const Library = {
     ]
   },
   input: {
-    invocationGenerator: () => new Input(),
+    invocationGenerator: () => new Input({ inputKey: makeUniqueId() }),
     name: "input"
   },
   capitalize: {
@@ -146,14 +149,16 @@ const Library = {
     name: "less than or equal?"
   },
   map: {
-    implementation: (a: LazyValue, func: LazyValue) => a.get().map(func.get()),
+    implementation: ({ a, func }: { a: LazyValue; func: LazyValue }) => {
+      return a.get().map(func.get());
+    },
     inputs: [
       {
         key: "a",
         displayName: "list"
       },
       {
-        key: "b",
+        key: "func",
         displayName: "corked brick"
       }
     ],
