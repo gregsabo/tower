@@ -6,7 +6,8 @@ import { makeUniqueId } from "./MakeUniqueId";
 
 const Library = {
   add: {
-    implementation: ({ a, b }: { a: LazyValue; b: LazyValue }) => {
+    implementation: (a: LazyValue, b: LazyValue) => {
+      console.log("Adding", a.get(), "and", b.get());
       return a.get() + b.get();
     },
     name: "add",
@@ -40,12 +41,11 @@ const Library = {
     name: "input"
   },
   capitalize: {
-    implementation: (lazyA: LazyValue) => {
-      const a = lazyA.get();
-      if (a.length === 0) {
-        return a;
+    implementation: (a: LazyValue) => {
+      if (a.get().length === 0) {
+        return a.get();
       } else {
-        return a[0].toUpperCase() + a.slice(1);
+        return a.get()[0].toUpperCase() + a.get().slice(1);
       }
     },
     inputs: [
@@ -119,7 +119,10 @@ const Library = {
     name: "if"
   },
   join: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get().join(b.get()),
+    implementation: (a: LazyValue, b: LazyValue) => {
+      console.log("Joining", a.get(), "with", b.get());
+      return a.get().join(b.get());
+    },
     inputs: [
       {
         key: "a",
@@ -149,7 +152,7 @@ const Library = {
     name: "less than or equal?"
   },
   map: {
-    implementation: ({ a, func }: { a: LazyValue; func: LazyValue }) => {
+    implementation: (a: LazyValue, func: LazyValue) => {
       return a.get().map(func.get());
     },
     inputs: [

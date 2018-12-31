@@ -6,7 +6,7 @@ import {
   ImplementationKey,
   UniqueId,
   IInputConfiguration,
-  IInputValues
+  TowerPrimitive
 } from "./Types";
 import { Brick } from "./Brick";
 import { deserializeBrick } from "./Deserialization";
@@ -51,8 +51,8 @@ export class Invocation extends Brick {
     return json;
   }
 
-  public invoke(inputs: IInputValues, library: ILibrary, modules: IModules) {
-    return this.implementation(library, modules)(inputs);
+  public invoke(inputs: TowerPrimitive[], library: ILibrary, modules: IModules) {
+    return this.implementation(library, modules)(...inputs);
   }
 
   public getName(library: ILibrary, modules: IModules) {
@@ -79,7 +79,7 @@ export class Invocation extends Brick {
   public implementation(library: ILibrary, modules: IModules) {
     const libraryFunction = this.libraryFunction(library, modules);
     if (libraryFunction.rootBrick) {
-      return (inputs: IInputValues) => {
+      return (inputs: TowerPrimitive[]) => {
         return Runtime.evaluate(
           libraryFunction.rootBrick,
           inputs,

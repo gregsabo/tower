@@ -4,10 +4,10 @@ import * as Runtime from "./Runtime";
 import Value from "./Value";
 import { parseLiteral } from "./Parsing";
 import "./TestGrid.css";
-import { ITest, ILibrary, IModules, IInputValues } from "./Types";
+import { ITest, ILibrary, IModules, ITower, IInputConfiguration, TowerPrimitive } from "./Types";
 
 interface IProps {
-  brick: any;
+  brick: ITower;
   onTestsChanged: any;
   library: ILibrary;
   modules: IModules;
@@ -36,7 +36,7 @@ export default class TestGrid extends React.Component<IProps> {
         <thead>
           <tr>
             <td />
-            <td>INPUT 1</td>
+            {this.props.brick.inputs.map(this.renderInputHeader)}
             <td>Expected Result</td>
             <td>Actual Result</td>
           </tr>
@@ -47,12 +47,14 @@ export default class TestGrid extends React.Component<IProps> {
   }
 
   @autobind
+  public renderInputHeader(inputConfig: IInputConfiguration, i: number) {
+    return <td key={i}>{inputConfig.displayName}</td>
+
+  }
+
+  @autobind
   public renderTest(test: ITest, num: number) {
     test = test || this.newTest();
-    let ref;
-    if (num === 0) {
-      ref = (first: HTMLInputElement) => (this.firstCell = first);
-    }
     const result = this.renderResult(test);
     const passed = this.testPassed(test, result);
     return (
@@ -63,16 +65,9 @@ export default class TestGrid extends React.Component<IProps> {
         key={num}
       >
         <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
-        <td>
-          <input
-            className="TestGrid-input"
-            type="text"
-            ref={ref}
-            contentEditable={true}
-            onChange={this.onArgChanged.bind(this, num, 0)}
-            value={test.inputs[0]}
-          />
-        </td>
+        {this.props.brick.inputs.map((inputConfig: IInputConfiguration, i: number) => {
+          return this.renderInputValue(inputConfig, test, i);
+        })}
         <td>
           <input
             className="TestGrid-input"
@@ -87,15 +82,16 @@ export default class TestGrid extends React.Component<IProps> {
     );
   }
 
-  public mapValues(func: any, inObject: object): IInputValues {
-    const outObject = {};
-    for (const key in inObject) {
-      if (!inObject.hasOwnProperty(key)) {
-        continue;
-      }
-      outObject[key] = func(inObject[key]);
-    }
-    return outObject;
+  public renderInputValue(inputConfig: IInputConfiguration, test: ITest, i: number) {
+      return <td key={i}>
+        <input
+          className="TestGrid-input"
+          type="text"
+          contentEditable={true}
+          onChange={this.onArgChanged.bind(this, test, inputConfig.key)}
+          value={test.inputs[inputConfig.key]}
+        />
+      </td>
   }
 
   public renderResult(test: ITest) {
@@ -112,7 +108,7 @@ export default class TestGrid extends React.Component<IProps> {
       // try {
       result = Runtime.evaluate(
         this.props.brick.rootBrick,
-        this.mapValues(parseLiteral, test.inputs),
+        this.makeOrderedValues(test),
         this.props.library,
         this.props.modules,
         {}
@@ -128,6 +124,12 @@ export default class TestGrid extends React.Component<IProps> {
         return result;
       }
     }
+  }
+
+  public makeOrderedValues(test: ITest): TowerPrimitive[] {
+    return this.props.brick.inputs.map((inputConfig: IInputConfiguration) => {
+      return parseLiteral(test.inputs[inputConfig.key]);
+    });
   }
 
   public testPassed(test: ITest, result: string) {
@@ -152,12 +154,12 @@ export default class TestGrid extends React.Component<IProps> {
 
   @autobind
   public onArgChanged(
-    row: number,
-    argnum: number,
+    testCase: ITest,
+    inputKey: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
-    const test = this.getTestNum(row);
-    test.inputs[argnum] = e.target.value;
+    testCase.inputs[inputKey] = e.target.value;
+    console.log("Setting", inputKey, "of", testCase, "to", e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
   }
 
@@ -183,7 +185,7 @@ export default class TestGrid extends React.Component<IProps> {
 
   public newTest() {
     return {
-      inputs: [],
+      inputs: {},
       expected: ""
     };
   }

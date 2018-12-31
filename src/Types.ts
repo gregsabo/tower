@@ -74,7 +74,3 @@ export interface IModules {
 }
 
 export type EditorMode = "cursor" | "insert" | "constant" | "test" | "naming";
-
-export interface IInputValues {
-  [key: string]: TowerPrimitive;
-}

@@ -5,7 +5,6 @@ import { Input } from "./Input";
 import BrickNamer from "./BrickNamer";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
-import InputConfiguration from "./InputConfiguration";
 import { Invocation } from "./Invocation";
 import KeyboardController from "./KeyboardController";
 import Library from "./Library";
@@ -51,7 +50,6 @@ interface IState {
   highlightedLibraryItemId: string;
   canCursorId: string;
   editorMode: EditorMode;
-  inputs: InputConfiguration[];
   library: any;
   modules: IModules;
   currentModuleId: string;
@@ -95,7 +93,6 @@ class App extends React.Component<{}, IState> {
       currentModuleId: "basic",
       editorMode: "cursor",
       highlightedLibraryItemId: "string",
-      inputs: [new InputConfiguration(0)],
       library: Library,
       modules,
       sky: new Sky()
@@ -219,11 +216,6 @@ class App extends React.Component<{}, IState> {
         modules: this.undoManager.redo()
       });
     }
-  }
-
-  @autobind
-  public onInputsChanged(inputs: InputConfiguration[]) {
-    this.setState({ inputs });
   }
 
   @autobind
