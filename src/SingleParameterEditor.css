@@ -1,0 +1,13 @@
+.SingleParameterEditor-input {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 14px;
+  border: none;
+}
+
+.SingleParameterEditor--isNaming .SingleParameterEditor-input {
+  border: 1px solid gray;
+}
+
+.SingleParameterEditor--isSelected {
+  border: 3px solid red;
+}
