@@ -7,7 +7,6 @@ import { makeUniqueId } from "./MakeUniqueId";
 const Library = {
   add: {
     implementation: (a: LazyValue, b: LazyValue) => {
-      console.log("Adding", a.get(), "and", b.get());
       return a.get() + b.get();
     },
     name: "add",
@@ -120,7 +119,6 @@ const Library = {
   },
   join: {
     implementation: (a: LazyValue, b: LazyValue) => {
-      console.log("Joining", a.get(), "with", b.get());
       return a.get().join(b.get());
     },
     inputs: [

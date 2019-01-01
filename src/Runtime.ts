@@ -5,7 +5,12 @@ import { Invocation } from "./Invocation";
 import LazyValue from "./LazyValue";
 import { Socket } from "./Socket";
 import TowerError from "./TowerError";
-import { ILibrary, IModules, TowerPrimitive, IInputConfiguration } from "./Types";
+import {
+  ILibrary,
+  IModules,
+  TowerPrimitive,
+  IInputConfiguration
+} from "./Types";
 import { Brick } from "./Brick";
 
 export function evaluate(
@@ -20,16 +25,27 @@ export function evaluate(
   }
   const invocation = brick;
   const inputKeysToIndexes = {};
-  invocation.getInputConfiguration(library, modules).map((inputConfig: IInputConfiguration, num: number) => {
-    inputKeysToIndexes[inputConfig.key] =  num;
-  });
+  invocation
+    .getInputConfiguration(library, modules)
+    .map((inputConfig: IInputConfiguration, num: number) => {
+      inputKeysToIndexes[inputConfig.key] = num;
+    });
 
   // lazy inputs: map over the invocation's inputs,
   // lazifying each. This involves passing down the
   // input values from the tower as a whole.
-  const lazyInputs = invocation.getOrderedInputs(library, modules).map((input) => {
-    return makeLazyValue(input, towerInputValues, inputKeysToIndexes, library, modules, resultMap);
-  })
+  const lazyInputs = invocation
+    .getOrderedInputs(library, modules)
+    .map(input => {
+      return makeLazyValue(
+        input,
+        towerInputValues,
+        inputKeysToIndexes,
+        library,
+        modules,
+        resultMap
+      );
+    });
 
   for (const key in lazyInputs) {
     if (!lazyInputs.hasOwnProperty(key)) {
@@ -47,14 +63,13 @@ export function evaluate(
 
   const returnValue = invocation.invoke(lazyInputs, library, modules);
   resultMap[brick.uniqueId] = returnValue;
-  console.log("Returnvalue", brick.implementationKey, returnValue);
   return returnValue;
 }
 
 function makeLazyValue(
   value: any, // the bricks going into me
   towerInputValues: TowerPrimitive[], // the inputs for this tower (in case one of these inputs is a Brick)
-  inputKeyToInputNumMap: {[key: string]: number},
+  inputKeyToInputNumMap: { [key: string]: number },
   library: ILibrary,
   modules: IModules,
   resultMap: object
@@ -62,7 +77,9 @@ function makeLazyValue(
   if (value instanceof Socket) {
     return value;
   } else if (value instanceof Input) {
-    return LazyValue.wrap(towerInputValues[inputKeyToInputNumMap[value.inputKey]]);
+    return LazyValue.wrap(
+      towerInputValues[inputKeyToInputNumMap[value.inputKey]]
+    );
   } else if (value instanceof Invocation) {
     if (isInvocationGettingCorked(value)) {
       return LazyValue.wrap(corkInvocation(value, library, modules));
@@ -88,7 +105,6 @@ function isInvocationGettingCorked(invocation: Invocation) {
   }
   return false;
 }
-
 
 function corkInvocation(
   invocation: Invocation,

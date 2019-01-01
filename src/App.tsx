@@ -19,12 +19,14 @@ import {
   LibraryKey,
   UniqueId,
   EditorMode,
-  IInputConfiguration
+  IInputConfiguration,
+  ParameterEditingState
 } from "./Types";
 import { Sky } from "./Sky";
 import SkyComponent from "./SkyComponent";
 import { Brick } from "./Brick";
 import { deserializeModules } from "./Deserialization";
+import ParameterPane from "./ParameterPane";
 
 const CAPITALIZE_SENTENCE = new Invocation({
   inputs: {
@@ -55,6 +57,7 @@ interface IState {
   currentModuleId: string;
   currentBrickId: string;
   sky: Sky;
+  parameterEditingState: ParameterEditingState;
 }
 const log = console.log;
 
@@ -125,6 +128,13 @@ class App extends React.Component<{}, IState> {
             />
           ) : (
             <div>
+              {this.state.editorMode === "parameter" ? (
+                <ParameterPane
+                  parameters={this.currentTower().inputs}
+                  parameterEditingState={this.state.parameterEditingState}
+                  onNameChange={this.onParameterNameChange}
+                />
+              ) : null}
               <SkyComponent
                 contents={this.state.sky.peek()}
                 editorMode={this.state.editorMode}
@@ -163,6 +173,13 @@ class App extends React.Component<{}, IState> {
   @autobind
   public onTestsChanged(tests: ITest[]) {
     this.currentTower().tests = tests;
+    this.modulesChanged();
+  }
+
+  @autobind
+  public onParameterNameChange(num: number, newName: string) {
+    const parameter = this.currentTower().inputs[num];
+    parameter.displayName = newName;
     this.modulesChanged();
   }
 

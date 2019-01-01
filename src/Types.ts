@@ -73,4 +73,15 @@ export interface IModules {
   [key: string]: IModule;
 }
 
-export type EditorMode = "cursor" | "insert" | "constant" | "test" | "naming";
+export type EditorMode =
+  | "cursor"
+  | "insert"
+  | "constant"
+  | "test"
+  | "naming"
+  | "parameter";
+
+export type ParameterEditingState = {
+  mode: "naming" | "cursor";
+  key: string;
+} | null;

@@ -63,7 +63,6 @@ it("maps corked bricks", () => {
     }
   };
   const result = evaluate(invocation, [], Library, modules, {});
-  console.log("test result is", result);
 
   expect(result).toEqual([3, 4, 5]);
 });

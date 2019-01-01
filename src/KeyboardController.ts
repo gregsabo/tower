@@ -6,6 +6,7 @@ import { Constant } from "./Constant";
 import App from "./App";
 import { copyTowerObject } from "./CopyTowerObject";
 import { Brick } from "./Brick";
+import * as ParameterKeyboardController from "./ParameterKeyboardController";
 
 const log = console.log;
 
@@ -51,7 +52,6 @@ export default class KeyboardController {
       this.app.currentTower(),
       this.app.state.canCursorId
     );
-    console.log("Trying to find below cursor", result);
     if (!result) {
       log("No result found. Assuming bottom.");
       return this.app.currentTower().rootBrick.uniqueId;
@@ -131,6 +131,7 @@ export default class KeyboardController {
   }
 
   public enterCursorMode() {
+    ParameterKeyboardController.deactivate(this.app);
     this.app.setState({
       editorMode: "cursor"
     });
@@ -299,6 +300,9 @@ export default class KeyboardController {
     if (e.code === "Escape") {
       this.enterCursorMode();
     }
+    if (ParameterKeyboardController.isActive(this.app)) {
+      return ParameterKeyboardController.dispatch(e, this.app);
+    }
     if (this.app.state.editorMode !== "cursor") {
       return true;
     }
@@ -311,6 +315,9 @@ export default class KeyboardController {
         break;
       case "KeyY":
         this.app.redo();
+        break;
+      case "KeyA":
+        ParameterKeyboardController.activate(this.app);
         break;
       case "KeyI":
         this.enterInsertMode();
