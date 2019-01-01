@@ -81,7 +81,7 @@ export type EditorMode =
   | "naming"
   | "parameter";
 
-export type ParameterEditingState = {
+export interface IParameterEditingState {
   mode: "naming" | "cursor";
   key: string;
-} | null;
+}

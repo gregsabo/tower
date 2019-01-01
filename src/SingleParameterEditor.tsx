@@ -1,11 +1,11 @@
 import * as React from "react";
 import "./SingleParameterEditor.css";
-import { ParameterEditingState, IInputConfiguration } from "./Types";
+import { IParameterEditingState, IInputConfiguration } from "./Types";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
 
 interface IProps {
-  parameterEditingState: ParameterEditingState;
+  parameterEditingState: IParameterEditingState;
   parameter: IInputConfiguration;
   onNameChange: (value: string) => void;
   number: number;
@@ -43,7 +43,7 @@ export default class SingleParameterEditor extends React.Component<IProps> {
       >
         {num + 1}.{" "}
         <input
-          defaultValue={parameter.displayName}
+          value={parameter.displayName}
           ref={input => (this.input = input)}
           onChange={this.handleChange}
           className="SingleParameterEditor-input"

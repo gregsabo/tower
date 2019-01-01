@@ -20,7 +20,7 @@ import {
   UniqueId,
   EditorMode,
   IInputConfiguration,
-  ParameterEditingState
+  IParameterEditingState
 } from "./Types";
 import { Sky } from "./Sky";
 import SkyComponent from "./SkyComponent";
@@ -57,7 +57,7 @@ interface IState {
   currentModuleId: string;
   currentBrickId: string;
   sky: Sky;
-  parameterEditingState: ParameterEditingState;
+  parameterEditingState: IParameterEditingState;
 }
 const log = console.log;
 

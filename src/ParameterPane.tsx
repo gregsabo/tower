@@ -1,12 +1,12 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import "./ParameterPane.css";
-import { IInputConfiguration, ParameterEditingState } from "./Types";
+import { IInputConfiguration, IParameterEditingState } from "./Types";
 import SingleParameterEditor from "./SingleParameterEditor";
 
 interface IProps {
   parameters: IInputConfiguration[];
-  parameterEditingState: ParameterEditingState;
+  parameterEditingState: IParameterEditingState;
   onNameChange: (num: number, newName: string) => void;
 }
 
