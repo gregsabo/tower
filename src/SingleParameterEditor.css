@@ -2,12 +2,22 @@
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 14px;
   border: none;
+  background: none;
 }
 
 .SingleParameterEditor--isNaming .SingleParameterEditor-input {
   border: 1px solid gray;
 }
 
+.SingleParameterEditor {
+  background: white;
+}
+
 .SingleParameterEditor--isSelected {
-  border: 3px solid red;
+  background: lightgrey;
+  color: black;
+}
+
+.SingleParameterEditor--isSelected .SingleParameterEditor-input {
+  color: black;
 }

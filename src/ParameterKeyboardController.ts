@@ -19,10 +19,12 @@ export function newParameter(app: App) {
 }
 
 export function exitNamingMode(app: App) {
+  const oldKey = app.state.parameterEditingState.key;
+  app.state.parameterEditingState.mode = "cursor";
   app.setState({
     parameterEditingState: {
       mode: "cursor",
-      key: ""
+      key: oldKey
     }
   });
   app.modulesChanged();
@@ -106,6 +108,22 @@ export function moveParameterUp(app: App) {
   app.modulesChanged();
 }
 
+export function deleteParameter(app: App) {
+  const foundIndex = currentCursorIndex(app);
+  if (foundIndex === null) {
+    return;
+  }
+  app.currentTower().inputs.splice(foundIndex, 1);
+  app.modulesChanged();
+  const newNumInputs = app.currentTower().inputs.length;
+  if (newNumInputs === 0) {
+    return;
+  }
+  const newIndex = foundIndex >= newNumInputs ? newNumInputs - 1 : foundIndex;
+  app.state.parameterEditingState.key = app.currentTower().inputs[newIndex].key;
+  app.setState({});
+}
+
 export function dispatch(e: KeyboardEvent, app: App) {
   if (
     app.state.parameterEditingState &&
@@ -128,5 +146,7 @@ export function dispatch(e: KeyboardEvent, app: App) {
       return moveParameterUp(app);
     case "KeyN":
       return moveParameterDown(app);
+    case "KeyD":
+      return deleteParameter(app);
   }
 }
