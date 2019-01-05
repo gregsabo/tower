@@ -25,7 +25,7 @@ interface IProps {
 
 const style = {
   display: "flex",
-  marginTop: "50px"
+  marginTop: "25px"
 };
 
 class Program extends React.Component<IProps, {}> {

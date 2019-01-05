@@ -13,7 +13,7 @@ interface IProps {
 export default class ParameterPane extends React.Component<IProps> {
   public render() {
     return (
-      <div>
+      <div className="ParameterPane">
         <h3>Parameters</h3>
         {this.props.parameters.map(this.renderParameter)}
       </div>

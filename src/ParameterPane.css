@@ -1,0 +1,11 @@
+.ParameterPane {
+  position: absolute;
+  background: white;
+  z-index: 1;
+  height: 100%;
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  left: 0;
+  margin-top: -20px;
+  padding: 20px;
+}

@@ -91,7 +91,7 @@ export function cursorDown(app: App) {
 export function moveParameterDown(app: App) {
   const foundIndex = currentCursorIndex(app);
   const inputs = app.currentTower().inputs;
-  if (foundIndex === null || foundIndex >= inputs.length) {
+  if (foundIndex === null || foundIndex + 1 >= inputs.length) {
     return;
   }
   const neighborIndex = foundIndex + 1;
