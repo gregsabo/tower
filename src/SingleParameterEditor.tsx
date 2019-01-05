@@ -64,11 +64,6 @@ export default class SingleParameterEditor extends React.Component<IProps> {
     if (!this.input) {
       return;
     }
-    console.log(
-      "comp did update",
-      parameterIsNaming(this.props),
-      parameterIsNaming(oldProps)
-    );
     if (parameterIsNaming(this.props)) {
       this.input.focus();
     }

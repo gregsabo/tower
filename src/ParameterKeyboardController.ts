@@ -2,6 +2,7 @@ import App from "./App";
 import { makeUniqueId } from "./MakeUniqueId";
 import { IInputConfiguration } from "./Types";
 import { findIndex } from "lodash";
+import { Input } from "./Input";
 
 export function newParameter(app: App) {
   const key = makeUniqueId();
@@ -16,6 +17,11 @@ export function newParameter(app: App) {
       key
     }
   });
+}
+
+export function renameParameter(app: App) {
+  app.state.parameterEditingState.mode = "naming";
+  app.setState({});
 }
 
 export function exitNamingMode(app: App) {
@@ -108,6 +114,13 @@ export function moveParameterUp(app: App) {
   app.modulesChanged();
 }
 
+export function insertParameterNumber(app: App, num: number) {
+  const inputKey = app.currentTower().inputs[currentCursorIndex(app)].key;
+  const cursor = app.state.canCursorId;
+  app.insertBrickAtUniqueId(cursor, new Input({ inputKey }));
+  return;
+}
+
 export function deleteParameter(app: App) {
   const foundIndex = currentCursorIndex(app);
   if (foundIndex === null) {
@@ -134,6 +147,9 @@ export function dispatch(e: KeyboardEvent, app: App) {
     }
     return;
   }
+  if (e.keyCode >= 49 && e.keyCode <= 57) {
+    return insertParameterNumber(app, e.keyCode - 48);
+  }
   switch (e.code) {
     case "KeyI":
       e.preventDefault();
@@ -148,5 +164,8 @@ export function dispatch(e: KeyboardEvent, app: App) {
       return moveParameterDown(app);
     case "KeyD":
       return deleteParameter(app);
+    case "KeyR":
+      e.preventDefault();
+      return renameParameter(app);
   }
 }

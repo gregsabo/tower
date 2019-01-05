@@ -238,6 +238,10 @@ class App extends React.Component<{}, IState> {
   @autobind
   public onCanInserted(canId: UniqueId, selectedLibraryItem: LibraryKey) {
     const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
+    this.insertBrickAtUniqueId(canId, invocation);
+  }
+
+  public insertBrickAtUniqueId(canId: UniqueId, invocation: Brick) {
     const rootBrick = this.currentTower().rootBrick;
     if (rootBrick.uniqueId === canId) {
       // it's the root, replace it.
@@ -263,7 +267,7 @@ class App extends React.Component<{}, IState> {
   public recurseFindAndReplaceById(
     program: Brick,
     needle: UniqueId,
-    invocation: Invocation
+    invocation: Brick
   ) {
     if (!(program instanceof Invocation)) {
       return false;
