@@ -51,7 +51,11 @@ export class Invocation extends Brick {
     return json;
   }
 
-  public invoke(inputs: TowerPrimitive[], library: ILibrary, modules: IModules) {
+  public invoke(
+    inputs: TowerPrimitive[],
+    library: ILibrary,
+    modules: IModules
+  ) {
     return this.implementation(library, modules)(...inputs);
   }
 
@@ -70,7 +74,11 @@ export class Invocation extends Brick {
     const configs = this.getInputConfiguration(library, modules);
     return configs.map(config => {
       if (typeof this.inputs[config.key] === "undefined") {
-        throw new Error(`Invocation ${this.implementationKey} didn't get a value for input key '${config.key}'.`);
+        throw new Error(
+          `Invocation ${
+            this.implementationKey
+          } didn't get a value for input key '${config.key}'.`
+        );
       }
       return this.inputs[config.key];
     });
@@ -94,10 +102,10 @@ export class Invocation extends Brick {
   }
 
   public maybeLookupModule(item: any, modules: IModules) {
-    if (item.moduleKey && item.brickKey) {
+    if (item.moduleKey && item.towerKey) {
       return Modules.getTowerFromModules(
         item.moduleKey,
-        item.brickKey,
+        item.towerKey,
         modules
       );
     } else {

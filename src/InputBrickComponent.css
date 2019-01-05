@@ -6,10 +6,37 @@
   margin: 0 5px 0 5px;
   text-align: center;
   min-width: 13px;
+  position: relative;
 }
 
 .InputBrickComponent.is-selected {
   border: 1px solid black;
   background-color: gray;
   color: white;
+}
+
+.InputBrickComponent-name {
+  z-index: 1;
+  transform: rotate(0deg);
+}
+
+.InputBrickComponent-arrow {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border: 1px solid grey;
+  top: -14px;
+  left: 50%;
+  margin-left: -12.5px;
+  background: white;
+  border-bottom: none;
+  border-right: none;
+}
+
+.InputBrickComponent.is-selected .InputBrickComponent-arrow {
+  background-color: gray;
+  border-color: black;
 }

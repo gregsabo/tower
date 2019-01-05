@@ -19,7 +19,7 @@ it("adds two", () => {
     basic: {
       towers: {
         addsTwo: {
-          brickKey: "addsTwo",
+          towerKey: "addsTwo",
           moduleKey: "basic",
           name: "Adds two",
           inputs: [{ key: inputKey, displayName: "a" }],
@@ -52,7 +52,7 @@ it("maps corked bricks", () => {
     basic: {
       towers: {
         addsTwo: {
-          brickKey: "addsTwo",
+          towerKey: "addsTwo",
           moduleKey: "basic",
           name: "Doubles everything",
           inputs: [],

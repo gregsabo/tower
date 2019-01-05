@@ -115,6 +115,13 @@ export function moveParameterUp(app: App) {
 }
 
 export function insertParameterNumber(app: App, num: number) {
+  const inputKey = app.currentTower().inputs[num - 1].key;
+  const cursor = app.state.canCursorId;
+  app.insertBrickAtUniqueId(cursor, new Input({ inputKey }));
+  return;
+}
+
+export function insertParameterAtCursor(app: App) {
   const inputKey = app.currentTower().inputs[currentCursorIndex(app)].key;
   const cursor = app.state.canCursorId;
   app.insertBrickAtUniqueId(cursor, new Input({ inputKey }));
@@ -167,5 +174,8 @@ export function dispatch(e: KeyboardEvent, app: App) {
     case "KeyR":
       e.preventDefault();
       return renameParameter(app);
+    case "Enter":
+      e.preventDefault();
+      return insertParameterAtCursor(app);
   }
 }

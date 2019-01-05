@@ -3,7 +3,15 @@ import * as React from "react";
 import { BrickComponent } from "./BrickComponent";
 import { Invocation } from "./Invocation";
 import "./InvocationBrickComponent.css";
-import { EditorMode, ILibrary, IModules, LibraryKey, UniqueId } from "./Types";
+import {
+  EditorMode,
+  ILibrary,
+  IModules,
+  LibraryKey,
+  UniqueId,
+  ModuleKey,
+  TowerKey
+} from "./Types";
 import { Brick } from "./Brick";
 
 interface IProps {
@@ -13,6 +21,8 @@ interface IProps {
   canCursorId?: string;
   library: ILibrary;
   modules: IModules;
+  currentModuleKey: ModuleKey;
+  currentTowerKey: TowerKey;
 }
 
 function renderName(props: IProps) {
@@ -34,6 +44,8 @@ function renderInputs(props: IProps) {
           onCanInserted={props.onCanInserted}
           library={props.library}
           modules={props.modules}
+          currentModuleKey={props.currentModuleKey}
+          currentTowerKey={props.currentTowerKey}
         />
       </span>
     );

@@ -12,7 +12,15 @@ import { Invocation } from "./Invocation";
 import { InvocationBrickComponent } from "./InvocationBrickComponent";
 import { Socket } from "./Socket";
 import { SocketComponent } from "./SocketComponent";
-import { EditorMode, ILibrary, IModules, LibraryKey, UniqueId } from "./Types";
+import {
+  EditorMode,
+  ILibrary,
+  IModules,
+  LibraryKey,
+  UniqueId,
+  ModuleKey,
+  TowerKey
+} from "./Types";
 import { Brick } from "./Brick";
 
 interface IProps {
@@ -22,6 +30,8 @@ interface IProps {
   canCursorId?: string;
   library: ILibrary;
   modules: IModules;
+  currentModuleKey: ModuleKey;
+  currentTowerKey: TowerKey;
 }
 
 function renderCanSearch(props: IProps) {

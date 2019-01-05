@@ -199,23 +199,23 @@ export default class KeyboardController {
       this.app.state.library,
       this.app.state.modules
     );
-    if (!brick.brickKey || !brick.moduleKey) {
+    if (!brick.towerKey || !brick.moduleKey) {
       return;
     }
     console.log("Got module", brick, "key", brick.moduleKey);
     this.app.setState({
-      currentBrickId: brick.brickKey,
-      currentModuleId: brick.moduleKey
+      currentTowerKey: brick.towerKey,
+      currentModuleKey: brick.moduleKey
     });
-    this.history.remember(brick.moduleKey, brick.brickKey);
+    this.history.remember(brick.moduleKey, brick.towerKey);
   }
 
   public goBack() {
     const current = this.history.goBack();
     console.log("going back", current);
     this.app.setState({
-      currentBrickId: current.brickKey,
-      currentModuleId: current.moduleKey
+      currentTowerKey: current.towerKey,
+      currentModuleKey: current.moduleKey
     });
   }
 
@@ -223,8 +223,8 @@ export default class KeyboardController {
     const current = this.history.goForwards();
     console.log("going forwards", current);
     this.app.setState({
-      currentBrickId: current.brickKey,
-      currentModuleId: current.moduleKey
+      currentTowerKey: current.towerKey,
+      currentModuleKey: current.moduleKey
     });
   }
 

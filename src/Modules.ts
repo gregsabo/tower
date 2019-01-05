@@ -1,16 +1,16 @@
 import { Socket } from "./Socket";
-import { IModules, BrickKey, ModuleKey } from "./Types";
+import { IModules, TowerKey, ModuleKey } from "./Types";
 
-export function makeLibraryKey(moduleKey: ModuleKey, brickKey: BrickKey) {
-  return moduleKey + "::" + brickKey;
+export function makeLibraryKey(moduleKey: ModuleKey, towerKey: TowerKey) {
+  return moduleKey + "::" + towerKey;
 }
 
 export function importModulesIntoLibrary(modules: IModules, library: any) {
   Object.keys(modules).map(moduleKey => {
     const bricks = modules[moduleKey].towers;
-    Object.keys(bricks).map(brickKey => {
-      library[makeLibraryKey(moduleKey, brickKey)] = {
-        brickKey,
+    Object.keys(bricks).map(towerKey => {
+      library[makeLibraryKey(moduleKey, towerKey)] = {
+        towerKey,
         moduleKey
       };
     });
@@ -19,17 +19,17 @@ export function importModulesIntoLibrary(modules: IModules, library: any) {
 
 export function getTowerFromModules(
   moduleKey: ModuleKey,
-  brickKey: BrickKey,
+  towerKey: TowerKey,
   modules: IModules
 ) {
-  return modules[moduleKey].towers[brickKey];
+  return modules[moduleKey].towers[towerKey];
 }
 
 export function maybeLookUpModule(libraryItem: any, modules: IModules) {
-  if (libraryItem.moduleKey && libraryItem.brickKey) {
+  if (libraryItem.moduleKey && libraryItem.towerKey) {
     return getTowerFromModules(
       libraryItem.moduleKey,
-      libraryItem.brickKey,
+      libraryItem.towerKey,
       modules
     );
   } else {
@@ -40,7 +40,7 @@ export function maybeLookUpModule(libraryItem: any, modules: IModules) {
 export function createNewTower(moduleKey: ModuleKey, modules: IModules) {
   const newBrickId = String(Math.random());
   modules[moduleKey].towers[newBrickId] = {
-    brickKey: newBrickId,
+    towerKey: newBrickId,
     moduleKey,
     name: `New Tower ${newBrickId}`,
     inputs: [],

@@ -23,7 +23,7 @@ export interface IGeneratingLibraryBrick {
 
 export interface IModuleLibraryBrick {
   moduleKey: ModuleKey;
-  brickKey: BrickKey;
+  towerKey: TowerKey;
 }
 
 export type ILibraryBrick =
@@ -39,7 +39,7 @@ export interface ILibrary {
 export type InvocationKeyType = UniqueId;
 
 export type ModuleKey = string;
-export type BrickKey = string;
+export type TowerKey = string;
 export type UniqueId = string;
 export type ImplementationKey = string;
 
@@ -56,7 +56,7 @@ export type BrickTypeName =
 
 export interface ITower {
   rootBrick: Brick;
-  brickKey: BrickKey;
+  towerKey: TowerKey;
   moduleKey: ModuleKey;
   name: string;
   inputs: IInputConfiguration[];

@@ -7,7 +7,9 @@ import {
   EditorMode,
   UniqueId,
   LibraryKey,
-  ITower
+  ITower,
+  ModuleKey,
+  TowerKey
 } from "./Types";
 
 interface IProps {
@@ -17,6 +19,8 @@ interface IProps {
   canCursorId: string;
   library: ILibrary;
   modules: IModules;
+  currentModuleKey: ModuleKey;
+  currentTowerKey: TowerKey;
 }
 
 const style = {
@@ -36,6 +40,8 @@ class Program extends React.Component<IProps, {}> {
             canCursorId={this.props.canCursorId}
             library={this.props.library}
             modules={this.props.modules}
+            currentModuleKey={this.props.currentModuleKey}
+            currentTowerKey={this.props.currentTowerKey}
           />
         </div>
       </div>

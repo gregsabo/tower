@@ -54,8 +54,8 @@ interface IState {
   editorMode: EditorMode;
   library: any;
   modules: IModules;
-  currentModuleId: string;
-  currentBrickId: string;
+  currentModuleKey: string;
+  currentTowerKey: string;
   sky: Sky;
   parameterEditingState: IParameterEditingState;
 }
@@ -73,7 +73,7 @@ class App extends React.Component<{}, IState> {
         name: "Starter Module",
         towers: {
           sentence_cap: {
-            brickKey: "sentence_cap",
+            towerKey: "sentence_cap",
             moduleKey: "basic",
             name: "Sentence Capitalization",
             inputs: [{ key: "a", displayName: "sentence" }],
@@ -92,8 +92,8 @@ class App extends React.Component<{}, IState> {
 
     this.setState({
       canCursorId: CAPITALIZE_SENTENCE.uniqueId,
-      currentBrickId: "sentence_cap",
-      currentModuleId: "basic",
+      currentTowerKey: "sentence_cap",
+      currentModuleKey: "basic",
       editorMode: "cursor",
       highlightedLibraryItemId: "string",
       library: Library,
@@ -140,6 +140,8 @@ class App extends React.Component<{}, IState> {
                 editorMode={this.state.editorMode}
                 library={this.state.library}
                 modules={this.state.modules}
+                currentModuleKey={this.state.currentModuleKey}
+                currentTowerKey={this.state.currentTowerKey}
               />
               <Program
                 contents={this.currentTower()}
@@ -148,6 +150,8 @@ class App extends React.Component<{}, IState> {
                 modules={this.state.modules}
                 onCanInserted={this.onCanInserted}
                 canCursorId={this.state.canCursorId}
+                currentModuleKey={this.state.currentModuleKey}
+                currentTowerKey={this.state.currentTowerKey}
               />
             </div>
           )}
@@ -158,8 +162,8 @@ class App extends React.Component<{}, IState> {
 
   public currentTower() {
     return Modules.getTowerFromModules(
-      this.state.currentModuleId,
-      this.state.currentBrickId,
+      this.state.currentModuleKey,
+      this.state.currentTowerKey,
       this.state.modules
     );
   }
@@ -190,7 +194,7 @@ class App extends React.Component<{}, IState> {
   public invocationForLibraryItemId(itemId: string) {
     if (itemId === "newBrick") {
       itemId = Modules.createNewTower(
-        this.state.currentModuleId,
+        this.state.currentModuleKey,
         this.state.modules
       );
       Modules.importModulesIntoLibrary(this.state.modules, this.state.library);

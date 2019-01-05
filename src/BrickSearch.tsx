@@ -108,10 +108,10 @@ class BrickSearch extends React.Component<IProps, IState> {
 
   public lookupBrickName(item: ILibraryBrick) {
     const moduleItem = item as IModuleLibraryBrick;
-    if (moduleItem.moduleKey && moduleItem.brickKey) {
+    if (moduleItem.moduleKey && moduleItem.towerKey) {
       return Modules.getTowerFromModules(
         moduleItem.moduleKey,
-        moduleItem.brickKey,
+        moduleItem.towerKey,
         this.props.modules
       ).name;
     } else {
