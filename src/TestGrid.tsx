@@ -4,7 +4,14 @@ import * as Runtime from "./Runtime";
 import Value from "./Value";
 import { parseLiteral } from "./Parsing";
 import "./TestGrid.css";
-import { ITest, ILibrary, IModules, ITower, IInputConfiguration, TowerPrimitive } from "./Types";
+import {
+  ITest,
+  ILibrary,
+  IModules,
+  ITower,
+  IInputConfiguration,
+  TowerPrimitive
+} from "./Types";
 
 interface IProps {
   brick: ITower;
@@ -48,8 +55,7 @@ export default class TestGrid extends React.Component<IProps> {
 
   @autobind
   public renderInputHeader(inputConfig: IInputConfiguration, i: number) {
-    return <td key={i}>{inputConfig.displayName}</td>
-
+    return <td key={i}>{inputConfig.displayName}</td>;
   }
 
   @autobind
@@ -65,9 +71,11 @@ export default class TestGrid extends React.Component<IProps> {
         key={num}
       >
         <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
-        {this.props.brick.inputs.map((inputConfig: IInputConfiguration, i: number) => {
-          return this.renderInputValue(inputConfig, test, i);
-        })}
+        {this.props.brick.inputs.map(
+          (inputConfig: IInputConfiguration, i: number) => {
+            return this.renderInputValue(inputConfig, test, i);
+          }
+        )}
         <td>
           <input
             className="TestGrid-input"
@@ -82,8 +90,13 @@ export default class TestGrid extends React.Component<IProps> {
     );
   }
 
-  public renderInputValue(inputConfig: IInputConfiguration, test: ITest, i: number) {
-      return <td key={i}>
+  public renderInputValue(
+    inputConfig: IInputConfiguration,
+    test: ITest,
+    i: number
+  ) {
+    return (
+      <td key={i}>
         <input
           className="TestGrid-input"
           type="text"
@@ -92,6 +105,7 @@ export default class TestGrid extends React.Component<IProps> {
           value={test.inputs[inputConfig.key]}
         />
       </td>
+    );
   }
 
   public renderResult(test: ITest) {
@@ -105,18 +119,18 @@ export default class TestGrid extends React.Component<IProps> {
     if (Object.keys(test.inputs).length === 0) {
       return "";
     } else {
-      // try {
-      result = Runtime.evaluate(
-        this.props.brick.rootBrick,
-        this.makeOrderedValues(test),
-        this.props.library,
-        this.props.modules,
-        {}
-      );
-      console.log("Result was", result);
-      // } catch (e) {
-      //   result = "ERROR: " + e.message;
-      // }
+      try {
+        result = Runtime.evaluate(
+          this.props.brick.rootBrick,
+          this.makeOrderedValues(test),
+          this.props.library,
+          this.props.modules,
+          {}
+        );
+        console.log("Result was", result);
+      } catch (e) {
+        result = "ERROR: " + e.message;
+      }
 
       if (result === parsedExpected) {
         return "=";

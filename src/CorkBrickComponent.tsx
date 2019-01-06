@@ -18,8 +18,6 @@ export const CorkBrickComponent: React.SFC<IProps> = props => {
   return (
     <div
       className={classnames("CorkBrickComponent", { "is-selected": selected })}
-    >
-      CORK
-    </div>
+    />
   );
 };
