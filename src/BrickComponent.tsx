@@ -49,10 +49,7 @@ function renderCanSearch(props: IProps) {
     <BrickSearch
       library={props.library}
       modules={props.modules}
-      onLibraryItemSelected={props.onCanInserted.bind(
-        null,
-        props.contents.uniqueId
-      )}
+      onLibraryItemSelected={props.onCanInserted.bind(null, props.path)}
     />
   );
 }
