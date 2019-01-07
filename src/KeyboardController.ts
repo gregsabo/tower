@@ -129,7 +129,8 @@ export default class KeyboardController {
     console.log("Got module", brick, "key", tower.moduleKey);
     this.app.setState({
       currentTowerKey: tower.towerKey,
-      currentModuleKey: tower.moduleKey
+      currentModuleKey: tower.moduleKey,
+      cursorPath: TowerPath.forRoot()
     });
     this.history.remember(tower.moduleKey, tower.towerKey);
   }
@@ -139,7 +140,8 @@ export default class KeyboardController {
     console.log("going back", current);
     this.app.setState({
       currentTowerKey: current.towerKey,
-      currentModuleKey: current.moduleKey
+      currentModuleKey: current.moduleKey,
+      cursorPath: TowerPath.forRoot()
     });
   }
 
@@ -148,7 +150,8 @@ export default class KeyboardController {
     console.log("going forwards", current);
     this.app.setState({
       currentTowerKey: current.towerKey,
-      currentModuleKey: current.moduleKey
+      currentModuleKey: current.moduleKey,
+      cursorPath: TowerPath.forRoot()
     });
   }
 
