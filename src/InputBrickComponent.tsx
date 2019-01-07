@@ -3,7 +3,6 @@ import {
   ILibrary,
   IModules,
   EditorMode,
-  UniqueId,
   LibraryKey,
   ModuleKey,
   TowerKey
@@ -12,12 +11,14 @@ import "./InputBrickComponent.css";
 import classnames from "classnames";
 import { Input } from "./Input";
 import { getTowerFromModules } from "./Modules";
+import TowerPath from "./TowerPath";
 
 interface IProps {
   contents: Input;
+  path: TowerPath;
+  cursorPath: TowerPath | null;
   editorMode: EditorMode;
-  onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
-  canCursorId?: string;
+  onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
   library: ILibrary;
   modules: IModules;
   currentModuleKey: ModuleKey;
@@ -39,7 +40,7 @@ function parameterConfig(props: IProps) {
 }
 
 export const InputBrickComponent: React.SFC<IProps> = props => {
-  const selected = props.canCursorId === props.contents.uniqueId;
+  const selected = props.path.equals(props.cursorPath);
   const parameter = parameterConfig(props);
   return (
     <div

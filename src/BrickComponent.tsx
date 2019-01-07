@@ -17,28 +17,29 @@ import {
   ILibrary,
   IModules,
   LibraryKey,
-  UniqueId,
   ModuleKey,
   TowerKey
 } from "./Types";
 import { Brick } from "./Brick";
+import TowerPath from "./TowerPath";
 
 interface IProps {
   contents: Brick;
+  path: TowerPath;
   editorMode: EditorMode;
-  onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
-  canCursorId?: string;
+  onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
   library: ILibrary;
   modules: IModules;
   currentModuleKey: ModuleKey;
   currentTowerKey: TowerKey;
+  cursorPath: TowerPath | null;
 }
 
 function renderCanSearch(props: IProps) {
   if (props.editorMode !== "insert") {
     return null;
   }
-  if (props.contents.uniqueId !== props.canCursorId) {
+  if (!props.path.equals(props.cursorPath)) {
     return null;
   }
   if (props.onCanInserted === undefined) {

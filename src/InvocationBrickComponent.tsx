@@ -8,17 +8,19 @@ import {
   ILibrary,
   IModules,
   LibraryKey,
-  UniqueId,
   ModuleKey,
-  TowerKey
+  TowerKey,
+  IInputConfiguration
 } from "./Types";
-import { Brick } from "./Brick";
+import TowerPath from "./TowerPath";
+import { Socket } from "./Socket";
 
 interface IProps {
   contents: Invocation;
+  path: TowerPath;
   editorMode: EditorMode;
-  onCanInserted?: (selected: UniqueId, libraryKey: LibraryKey) => void;
-  canCursorId?: string;
+  onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
+  cursorPath: TowerPath | null;
   library: ILibrary;
   modules: IModules;
   currentModuleKey: ModuleKey;
@@ -33,13 +35,18 @@ function renderInputs(props: IProps) {
   if (!props.contents.inputs) {
     return null;
   }
-  const inputs = props.contents.getOrderedInputs(props.library, props.modules);
-  return inputs.map((item: Brick, i: number) => {
+  const inputConfigs = props.contents.getInputConfiguration(
+    props.library,
+    props.modules
+  );
+  return inputConfigs.map((config: IInputConfiguration, i: number) => {
+    const input = props.contents.inputs[config.key];
     return (
       <span key={i} className="InvocationBrickComponent-input">
         <BrickComponent
-          canCursorId={props.canCursorId}
-          contents={item}
+          cursorPath={props.cursorPath}
+          path={props.path.plus(config.key)}
+          contents={input || new Socket()}
           editorMode={props.editorMode}
           onCanInserted={props.onCanInserted}
           library={props.library}
@@ -57,10 +64,7 @@ function selectable(selected: boolean, className: string) {
 }
 
 export const InvocationBrickComponent: React.SFC<IProps> = props => {
-  const s = selectable.bind(
-    null,
-    props.contents.uniqueId === props.canCursorId
-  );
+  const s = selectable.bind(null, props.path.equals(props.cursorPath));
 
   return (
     <div className={s("InvocationBrickComponent")}>

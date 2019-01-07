@@ -4,6 +4,7 @@ import "./SkyComponent.css";
 import { EditorMode, ILibrary, IModules, ModuleKey, TowerKey } from "./Types";
 import { BrickComponent } from "./BrickComponent";
 import { Brick } from "./Brick";
+import TowerPath from "./TowerPath";
 
 interface IProps {
   contents: Brick | null;
@@ -22,6 +23,8 @@ export default class SkyComponent extends React.Component<IProps> {
       return (
         <BrickComponent
           contents={this.props.contents}
+          cursorPath={null}
+          path={TowerPath.forRoot()}
           editorMode={this.props.editorMode}
           library={this.props.library}
           modules={this.props.modules}

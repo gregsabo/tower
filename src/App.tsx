@@ -10,16 +10,13 @@ import KeyboardController from "./KeyboardController";
 import Library from "./Library";
 import * as Modules from "./Modules";
 import Program from "./Program";
-import { Socket } from "./Socket";
 import TestGrid from "./TestGrid";
 import UndoManager from "./UndoManager";
 import {
   ITest,
   IModules,
   LibraryKey,
-  UniqueId,
   EditorMode,
-  IInputConfiguration,
   IParameterEditingState
 } from "./Types";
 import { Sky } from "./Sky";
@@ -27,6 +24,7 @@ import SkyComponent from "./SkyComponent";
 import { Brick } from "./Brick";
 import { deserializeModules } from "./Deserialization";
 import ParameterPane from "./ParameterPane";
+import TowerPath from "./TowerPath";
 
 const CAPITALIZE_SENTENCE = new Invocation({
   inputs: {
@@ -50,7 +48,7 @@ const CAPITALIZE_SENTENCE = new Invocation({
 
 interface IState {
   highlightedLibraryItemId: string;
-  canCursorId: string;
+  cursorPath: TowerPath;
   editorMode: EditorMode;
   library: any;
   modules: IModules;
@@ -59,7 +57,6 @@ interface IState {
   sky: Sky;
   parameterEditingState: IParameterEditingState;
 }
-const log = console.log;
 
 class App extends React.Component<{}, IState> {
   public undoManager: UndoManager;
@@ -91,7 +88,7 @@ class App extends React.Component<{}, IState> {
     Modules.importModulesIntoLibrary(modules, Library);
 
     this.setState({
-      canCursorId: CAPITALIZE_SENTENCE.uniqueId,
+      cursorPath: TowerPath.forRoot(),
       currentTowerKey: "sentence_cap",
       currentModuleKey: "basic",
       editorMode: "cursor",
@@ -148,8 +145,8 @@ class App extends React.Component<{}, IState> {
                 editorMode={this.state.editorMode}
                 library={this.state.library}
                 modules={this.state.modules}
-                onCanInserted={this.onCanInserted}
-                canCursorId={this.state.canCursorId}
+                onCanInserted={this.insertLibraryItemAtPath}
+                cursorPath={this.state.cursorPath}
                 currentModuleKey={this.state.currentModuleKey}
                 currentTowerKey={this.state.currentTowerKey}
               />
@@ -207,13 +204,9 @@ class App extends React.Component<{}, IState> {
     if (libraryItem.invocationGenerator) {
       return libraryItem.invocationGenerator();
     }
-    const inputs = {};
-    libraryItem.inputs.forEach((inputConfig: IInputConfiguration) => {
-      inputs[inputConfig.key] = new Socket();
-    });
     return new Invocation({
       implementationKey: itemId,
-      inputs
+      inputs: {}
     });
   }
 
@@ -240,76 +233,20 @@ class App extends React.Component<{}, IState> {
   }
 
   @autobind
-  public onCanInserted(canId: UniqueId, selectedLibraryItem: LibraryKey) {
+  public insertLibraryItemAtPath(
+    path: TowerPath,
+    selectedLibraryItem: LibraryKey
+  ) {
     const invocation = this.invocationForLibraryItemId(selectedLibraryItem);
-    this.insertBrickAtUniqueId(canId, invocation);
+    this.replaceBrickAtPath(path, invocation);
   }
 
-  public insertBrickAtUniqueId(canId: UniqueId, invocation: Brick) {
-    const rootBrick = this.currentTower().rootBrick;
-    if (rootBrick.uniqueId === canId) {
-      // it's the root, replace it.
-      this.currentTower().rootBrick = invocation;
-      this.setState({
-        canCursorId: invocation.uniqueId,
-        editorMode: "cursor"
-      });
-      return this.modulesChanged();
-    }
-    this.recurseFindAndReplaceById(
-      this.currentTower().rootBrick,
-      canId,
-      invocation
-    );
+  public replaceBrickAtPath(path: TowerPath, brick: Brick) {
+    path.replace(this.currentTower(), brick);
     this.setState({
-      canCursorId: invocation.uniqueId,
+      cursorPath: path,
       editorMode: "cursor"
     });
-    this.modulesChanged();
-  }
-
-  public recurseFindAndReplaceById(
-    program: Brick,
-    needle: UniqueId,
-    invocation: Brick
-  ) {
-    if (!(program instanceof Invocation)) {
-      return false;
-    }
-    for (const key in program.inputs) {
-      if (!program.inputs.hasOwnProperty(key)) {
-        continue;
-      }
-      if (program.inputs[key].uniqueId === needle) {
-        log("Replacing", program, key, invocation);
-        program.inputs[key] = invocation;
-        return true;
-      }
-      this.recurseFindAndReplaceById(program.inputs[key], needle, invocation);
-    }
-    return false;
-  }
-
-  public recurseFindAndReplace(
-    program: Brick,
-    needle: Brick,
-    invocation: Brick
-  ) {
-    if (!(program instanceof Invocation)) {
-      return false;
-    }
-    for (const key in program.inputs) {
-      if (!program.inputs.hasOwnProperty(key)) {
-        continue;
-      }
-      if (program.inputs[key].uniqueId === needle.uniqueId) {
-        log("Replacing", program, key, invocation);
-        program.inputs[key] = invocation;
-        return true;
-      }
-      this.recurseFindAndReplace(program.inputs[key], needle, invocation);
-    }
-    return false;
   }
 }
 

@@ -5,18 +5,19 @@ import {
   ILibrary,
   IModules,
   EditorMode,
-  UniqueId,
   LibraryKey,
   ITower,
   ModuleKey,
   TowerKey
 } from "./Types";
+import TowerPath from "./TowerPath";
+import { Socket } from "./Socket";
 
 interface IProps {
   contents: ITower;
   editorMode: EditorMode;
-  onCanInserted: (selected: UniqueId, libraryKey: LibraryKey) => void;
-  canCursorId: string;
+  onCanInserted: (path: TowerPath, libraryKey: LibraryKey) => void;
+  cursorPath: TowerPath;
   library: ILibrary;
   modules: IModules;
   currentModuleKey: ModuleKey;
@@ -34,10 +35,11 @@ class Program extends React.Component<IProps, {}> {
       <div>
         <div style={style}>
           <BrickComponent
-            contents={this.props.contents.rootBrick}
+            contents={this.props.contents.rootBrick || new Socket()}
+            path={TowerPath.forRoot()}
             editorMode={this.props.editorMode}
             onCanInserted={this.props.onCanInserted}
-            canCursorId={this.props.canCursorId}
+            cursorPath={this.props.cursorPath}
             library={this.props.library}
             modules={this.props.modules}
             currentModuleKey={this.props.currentModuleKey}

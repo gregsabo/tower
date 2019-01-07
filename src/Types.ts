@@ -55,7 +55,7 @@ export type BrickTypeName =
   | "socket";
 
 export interface ITower {
-  rootBrick: Brick;
+  rootBrick: Brick | null;
   towerKey: TowerKey;
   moduleKey: ModuleKey;
   name: string;

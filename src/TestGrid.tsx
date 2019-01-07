@@ -118,6 +118,8 @@ export default class TestGrid extends React.Component<IProps> {
 
     if (Object.keys(test.inputs).length === 0) {
       return "";
+    } else if (!this.props.brick.rootBrick) {
+      return "Empty tower.";
     } else {
       try {
         result = Runtime.evaluate(

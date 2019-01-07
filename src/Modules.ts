@@ -1,4 +1,3 @@
-import { Socket } from "./Socket";
 import { IModules, TowerKey, ModuleKey } from "./Types";
 
 export function makeLibraryKey(moduleKey: ModuleKey, towerKey: TowerKey) {
@@ -44,7 +43,7 @@ export function createNewTower(moduleKey: ModuleKey, modules: IModules) {
     moduleKey,
     name: `New Tower ${newBrickId}`,
     inputs: [],
-    rootBrick: new Socket(),
+    rootBrick: null,
     tests: []
   };
   return makeLibraryKey(moduleKey, newBrickId);

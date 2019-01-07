@@ -116,15 +116,18 @@ export function moveParameterUp(app: App) {
 
 export function insertParameterNumber(app: App, num: number) {
   const inputKey = app.currentTower().inputs[num - 1].key;
-  const cursor = app.state.canCursorId;
-  app.insertBrickAtUniqueId(cursor, new Input({ inputKey }));
+  app.state.cursorPath.replace(app.currentTower(), new Input({ inputKey }));
+  app.setState({ editorMode: "cursor" });
+  app.modulesChanged();
   return;
 }
 
 export function insertParameterAtCursor(app: App) {
+  console.log("trying to insert at cursor");
   const inputKey = app.currentTower().inputs[currentCursorIndex(app)].key;
-  const cursor = app.state.canCursorId;
-  app.insertBrickAtUniqueId(cursor, new Input({ inputKey }));
+  app.state.cursorPath.replace(app.currentTower(), new Input({ inputKey }));
+  app.setState({ editorMode: "cursor" });
+  app.modulesChanged();
   return;
 }
 
