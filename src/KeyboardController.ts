@@ -189,6 +189,7 @@ export default class KeyboardController {
       this.app.currentTower(),
       copyTowerObject(skyItem)
     );
+    this.app.modulesChanged();
   }
 
   public clearSky() {
