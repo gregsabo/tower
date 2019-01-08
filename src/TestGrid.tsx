@@ -12,6 +12,7 @@ import {
   IInputConfiguration,
   TowerPrimitive
 } from "./Types";
+import { isEqual } from "lodash";
 
 interface IProps {
   brick: ITower;
@@ -134,7 +135,8 @@ export default class TestGrid extends React.Component<IProps> {
         result = "ERROR: " + e.message;
       }
 
-      if (result === parsedExpected) {
+      console.log("Comparing", result, parsedExpected);
+      if (isEqual(result, parsedExpected)) {
         return "=";
       } else {
         return result;
