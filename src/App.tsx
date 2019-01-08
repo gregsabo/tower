@@ -247,6 +247,7 @@ class App extends React.Component<{}, IState> {
       cursorPath: path,
       editorMode: "cursor"
     });
+    this.modulesChanged();
   }
 }
 

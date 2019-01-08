@@ -29,7 +29,14 @@ it("adds two", () => {
       }
     }
   };
-  const result = evaluate(invocation, [3], Library, modules, {});
+  const result = evaluate(
+    invocation,
+    [3],
+    { [inputKey]: 0 },
+    Library,
+    modules,
+    {}
+  );
 
   expect(result).toEqual(5);
 });
@@ -62,7 +69,7 @@ it("maps corked bricks", () => {
       }
     }
   };
-  const result = evaluate(invocation, [], Library, modules, {});
+  const result = evaluate(invocation, [], {}, Library, modules, {});
 
   expect(result).toEqual([3, 4, 5]);
 });

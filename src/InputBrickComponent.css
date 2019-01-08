@@ -22,15 +22,15 @@
 
 .InputBrickComponent-arrow {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
   border: 1px solid grey;
-  top: -14px;
+  top: -9px;
   left: 50%;
-  margin-left: -12.5px;
+  margin-left: -7.5px;
   background: white;
   border-bottom: none;
   border-right: none;

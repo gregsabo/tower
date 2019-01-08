@@ -3,21 +3,25 @@
 
 // import Constant from "./Constant";
 
-import { TowerPrimitive } from './Types';
+import { TowerPrimitive } from "./Types";
 
 export function parseLiteral(givenString: string): TowerPrimitive {
-  if (givenString.trim()[0] === '[' && givenString.indexOf(']') > -1) {
+  if (givenString.trim()[0] === "[" && givenString.indexOf("]") > -1) {
     const withoutBraces = givenString
       .trim()
-      .replace('[', '')
-      .replace(']', '');
+      .replace("[", "")
+      .replace("]", "");
     return withoutBraces
-      .split(',')
+      .split(",")
       .filter(parseable)
       .map(parseLiteral) as TowerPrimitive;
   }
   const givenNum = Number.parseFloat(givenString);
-  if (Number.isNaN(givenNum)) {
+  if (givenString.toLowerCase().trim() === "true") {
+    return true;
+  } else if (givenString.toLowerCase().trim() === "false") {
+    return false;
+  } else if (Number.isNaN(givenNum)) {
     return givenString as TowerPrimitive;
   } else {
     return givenNum as TowerPrimitive;
@@ -25,5 +29,5 @@ export function parseLiteral(givenString: string): TowerPrimitive {
 }
 
 export function parseable(givenString: string) {
-  return givenString.trim() !== '';
+  return givenString.trim() !== "";
 }

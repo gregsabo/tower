@@ -125,11 +125,11 @@ export default class TestGrid extends React.Component<IProps> {
         result = Runtime.evaluate(
           this.props.brick.rootBrick,
           this.makeOrderedValues(test),
+          this.makeInputNumMap(),
           this.props.library,
           this.props.modules,
           {}
         );
-        console.log("Result was", result);
       } catch (e) {
         result = "ERROR: " + e.message;
       }
@@ -144,15 +144,25 @@ export default class TestGrid extends React.Component<IProps> {
 
   public makeOrderedValues(test: ITest): TowerPrimitive[] {
     return this.props.brick.inputs.map((inputConfig: IInputConfiguration) => {
-      return parseLiteral(test.inputs[inputConfig.key]);
+      return parseLiteral(test.inputs[inputConfig.key] || "");
     });
+  }
+
+  public makeInputNumMap(): { [key: string]: number } {
+    const map = {};
+    this.props.brick.inputs.map(
+      (inputConfig: IInputConfiguration, i: number) => {
+        map[inputConfig.key] = i;
+      }
+    );
+    return map;
   }
 
   public testPassed(test: ITest, result: string) {
     if (test.expected === null) {
       return true;
     }
-    const parsedExpected = parseLiteral(test.expected);
+    const parsedExpected = parseLiteral(test.expected || "");
     if (result === "=") {
       return true;
     }

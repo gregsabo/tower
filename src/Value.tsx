@@ -1,6 +1,7 @@
 import { Socket } from "./Socket";
 import * as React from "react";
 import { TowerPrimitive } from "./Types";
+import { isBoolean } from "lodash";
 
 interface IProps {
   value: TowerPrimitive;
@@ -20,6 +21,8 @@ function renderResultString(result: TowerPrimitive) {
     return result.join(", ");
   } else if (typeof result === "string" && result.trim() === "") {
     return '"' + result + '"';
+  } else if (isBoolean(result)) {
+    return result.toString();
   } else {
     return result;
   }

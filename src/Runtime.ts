@@ -5,17 +5,13 @@ import { Invocation } from "./Invocation";
 import LazyValue from "./LazyValue";
 import { Socket } from "./Socket";
 import TowerError from "./TowerError";
-import {
-  ILibrary,
-  IModules,
-  TowerPrimitive,
-  IInputConfiguration
-} from "./Types";
+import { ILibrary, IModules, TowerPrimitive } from "./Types";
 import { Brick } from "./Brick";
 
 export function evaluate(
   brick: Brick,
   towerInputValues: TowerPrimitive[],
+  towerInputPositionMap: { [key: string]: number },
   library: any,
   modules: IModules,
   resultMap: object
@@ -24,12 +20,6 @@ export function evaluate(
     return brick;
   }
   const invocation = brick;
-  const inputKeysToIndexes = {};
-  invocation
-    .getInputConfiguration(library, modules)
-    .map((inputConfig: IInputConfiguration, num: number) => {
-      inputKeysToIndexes[inputConfig.key] = num;
-    });
 
   // lazy inputs: map over the invocation's inputs,
   // lazifying each. This involves passing down the
@@ -40,7 +30,7 @@ export function evaluate(
       return makeLazyValue(
         input,
         towerInputValues,
-        inputKeysToIndexes,
+        towerInputPositionMap,
         library,
         modules,
         resultMap
@@ -85,7 +75,14 @@ function makeLazyValue(
       return LazyValue.wrap(corkInvocation(value, library, modules));
     } else {
       return new LazyValue(() => {
-        return evaluate(value, towerInputValues, library, modules, resultMap);
+        return evaluate(
+          value,
+          towerInputValues,
+          inputKeyToInputNumMap,
+          library,
+          modules,
+          resultMap
+        );
       });
     }
   } else if (value instanceof Constant) {

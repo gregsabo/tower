@@ -1,4 +1,5 @@
 import { IModules, TowerKey, ModuleKey } from "./Types";
+import { makeUniqueId } from "./MakeUniqueId";
 
 export function makeLibraryKey(moduleKey: ModuleKey, towerKey: TowerKey) {
   return moduleKey + "::" + towerKey;
@@ -37,7 +38,7 @@ export function maybeLookUpModule(libraryItem: any, modules: IModules) {
 }
 
 export function createNewTower(moduleKey: ModuleKey, modules: IModules) {
-  const newBrickId = String(Math.random());
+  const newBrickId = makeUniqueId();
   modules[moduleKey].towers[newBrickId] = {
     towerKey: newBrickId,
     moduleKey,
