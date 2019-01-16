@@ -45,6 +45,9 @@ export default class KeyboardController {
 
   public moveCursorPathLeft() {
     const path = this.app.state.cursorPath;
+    if (path.isRoot()) {
+      return path;
+    }
     const parent = path.parent().get(this.app.currentTower()) as Invocation;
     const inputConfigs = parent.getInputConfiguration(
       this.app.state.library,
@@ -62,6 +65,9 @@ export default class KeyboardController {
 
   public moveCursorPathRight() {
     const path = this.app.state.cursorPath;
+    if (path.isRoot()) {
+      return path;
+    }
     const parent = path.parent().get(this.app.currentTower()) as Invocation;
     const inputConfigs = parent.getInputConfiguration(
       this.app.state.library,
