@@ -4,34 +4,75 @@ import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
 import { makeUniqueId } from "./MakeUniqueId";
 
-const Library = {
+type TypeName = string | number;
+
+interface ITowerType {
+  typeName: TypeName;
+  typeParameters?: TypeName[];
+}
+
+const NUM = "number";
+const STR = "string";
+const BOOL = "boolean";
+const LIST = "list";
+const UNION = "union";
+const FUNC = "function";
+
+function t(typeName: TypeName, parameters?: TypeName[]) {
+  return {
+    typeName,
+    typeParameters: parameters
+  };
+}
+
+interface IGeneratingLibraryEntry {
+  invocationGenerator: any;
+  name: string;
+}
+
+interface IImplementedLibraryEntry {
+  name: string;
+  implementation: any;
+  returnType: ITowerType;
+  inputs: Array<{ key: string; displayName: string; type: ITowerType }>;
+}
+
+type LibraryEntry = IGeneratingLibraryEntry | IImplementedLibraryEntry;
+
+const Library: { [name: string]: LibraryEntry } = {
   add: {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() + b.get();
     },
     name: "add",
+    returnType: t(NUM),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(NUM)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(NUM)
       }
     ]
   },
   and: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() && b.get(),
     name: "and",
+    returnType: t(BOOL),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(BOOL)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(BOOL)
       }
     ]
   },
@@ -47,24 +88,29 @@ const Library = {
         return a.get()[0].toUpperCase() + a.get().slice(1);
       }
     },
+    returnType: t(STR),
     inputs: [
       {
         key: "a",
-        displayName: "input string"
+        displayName: "input string",
+        type: t(STR)
       }
     ],
     name: "capitalize"
   },
   concat: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
+    returnType: t(STR),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(STR)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(STR)
       }
     ],
     name: "concat"
@@ -77,14 +123,17 @@ const Library = {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() === b.get();
     },
+    returnType: t(BOOL),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(BOOL)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(BOOL)
       }
     ],
     name: "equals?"
@@ -101,18 +150,22 @@ const Library = {
         return ifFalse.get();
       }
     },
+    returnType: t(UNION, [1, 2]),
     inputs: [
       {
         key: "if",
-        displayName: "if"
+        displayName: "if",
+        type: t(BOOL)
       },
       {
         key: "then",
-        displayName: "then"
+        displayName: "then",
+        type: t(1)
       },
       {
         key: "else",
-        displayName: "else"
+        displayName: "else",
+        type: t(2)
       }
     ],
     name: "if"
@@ -121,14 +174,17 @@ const Library = {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get().join(b.get());
     },
+    returnType: t(STR),
     inputs: [
       {
         key: "a",
-        displayName: "list"
+        displayName: "list",
+        type: t(LIST, [STR])
       },
       {
         key: "b",
-        displayName: "connector"
+        displayName: "connector",
+        type: t(STR)
       }
     ],
     name: "join"
@@ -137,14 +193,17 @@ const Library = {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() <= b.get();
     },
+    returnType: t(BOOL),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(BOOL)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(BOOL)
       }
     ],
     name: "less than or equal?"
@@ -153,49 +212,57 @@ const Library = {
     implementation: (a: LazyValue, func: LazyValue) => {
       return a.get().map(func.get());
     },
+    returnType: t(LIST, [2]),
     inputs: [
       {
         key: "a",
-        displayName: "list"
+        displayName: "list",
+        type: t(LIST, [1])
       },
       {
         key: "func",
-        displayName: "corked brick"
+        displayName: "corked brick",
+        type: t(FUNC, [1, 2])
       }
     ],
     name: "map"
   },
   mod: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() % b.get(),
+    returnType: t(NUM),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(NUM)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(NUM)
       }
     ],
     name: "modulo"
   },
   multiply: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() * b.get(),
+    returnType: t(NUM),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(NUM)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(NUM)
       }
     ],
     name: "multiply"
   },
   newBrick: {
-    implementation: () => new Error("Uninitialized brick"),
-    inputs: [],
+    invocationGenerator: () => null,
     name: "newBrick"
   },
   numberLiteral: {
@@ -221,20 +288,24 @@ const Library = {
       }
       return outArray;
     },
+    returnType: t(LIST, [NUM]),
     inputs: [
       {
         key: "max",
-        displayName: "max"
+        displayName: "max",
+        type: t(NUM)
       }
     ],
     name: "range"
   },
   split: {
     implementation: (a: LazyValue) => a.get().split(" "),
+    returnType: t(LIST, [STR]),
     inputs: [
       {
         key: "a",
-        displayName: "input string"
+        displayName: "input string",
+        type: t(STR)
       }
     ],
     name: "split"
@@ -246,14 +317,17 @@ const Library = {
   },
   subtract: {
     implementation: (a: LazyValue, b: LazyValue) => a.get() - b.get(),
+    returnType: t(NUM),
     inputs: [
       {
         key: "a",
-        displayName: "a"
+        displayName: "a",
+        type: t(NUM)
       },
       {
         key: "b",
-        displayName: "b"
+        displayName: "b",
+        type: t(NUM)
       }
     ],
     name: "subtract"
