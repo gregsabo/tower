@@ -3,27 +3,9 @@ import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
 import { makeUniqueId } from "./MakeUniqueId";
+import {ITowerType, t, NUM, STR, BOOL, LIST, UNION, FUNC} from "./ITowerType";
 
-type TypeName = string | number;
 
-interface ITowerType {
-  typeName: TypeName;
-  typeParameters?: TypeName[];
-}
-
-const NUM = "number";
-const STR = "string";
-const BOOL = "boolean";
-const LIST = "list";
-const UNION = "union";
-const FUNC = "function";
-
-function t(typeName: TypeName, parameters?: TypeName[]) {
-  return {
-    typeName,
-    typeParameters: parameters
-  };
-}
 
 interface IGeneratingLibraryEntry {
   invocationGenerator: any;
@@ -42,7 +24,6 @@ type LibraryEntry = IGeneratingLibraryEntry | IImplementedLibraryEntry;
 const Library: { [name: string]: LibraryEntry } = {
   add: {
     implementation: (a: LazyValue, b: LazyValue) => {
-      console.log("About to add", a.get(), b.get());
       return a.get() + b.get();
     },
     name: "add",
@@ -211,7 +192,6 @@ const Library: { [name: string]: LibraryEntry } = {
   },
   map: {
     implementation: (a: LazyValue, func: LazyValue) => {
-      console.log("About to map over", a.get());
       return a.get().map(func.get());
     },
     returnType: t(LIST, [2]),

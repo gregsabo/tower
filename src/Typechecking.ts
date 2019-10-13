@@ -1,5 +1,6 @@
-import { ITower, ILibrary, IModules } from "./Types";
+import { ILibrary, IModules } from "./Types";
 // import { isEqual } from "lodash";
+import { Brick } from "./Brick";
 import { Invocation } from "./Invocation";
 
 interface ITypeError {
@@ -12,7 +13,7 @@ interface ITypecheck {
 }
 
 export function checkTypes(
-  tower: ITower,
+  brick: Brick,
   library: ILibrary,
   modules: IModules
 ): ITypecheck {
