@@ -42,6 +42,7 @@ type LibraryEntry = IGeneratingLibraryEntry | IImplementedLibraryEntry;
 const Library: { [name: string]: LibraryEntry } = {
   add: {
     implementation: (a: LazyValue, b: LazyValue) => {
+      console.log("About to add", a.get(), b.get());
       return a.get() + b.get();
     },
     name: "add",
@@ -210,6 +211,7 @@ const Library: { [name: string]: LibraryEntry } = {
   },
   map: {
     implementation: (a: LazyValue, func: LazyValue) => {
+      console.log("About to map over", a.get());
       return a.get().map(func.get());
     },
     returnType: t(LIST, [2]),

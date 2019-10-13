@@ -72,7 +72,7 @@ function makeLazyValue(
     );
   } else if (value instanceof Invocation) {
     if (isInvocationGettingCorked(value)) {
-      return LazyValue.wrap(corkInvocation(value, library, modules));
+      return LazyValue.wrap(corkInvocation(value, towerInputValues, inputKeyToInputNumMap, library, modules, resultMap));
     } else {
       return new LazyValue(() => {
         return evaluate(
@@ -104,9 +104,12 @@ function isInvocationGettingCorked(invocation: Invocation) {
 }
 
 function corkInvocation(
-  invocation: Invocation,
+  invocation: any,
+  towerInputValues: TowerPrimitive[],
+  inputKeyToInputNumMap: { [key: string]: number },
   library: ILibrary,
-  modules: IModules
+  modules: IModules,
+  resultMap: object
 ) {
   return (...inputs: any[]) => {
     let numCorksSeen = 0;
@@ -117,10 +120,10 @@ function corkInvocation(
         numCorksSeen += 1;
         return LazyValue.wrap(result);
       } else {
-        return LazyValue.wrap(input);
+        return makeLazyValue(input, towerInputValues, inputKeyToInputNumMap, library, modules, resultMap);
       }
     });
-    console.log("Invoking with final inputs", finalInputs);
+    console.log("Invoking with final inputs", finalInputs.map((x: any) => x.get()));
     return invocation.invoke(finalInputs, library, modules);
   };
 }

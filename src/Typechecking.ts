@@ -1,5 +1,5 @@
 import { ITower, ILibrary, IModules } from "./Types";
-import { isEqual } from "lodash";
+// import { isEqual } from "lodash";
 import { Invocation } from "./Invocation";
 
 interface ITypeError {
@@ -16,11 +16,12 @@ export function checkTypes(
   library: ILibrary,
   modules: IModules
 ): ITypecheck {
-  // Recurse from the root upwards
-  // For each brick, check that each input's type matches
-  // the actual brick's type.
-  // If not, add an entry for the input brick's uniqueId.
-  const inputs = tower.inputs;
+  // const inputs = tower.inputs;
+
+  // for each of this tower's inputs:
+  // compare the socket's expected type with the actual type
+  // if different, append information to the error set
+  // now, call this function on the input and extend more errors.
   return {};
 }
 
@@ -30,10 +31,11 @@ export function checkTypesForInvocation(
   modules: IModules,
   typecheck: ITypecheck // this gets mutated
 ) {
-  const inputConfigs = invocation.getInputConfiguration(library, modules);
-  const inputs = invocation.getOrderedInputs(library, modules);
-  inputConfigs.forEach((input, i) => {
-    isEqual(input.type, inputs[i]);
-    input.type;
-  });
+  return null;
+  // const inputConfigs = invocation.getInputConfiguration(library, modules);
+  // const inputs = invocation.getOrderedInputs(library, modules);
+  // inputConfigs.forEach((input, i) => {
+  //   isEqual(input.type, inputs[i]);
+  //   input.type;
+  // });
 }

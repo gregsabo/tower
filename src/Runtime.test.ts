@@ -44,11 +44,11 @@ it("adds two", () => {
 it("maps corked bricks", () => {
   const invocation = new Invocation({
     inputs: {
-      a: new Constant({ value: [1, 2, 3] }),
+      a: new Constant({ value: [100, 200, 300] }),
       func: new Invocation({
         inputs: {
-          a: new Constant({ value: 2 }),
-          b: new Cork()
+          b: new Constant({ value: 5 }),
+          a: new Cork()
         },
         implementationKey: "add"
       })
@@ -70,6 +70,7 @@ it("maps corked bricks", () => {
     }
   };
   const result = evaluate(invocation, [], {}, Library, modules, {});
+  console.log(result)
 
-  expect(result).toEqual([3, 4, 5]);
+  expect(result).toEqual([105, 205, 305]);
 });

@@ -9,6 +9,7 @@ interface IProps {
   editorMode: EditorMode;
 }
 
+
 export default class BrickNamer extends React.Component<IProps> {
   private input: HTMLInputElement | null = null;
 

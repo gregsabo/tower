@@ -1,6 +1,7 @@
 import { makeUniqueId } from "./MakeUniqueId";
 import { UniqueId } from "./Types";
 
+
 export class TowerType {
   public static fromJSON(inJson: any) {
     return new TowerType(inJson.uniqueId);
