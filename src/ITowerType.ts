@@ -19,3 +19,8 @@ export function t(typeName: TypeName, parameters?: TypeName[]) {
     typeParameters: parameters
   };
 }
+
+export interface ITowerTypeError {
+  expected: ITowerType,
+  was: ITowerType
+}

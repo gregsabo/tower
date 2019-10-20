@@ -1,5 +1,6 @@
 import { Brick } from "./Brick";
 import { UniqueId } from "./Types";
+import { ITowerType, ITowerTypeError } from "./ITowerType";
 
 interface IProps {
   uniqueId?: UniqueId;
@@ -23,5 +24,9 @@ export class Input extends Brick {
     json.types.push("input");
     json.inputKey = this.inputKey;
     return json;
+  }
+
+  public typeErrorForExpectedType(type: ITowerType): ITowerTypeError|null {
+    return null;
   }
 }

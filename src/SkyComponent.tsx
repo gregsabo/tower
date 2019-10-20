@@ -30,6 +30,7 @@ export default class SkyComponent extends React.Component<IProps> {
           modules={this.props.modules}
           currentModuleKey={this.props.currentModuleKey}
           currentTowerKey={this.props.currentTowerKey}
+          errors={{}}
         />
       );
     }

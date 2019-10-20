@@ -5,6 +5,7 @@ import { EditorMode, ILibrary, IModules, LibraryKey } from "./Types";
 import Value from "./Value";
 import { Constant } from "./Constant";
 import TowerPath from "./TowerPath";
+import { ITypecheck } from "./Typechecking";
 
 interface IProps {
   contents: Constant;
@@ -14,6 +15,7 @@ interface IProps {
   onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
   library: ILibrary;
   modules: IModules;
+  errors: ITypecheck;
 }
 
 export const ConstantBrickComponent: React.SFC<IProps> = props => {

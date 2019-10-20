@@ -4,6 +4,7 @@ import "./SocketComponent.css";
 import { EditorMode, ILibrary, IModules, LibraryKey } from "./Types";
 import { Socket } from "./Socket";
 import TowerPath from "./TowerPath";
+import { ITypecheck } from "./Typechecking";
 
 interface IProps {
   contents: Socket;
@@ -13,6 +14,7 @@ interface IProps {
   onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
   library: ILibrary;
   modules: IModules;
+  errors: ITypecheck;
 }
 
 export const SocketComponent: React.SFC<IProps> = props => {

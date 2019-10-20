@@ -1,8 +1,8 @@
 import { makeUniqueId } from "./MakeUniqueId";
-import { TowerType } from "./TowerType";
 import { deserializeBrick } from "./Deserialization";
+import { Brick } from "./Brick";
 
-export const copyTowerObject = (inObject: TowerType) => {
+export const copyTowerObject = (inObject: Brick) => {
   const asJson = inObject.toJSON();
   clearUniqueIds(asJson);
   return deserializeBrick(asJson);

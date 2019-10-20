@@ -71,3 +71,13 @@
 .InvocationBrickComponent-name {
   padding: 10px;
 }
+
+.InvocationBrickComponent-inputExpectedType {
+  margin-left: 10px;
+  margin-right: 10px;
+  background: white;
+  padding: 10px;
+  border: 1px dashed gray;
+  border-radius: 100px;
+  color: gray;
+}

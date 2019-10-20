@@ -22,6 +22,7 @@ import {
 } from "./Types";
 import { Brick } from "./Brick";
 import TowerPath from "./TowerPath";
+import { ITypecheck } from "./Typechecking";
 
 interface IProps {
   contents: Brick;
@@ -33,6 +34,7 @@ interface IProps {
   currentModuleKey: ModuleKey;
   currentTowerKey: TowerKey;
   cursorPath: TowerPath | null;
+  errors: ITypecheck;
 }
 
 function renderCanSearch(props: IProps) {
@@ -70,11 +72,22 @@ function renderBrick(props: IProps) {
   throw new Error("Couldn't understand this invocation to render.");
 }
 
+function renderError(contents: Brick, errors: ITypecheck) {
+  console.log("Rendering error", errors);
+  const error = errors[contents.uniqueId];
+  if (error) {
+    return <div className="BrickComponent-unexpectedActualType">{error.was.typeName}</div>
+  } else {
+    return null;
+  }
+}
+
 export const BrickComponent: React.SFC<IProps> = props => {
   return (
     <div className="BrickComponent">
       {renderCanSearch(props)}
       {renderBrick(props)}
+      {renderError(props.contents, props.errors)}
     </div>
   );
 };

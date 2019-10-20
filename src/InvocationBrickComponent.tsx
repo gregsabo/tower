@@ -14,6 +14,8 @@ import {
 } from "./Types";
 import TowerPath from "./TowerPath";
 import { Socket } from "./Socket";
+import { ITypecheck } from "./Typechecking";
+import { Brick } from "./Brick";
 
 interface IProps {
   contents: Invocation;
@@ -25,10 +27,25 @@ interface IProps {
   modules: IModules;
   currentModuleKey: ModuleKey;
   currentTowerKey: TowerKey;
+  errors: ITypecheck;
 }
 
 function renderName(props: IProps) {
   return props.contents.getName(props.library, props.modules);
+}
+
+function renderTypeError(props: IProps, input: Brick) {
+  if (!input) {
+    return null;
+  }
+  const error = props.errors[input.uniqueId]
+  if (error) {
+    return <div className="InvocationBrickComponent-inputExpectedType">
+      {error.expected.typeName}
+    </div>
+  } else {
+    return null;
+  }
 }
 
 function renderInputs(props: IProps) {
@@ -43,6 +60,7 @@ function renderInputs(props: IProps) {
     const input = props.contents.inputs[config.key];
     return (
       <span key={i} className="InvocationBrickComponent-input">
+        {renderTypeError(props, input)}
         <BrickComponent
           cursorPath={props.cursorPath}
           path={props.path.plus(config.key)}
@@ -53,6 +71,7 @@ function renderInputs(props: IProps) {
           modules={props.modules}
           currentModuleKey={props.currentModuleKey}
           currentTowerKey={props.currentTowerKey}
+          errors={props.errors}
         />
       </span>
     );

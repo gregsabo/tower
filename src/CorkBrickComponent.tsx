@@ -4,6 +4,7 @@ import "./CorkBrickComponent.css";
 import { EditorMode, ILibrary, IModules, LibraryKey } from "./Types";
 import { Cork } from "./Cork";
 import TowerPath from "./TowerPath";
+import { ITypecheck } from "./Typechecking";
 
 interface IProps {
   contents: Cork;
@@ -13,6 +14,7 @@ interface IProps {
   onCanInserted?: (path: TowerPath, libraryKey: LibraryKey) => void;
   library: ILibrary;
   modules: IModules;
+  errors: ITypecheck;
 }
 
 export const CorkBrickComponent: React.SFC<IProps> = props => {

@@ -12,6 +12,7 @@ import classnames from "classnames";
 import { Input } from "./Input";
 import { getTowerFromModules } from "./Modules";
 import TowerPath from "./TowerPath";
+import { ITypecheck } from "./Typechecking";
 
 interface IProps {
   contents: Input;
@@ -23,6 +24,7 @@ interface IProps {
   modules: IModules;
   currentModuleKey: ModuleKey;
   currentTowerKey: TowerKey;
+  errors: ITypecheck;
 }
 
 function parameterConfig(props: IProps) {

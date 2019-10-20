@@ -12,6 +12,7 @@ import {
 } from "./Types";
 import TowerPath from "./TowerPath";
 import { Socket } from "./Socket";
+import { checkTypes } from "./Typechecking";
 
 interface IProps {
   contents: ITower;
@@ -31,11 +32,12 @@ const style = {
 
 class Program extends React.Component<IProps, {}> {
   public render() {
+    const rootContents = this.props.contents.rootBrick || new Socket();
     return (
       <div>
         <div style={style}>
           <BrickComponent
-            contents={this.props.contents.rootBrick || new Socket()}
+            contents={rootContents}
             path={TowerPath.forRoot()}
             editorMode={this.props.editorMode}
             onCanInserted={this.props.onCanInserted}
@@ -44,6 +46,7 @@ class Program extends React.Component<IProps, {}> {
             modules={this.props.modules}
             currentModuleKey={this.props.currentModuleKey}
             currentTowerKey={this.props.currentTowerKey}
+            errors={checkTypes(rootContents, this.props.library, this.props.modules)}
           />
         </div>
       </div>
