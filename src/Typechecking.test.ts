@@ -40,7 +40,6 @@ it("returns a type error", () => {
     },
     implementationKey: "add"
   });
-  console.log("Unique id", invocation.uniqueId);
   const modules = {
     basic: {
       towers: {
@@ -65,6 +64,8 @@ it("returns a type error", () => {
   expect(expected).toEqual(result);
 });
 
+// TODO: test when there's a brick with an algebraic type
 // TODO: test when incorrect placements are higher than the base brick.
 // TODO: test when library bricks are plugged into a wrong slot.
 // TODO: test when towerbricks are plugged into a wrong slot.
+// TODO: type checking terminates when analyzing a recursive function

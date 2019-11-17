@@ -73,7 +73,6 @@ function renderBrick(props: IProps) {
 }
 
 function renderError(contents: Brick, errors: ITypecheck) {
-  console.log("Rendering error", errors);
   const error = errors[contents.uniqueId];
   if (error) {
     return <div className="BrickComponent-unexpectedActualType">{error.was.typeName}</div>
