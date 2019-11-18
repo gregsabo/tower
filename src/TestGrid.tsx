@@ -25,7 +25,6 @@ export default class TestGrid extends React.Component<IProps> {
   private firstCell?: HTMLInputElement;
 
   public componentDidMount() {
-    console.log("Testgrid mounted", this.firstCell);
     if (this.props.brick.tests.length === 0) {
       for (let i = 0; i < 10; i++) {
         this.props.brick.tests.push(this.newTest());
@@ -86,7 +85,7 @@ export default class TestGrid extends React.Component<IProps> {
             value={test.expected}
           />
         </td>
-        <td>{result ? <Value value={result} /> : null}</td>
+        <td><Value value={result} /></td>
       </tr>
     );
   }
@@ -117,9 +116,7 @@ export default class TestGrid extends React.Component<IProps> {
       parsedExpected = parseLiteral(test.expected);
     }
 
-    if (Object.keys(test.inputs).length === 0) {
-      return "";
-    } else if (!this.props.brick.rootBrick) {
+    if (!this.props.brick.rootBrick) {
       return "Empty tower.";
     } else {
       try {
@@ -135,7 +132,6 @@ export default class TestGrid extends React.Component<IProps> {
         result = "ERROR: " + e.message;
       }
 
-      console.log("Comparing", result, parsedExpected);
       if (isEqual(result, parsedExpected)) {
         return "=";
       } else {

@@ -101,6 +101,24 @@ const Library: { [name: string]: LibraryEntry } = {
     invocationGenerator: () => new Cork(),
     name: "cork"
   },
+  divide: {
+    implementation: (a: LazyValue, b: LazyValue) => {
+      return a.get() / b.get();
+    },
+    returnType: t(NUM),
+    inputs: [
+      {
+        key: "a",
+        displayName: "dividend",
+        type: t(NUM),
+      }, {
+        key: "b",
+        displayName: "divisor",
+        type: t(NUM)
+      }
+    ],
+    name: "divide"
+  },
   equals: {
     implementation: (a: LazyValue, b: LazyValue) => {
       return a.get() === b.get();
@@ -110,15 +128,29 @@ const Library: { [name: string]: LibraryEntry } = {
       {
         key: "a",
         displayName: "a",
-        type: t(BOOL)
+        type: t(NUM)
       },
       {
         key: "b",
         displayName: "b",
-        type: t(BOOL)
+        type: t(NUM)
       }
     ],
     name: "equals?"
+  },
+  floor: {
+    implementation: (a: LazyValue) => {
+      return Math.floor(a.get());
+    },
+    returnType: t(NUM),
+    inputs: [
+      {
+        key: "a",
+        displayName: "Number",
+        type: t(NUM)
+      },
+    ],
+    name: "floor"
   },
   ifThenElse: {
     implementation: (
@@ -313,6 +345,12 @@ const Library: { [name: string]: LibraryEntry } = {
       }
     ],
     name: "subtract"
+  },
+  time: {
+    implementation: () => new Date().getTime(),
+    returnType: t(NUM),
+    inputs: [],
+    name: "time"
   }
 };
 
