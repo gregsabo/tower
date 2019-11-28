@@ -13,6 +13,7 @@ import {
   TowerPrimitive
 } from "./Types";
 import { isEqual } from "lodash";
+import mocksForTower, { IMockSignature } from "./mocksForTower";
 
 interface IProps {
   brick: ITower;
@@ -38,17 +39,21 @@ export default class TestGrid extends React.Component<IProps> {
   }
 
   public render() {
+    const mocks = mocksForTower(this.props.brick, this.props.library, this.props.modules);
     return (
       <table className="TestGrid">
         <thead>
           <tr>
             <td />
+            {mocks.map(this.renderMockOutputHeader)}
             {this.props.brick.inputs.map(this.renderInputHeader)}
             <td>Expected Result</td>
             <td>Actual Result</td>
           </tr>
         </thead>
-        <tbody>{this.props.brick.tests.map(this.renderTest)}</tbody>
+        <tbody>{this.props.brick.tests.map((test, num) => {
+          return this.renderTest(test, mocks, num);
+        })}</tbody>
       </table>
     );
   }
@@ -59,7 +64,12 @@ export default class TestGrid extends React.Component<IProps> {
   }
 
   @autobind
-  public renderTest(test: ITest, num: number) {
+  public renderMockOutputHeader(mockSignature: IMockSignature, i: number) {
+    return <td key={"mockoutput" + mockSignature.uniqueId}>{mockSignature.displayName} (simulated output)</td>;
+  }
+
+  @autobind
+  public renderTest(test: ITest, mocks: IMockSignature[], num: number) {
     test = test || this.newTest();
     const result = this.renderResult(test);
     const passed = this.testPassed(test, result);
@@ -76,6 +86,7 @@ export default class TestGrid extends React.Component<IProps> {
             return this.renderInputValue(inputConfig, test, i);
           }
         )}
+        {mocks.map(this.renderMockOutputForTest)}
         <td>
           <input
             className="TestGrid-input"
@@ -88,6 +99,18 @@ export default class TestGrid extends React.Component<IProps> {
         <td><Value value={result} /></td>
       </tr>
     );
+  }
+
+  public renderMockOutputForTest(mock: IMockSignature, num: number) {
+    return <td>
+      <input
+        className="TestGrid-input"
+        type="text"
+        contentEditable={true}
+        // onChange={}
+        // value={}
+      />
+    </td>
   }
 
   public renderInputValue(
@@ -212,21 +235,5 @@ export default class TestGrid extends React.Component<IProps> {
       inputs: {},
       expected: ""
     };
-  }
-
-  public renderEmptyTests() {
-    const tests = [];
-    for (let i = this.props.brick.tests.length; i < 10; i++) {
-      tests.push(
-        this.renderTest(
-          {
-            inputs: {},
-            expected: ""
-          },
-          i
-        )
-      );
-    }
-    return tests;
   }
 }

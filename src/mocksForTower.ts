@@ -3,17 +3,23 @@ import { Invocation } from "./Invocation";
 import mapInvocations from "./mapInvocations";
 import { ITowerType, t, STR } from "./ITowerType";
 
+// A mock signature represents all of the fields needed
+// to simulate a given brick.
 export interface IMockSignature {
+    uniqueId: UniqueId;
+    displayName: string;
     inputs: IInputConfiguration[];
     output: ITowerType;
 }
 
-export default function mocksForTower(tower: ITower, library: ILibrary, modules: IModules) {
+export default function mocksForTower(tower: ITower, library: ILibrary, modules: IModules): IMockSignature[] {
     if (tower.rootBrick instanceof Invocation) {
         const mocks : IMockSignature[] = [];
         mapInvocations(tower.rootBrick, (invocation: Invocation) => {
             if (invocationPerformsIO(invocation, [], library, modules)) {
                 mocks.push({
+                    uniqueId: invocation.uniqueId,
+                    displayName: invocation.getName(library, modules),
                     inputs: invocation.getInputConfiguration(library, modules),
                     output: t(STR)
                 })
@@ -21,7 +27,7 @@ export default function mocksForTower(tower: ITower, library: ILibrary, modules:
         }, library, modules)
         return mocks;
     } else {
-        return {};
+        return [];
     }
 }
 
