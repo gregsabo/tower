@@ -1,4 +1,5 @@
 import { Brick } from "./Brick";
+import { ITowerType } from "./ITowerType";
 
 export interface ITest {
   inputs: { [key: string]: string };
@@ -8,6 +9,7 @@ export interface ITest {
 export interface IInputConfiguration {
   key: string;
   displayName: string;
+  type?: ITowerType;
 }
 
 export interface ILibraryBrickWithImplementation {

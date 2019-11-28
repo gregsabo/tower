@@ -15,6 +15,7 @@ interface IGeneratingLibraryEntry {
 interface IImplementedLibraryEntry {
   name: string;
   implementation: any;
+  performsIO?: boolean;
   returnType: ITowerType;
   inputs: Array<{ key: string; displayName: string; type: ITowerType }>;
 }
@@ -348,6 +349,7 @@ const Library: { [name: string]: LibraryEntry } = {
   },
   time: {
     implementation: () => new Date().getTime(),
+    performsIO: true,
     returnType: t(NUM),
     inputs: [],
     name: "time"

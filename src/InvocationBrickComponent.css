@@ -29,14 +29,14 @@
   height: 50px;
   margin-top: -25px;
   background: lightgrey;
-  transition: background 0.1s;
+  /* transition: background 0.1s; */
   z-index: -1;
   border-radius: 5px 5px 0 0;
 }
 
 .InvocationBrickComponent-topFront {
   background: lightgrey;
-  transition: background 0.1s;
+  /* transition: background 0.1s; */
   border: 1px solid grey;
   height: 5px;
   position: absolute;
