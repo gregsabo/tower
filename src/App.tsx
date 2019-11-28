@@ -170,6 +170,7 @@ class App extends React.Component<{}, IState> {
   public onBrickNameChange(newName: string) {
     this.currentTower().name = newName;
     this.setState({});
+    this.modulesChanged();
   }
 
   @autobind
