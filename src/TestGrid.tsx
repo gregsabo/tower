@@ -10,7 +10,8 @@ import {
   IModules,
   ITower,
   IInputConfiguration,
-  TowerPrimitive
+  TowerPrimitive,
+  UniqueId
 } from "./Types";
 import { isEqual } from "lodash";
 import mocksForTower, { IMockSignature } from "./mocksForTower";
@@ -86,7 +87,10 @@ export default class TestGrid extends React.Component<IProps> {
             return this.renderInputValue(inputConfig, test, i);
           }
         )}
-        {mocks.map(this.renderMockOutputForTest)}
+        {mocks.map((mockSignature: IMockSignature) => {
+          const mock = test.mocks[mockSignature.uniqueId] || {};
+          return this.renderMockOutput(mock.output, mockSignature.uniqueId, num);
+        })}
         <td>
           <input
             className="TestGrid-input"
@@ -101,16 +105,27 @@ export default class TestGrid extends React.Component<IProps> {
     );
   }
 
-  public renderMockOutputForTest(mock: IMockSignature, num: number) {
+  public renderMockOutput(output: any, uniqueId: UniqueId, num: number) {
     return <td>
       <input
         className="TestGrid-input"
         type="text"
         contentEditable={true}
-        // onChange={}
-        // value={}
+        onChange={this.onMockOutputChanged.bind(this, num, uniqueId)}
+        value={output}
       />
     </td>
+  }
+
+  @autobind
+  public onMockOutputChanged(testNum: number, mockedInvocationId: UniqueId, e: React.ChangeEvent<HTMLInputElement>) {
+    console.log("Changing mock output for", testNum);
+    const mocks = this.props.brick.tests[testNum].mocks;
+    if (!mocks[mockedInvocationId]) {
+      mocks[mockedInvocationId] = this.newMock();
+    }
+    mocks[mockedInvocationId].output = e.target.value;
+    this.props.onTestsChanged(this.props.brick.tests);
   }
 
   public renderInputValue(
@@ -230,9 +245,17 @@ export default class TestGrid extends React.Component<IProps> {
     return this.props.brick.tests[num];
   }
 
+  public newMock() {
+    return {
+      inputs: {},
+      output: null
+    }
+  }
+
   public newTest() {
     return {
       inputs: {},
+      mocks: {},
       expected: ""
     };
   }

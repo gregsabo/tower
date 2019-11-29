@@ -69,6 +69,7 @@ function renderBrick(props: IProps) {
   } else if (contents instanceof Invocation) {
     return <InvocationBrickComponent {...props} contents={contents} />;
   }
+  console.error(contents);
   throw new Error("Couldn't understand this invocation to render.");
 }
 
