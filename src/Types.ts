@@ -3,11 +3,15 @@ import { ITowerType } from "./ITowerType";
 
 export interface ITest {
   inputs: { [key: string]: string };
-  mocks: {[key: string]: {
-    inputs: {[key: string]: any},
-    output: any
-  }}
   expected: string;
+  mocks: IMocks;
+}
+
+export interface IMocks {
+  [key: string]: {
+    inputs: { [key: string]: any };
+    output: any;
+  };
 }
 
 export interface IInputConfiguration {

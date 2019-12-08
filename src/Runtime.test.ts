@@ -74,3 +74,34 @@ it("maps corked bricks", () => {
 
   expect(result).toEqual([105, 205, 305]);
 });
+
+it("mocks IO bricks", () => {
+  const invocation = new Invocation({
+    inputs: {},
+    implementationKey: "time"
+  });
+  const modules = {
+    basic: {
+      towers: {
+        addsTwo: {
+          towerKey: "currentTime",
+          moduleKey: "basic",
+          name: "Returns current timestamp",
+          inputs: [],
+          rootBrick: invocation,
+          tests: []
+        }
+      }
+    }
+  };
+
+  const mocks = {};
+  mocks[invocation.uniqueId] = {
+    inputs: {},
+    output: 333
+  };
+  const result = evaluate(invocation, [], {}, Library, modules, {}, mocks);
+  console.log(result)
+  expect(result).toEqual(333);
+
+});

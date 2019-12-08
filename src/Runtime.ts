@@ -5,7 +5,7 @@ import { Invocation } from "./Invocation";
 import LazyValue from "./LazyValue";
 import { Socket } from "./Socket";
 import TowerError from "./TowerError";
-import { ILibrary, IModules, TowerPrimitive } from "./Types";
+import { ILibrary, IModules, TowerPrimitive, IMocks } from "./Types";
 import { Brick } from "./Brick";
 
 export function evaluate(
@@ -14,12 +14,18 @@ export function evaluate(
   towerInputPositionMap: { [key: string]: number },
   library: any,
   modules: IModules,
-  resultMap: object
+  resultMap: object,
+  mocks: IMocks = {}
 ): any {
   if (!(brick instanceof Invocation)) {
     return brick;
   }
   const invocation = brick;
+
+  if (invocation.uniqueId in mocks) {
+    // TODO: somehow assert expected inputs, too.
+    return mocks[invocation.uniqueId].output;
+  }
 
   // lazy inputs: map over the invocation's inputs,
   // lazifying each. This involves passing down the
@@ -33,7 +39,8 @@ export function evaluate(
         towerInputPositionMap,
         library,
         modules,
-        resultMap
+        resultMap,
+        mocks
       );
     });
 
@@ -62,7 +69,8 @@ function makeLazyValue(
   inputKeyToInputNumMap: { [key: string]: number },
   library: ILibrary,
   modules: IModules,
-  resultMap: object
+  resultMap: object,
+  mocks: IMocks
 ) {
   if (value instanceof Socket) {
     return value;
@@ -72,7 +80,17 @@ function makeLazyValue(
     );
   } else if (value instanceof Invocation) {
     if (isInvocationGettingCorked(value)) {
-      return LazyValue.wrap(corkInvocation(value, towerInputValues, inputKeyToInputNumMap, library, modules, resultMap));
+      return LazyValue.wrap(
+        corkInvocation(
+          value,
+          towerInputValues,
+          inputKeyToInputNumMap,
+          library,
+          modules,
+          resultMap,
+          mocks
+        )
+      );
     } else {
       return new LazyValue(() => {
         return evaluate(
@@ -81,7 +99,8 @@ function makeLazyValue(
           inputKeyToInputNumMap,
           library,
           modules,
-          resultMap
+          resultMap,
+          mocks
         );
       });
     }
@@ -109,7 +128,8 @@ function corkInvocation(
   inputKeyToInputNumMap: { [key: string]: number },
   library: ILibrary,
   modules: IModules,
-  resultMap: object
+  resultMap: object,
+  mocks: IMocks
 ) {
   return (...inputs: any[]) => {
     let numCorksSeen = 0;
@@ -120,10 +140,17 @@ function corkInvocation(
         numCorksSeen += 1;
         return LazyValue.wrap(result);
       } else {
-        return makeLazyValue(input, towerInputValues, inputKeyToInputNumMap, library, modules, resultMap);
+        return makeLazyValue(
+          input,
+          towerInputValues,
+          inputKeyToInputNumMap,
+          library,
+          modules,
+          resultMap,
+          mocks
+        );
       }
     });
-    console.log("Invoking with final inputs", finalInputs.map((x: any) => x.get()));
     return invocation.invoke(finalInputs, library, modules);
   };
 }

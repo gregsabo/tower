@@ -124,7 +124,7 @@ export default class TestGrid extends React.Component<IProps> {
     if (!mocks[mockedInvocationId]) {
       mocks[mockedInvocationId] = this.newMock();
     }
-    mocks[mockedInvocationId].output = e.target.value;
+    mocks[mockedInvocationId].output = parseLiteral(e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
   }
 
@@ -164,7 +164,8 @@ export default class TestGrid extends React.Component<IProps> {
           this.makeInputNumMap(),
           this.props.library,
           this.props.modules,
-          {}
+          {},
+          test.mocks
         );
       } catch (e) {
         result = "ERROR: " + e.message;
