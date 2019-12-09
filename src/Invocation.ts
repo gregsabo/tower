@@ -88,7 +88,7 @@ export class Invocation extends Brick {
   public implementation(library: ILibrary, modules: IModules) {
     const libraryFunction = this.libraryFunction(library, modules);
     if (libraryFunction.rootBrick) {
-      return (...inputs: TowerPrimitive[]) => {
+      return async (...inputs: TowerPrimitive[]) => {
         const inputKeysToIndexes = {};
         this.getInputConfiguration(library, modules).map(
           (inputConfig: IInputConfiguration, num: number) => {
@@ -96,7 +96,7 @@ export class Invocation extends Brick {
           }
         );
 
-        return Runtime.evaluate(
+        return await Runtime.evaluate(
           libraryFunction.rootBrick,
           inputs,
           inputKeysToIndexes,

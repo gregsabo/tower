@@ -6,7 +6,7 @@ import { Constant } from "./Constant";
 import { makeUniqueId } from "./MakeUniqueId";
 import { Cork } from "./Cork";
 
-it("adds two", () => {
+it("adds two", async () => {
   const inputKey = makeUniqueId();
   const invocation = new Invocation({
     inputs: {
@@ -29,7 +29,7 @@ it("adds two", () => {
       }
     }
   };
-  const result = evaluate(
+  const result = await evaluate(
     invocation,
     [3],
     { [inputKey]: 0 },
@@ -41,7 +41,7 @@ it("adds two", () => {
   expect(result).toEqual(5);
 });
 
-it("maps corked bricks", () => {
+it("maps corked bricks", async () => {
   const invocation = new Invocation({
     inputs: {
       a: new Constant({ value: [100, 200, 300] }),
@@ -69,13 +69,13 @@ it("maps corked bricks", () => {
       }
     }
   };
-  const result = evaluate(invocation, [], {}, Library, modules, {});
+  const result = await evaluate(invocation, [], {}, Library, modules, {});
   console.log(result)
 
   expect(result).toEqual([105, 205, 305]);
 });
 
-it("mocks IO bricks", () => {
+it("mocks IO bricks", async () => {
   const invocation = new Invocation({
     inputs: {},
     implementationKey: "time"
@@ -100,7 +100,7 @@ it("mocks IO bricks", () => {
     inputs: {},
     output: 333
   };
-  const result = evaluate(invocation, [], {}, Library, modules, {}, mocks);
+  const result = await evaluate(invocation, [], {}, Library, modules, {}, mocks);
   console.log(result)
   expect(result).toEqual(333);
 

@@ -23,8 +23,19 @@ interface IProps {
   modules: IModules;
 }
 
-export default class TestGrid extends React.Component<IProps> {
+type ITestRun = Promise<any> | any;
+
+interface IState {
+  testRuns: ITestRun[];
+}
+
+export default class TestGrid extends React.Component<IProps, IState> {
   private firstCell?: HTMLInputElement;
+
+  constructor(props: IProps) {
+    super(props);
+    this.state = { testRuns: [] };
+  }
 
   public componentDidMount() {
     if (this.props.brick.tests.length === 0) {
@@ -40,7 +51,11 @@ export default class TestGrid extends React.Component<IProps> {
   }
 
   public render() {
-    const mocks = mocksForTower(this.props.brick, this.props.library, this.props.modules);
+    const mocks = mocksForTower(
+      this.props.brick,
+      this.props.library,
+      this.props.modules
+    );
     return (
       <table className="TestGrid">
         <thead>
@@ -52,9 +67,11 @@ export default class TestGrid extends React.Component<IProps> {
             <td>Actual Result</td>
           </tr>
         </thead>
-        <tbody>{this.props.brick.tests.map((test, num) => {
-          return this.renderTest(test, mocks, num);
-        })}</tbody>
+        <tbody>
+          {this.props.brick.tests.map((test, num) => {
+            return this.renderTest(test, mocks, num);
+          })}
+        </tbody>
       </table>
     );
   }
@@ -66,13 +83,17 @@ export default class TestGrid extends React.Component<IProps> {
 
   @autobind
   public renderMockOutputHeader(mockSignature: IMockSignature, i: number) {
-    return <td key={"mockoutput" + mockSignature.uniqueId}>{mockSignature.displayName} (simulated output)</td>;
+    return (
+      <td key={"mockoutput" + mockSignature.uniqueId}>
+        {mockSignature.displayName} (simulated output)
+      </td>
+    );
   }
 
   @autobind
   public renderTest(test: ITest, mocks: IMockSignature[], num: number) {
     test = test || this.newTest();
-    const result = this.renderResult(test);
+    const result = this.renderResult(test, num);
     const passed = this.testPassed(test, result);
     return (
       <tr
@@ -89,7 +110,11 @@ export default class TestGrid extends React.Component<IProps> {
         )}
         {mocks.map((mockSignature: IMockSignature) => {
           const mock = test.mocks[mockSignature.uniqueId] || {};
-          return this.renderMockOutput(mock.output, mockSignature.uniqueId, num);
+          return this.renderMockOutput(
+            mock.output,
+            mockSignature.uniqueId,
+            num
+          );
         })}
         <td>
           <input
@@ -100,25 +125,33 @@ export default class TestGrid extends React.Component<IProps> {
             value={test.expected}
           />
         </td>
-        <td><Value value={result} /></td>
+        <td>
+          <Value value={result} />
+        </td>
       </tr>
     );
   }
 
   public renderMockOutput(output: any, uniqueId: UniqueId, num: number) {
-    return <td>
-      <input
-        className="TestGrid-input"
-        type="text"
-        contentEditable={true}
-        onChange={this.onMockOutputChanged.bind(this, num, uniqueId)}
-        value={output}
-      />
-    </td>
+    return (
+      <td>
+        <input
+          className="TestGrid-input"
+          type="text"
+          contentEditable={true}
+          onChange={this.onMockOutputChanged.bind(this, num, uniqueId)}
+          value={output}
+        />
+      </td>
+    );
   }
 
   @autobind
-  public onMockOutputChanged(testNum: number, mockedInvocationId: UniqueId, e: React.ChangeEvent<HTMLInputElement>) {
+  public onMockOutputChanged(
+    testNum: number,
+    mockedInvocationId: UniqueId,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
     console.log("Changing mock output for", testNum);
     const mocks = this.props.brick.tests[testNum].mocks;
     if (!mocks[mockedInvocationId]) {
@@ -146,12 +179,24 @@ export default class TestGrid extends React.Component<IProps> {
     );
   }
 
-  public renderResult(test: ITest) {
+  public renderResult(test: ITest, num: number) {
     let result = null;
 
     let parsedExpected;
     if (test.expected !== null) {
       parsedExpected = parseLiteral(test.expected);
+    }
+
+    if (num in this.state.testRuns) {
+      result = this.state.testRuns[num];
+      if (result.then) {
+        return "Calculating...";
+      }
+      if (isEqual(result, parsedExpected)) {
+        return "=";
+      } else {
+        return result;
+      }
     }
 
     if (!this.props.brick.rootBrick) {
@@ -167,16 +212,19 @@ export default class TestGrid extends React.Component<IProps> {
           {},
           test.mocks
         );
+        this.state.testRuns[num] = result;
+        result.then(value => {
+          if (num === 0) {
+            console.log("Resoling test 0", value);
+          }
+          this.state.testRuns[num] = value;
+          this.setState({});
+        });
       } catch (e) {
-        result = "ERROR: " + e.message;
-      }
-
-      if (isEqual(result, parsedExpected)) {
-        return "=";
-      } else {
-        return result;
+        return "ERROR: " + e.message;
       }
     }
+    return "Calculating..";
   }
 
   public makeOrderedValues(test: ITest): TowerPrimitive[] {
@@ -250,7 +298,7 @@ export default class TestGrid extends React.Component<IProps> {
     return {
       inputs: {},
       output: null
-    }
+    };
   }
 
   public newTest() {

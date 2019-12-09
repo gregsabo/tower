@@ -8,7 +8,7 @@ import TowerError from "./TowerError";
 import { ILibrary, IModules, TowerPrimitive, IMocks } from "./Types";
 import { Brick } from "./Brick";
 
-export function evaluate(
+export async function evaluate(
   brick: Brick,
   towerInputValues: TowerPrimitive[],
   towerInputPositionMap: { [key: string]: number },
@@ -16,7 +16,7 @@ export function evaluate(
   modules: IModules,
   resultMap: object,
   mocks: IMocks = {}
-): any {
+): Promise<any> {
   if (!(brick instanceof Invocation)) {
     return brick;
   }
@@ -92,8 +92,8 @@ function makeLazyValue(
         )
       );
     } else {
-      return new LazyValue(() => {
-        return evaluate(
+      return new LazyValue(async () => {
+        return await evaluate(
           value,
           towerInputValues,
           inputKeyToInputNumMap,
