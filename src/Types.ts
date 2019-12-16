@@ -21,7 +21,8 @@ export interface IInputConfiguration {
 }
 
 export interface ILibraryBrickWithImplementation {
-  implementation: any;
+  implementation?: any;
+  lazyImplementation?: any;
   inputs: IInputConfiguration[];
   name: string;
 }

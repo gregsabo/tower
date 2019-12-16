@@ -13,9 +13,9 @@ export default class LazyValue {
   public isLazyValue = true;
   private value: any;
   private evaluated: boolean;
-  private evaluationFunction: () => any;
+  private evaluationFunction: () => Promise<any>;
 
-  constructor(evaluationFunction: () => any) {
+  constructor(evaluationFunction: () => Promise<any>) {
     this.value = null;
     this.evaluationFunction = evaluationFunction;
     if (this.evaluationFunction === undefined) {
@@ -24,9 +24,9 @@ export default class LazyValue {
     this.evaluated = false;
   }
 
-  public get() {
+  public async get() {
     if (!this.evaluated) {
-      this.value = this.evaluationFunction();
+      this.value = await this.evaluationFunction();
       this.evaluated = true;
     }
     if (this.value instanceof Socket) {

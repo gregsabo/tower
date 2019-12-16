@@ -215,7 +215,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
         this.state.testRuns[num] = result;
         result.then(value => {
           if (num === 0) {
-            console.log("Resoling test 0", value);
+            console.log("Resolving test 0", value);
           }
           this.state.testRuns[num] = value;
           this.setState({});

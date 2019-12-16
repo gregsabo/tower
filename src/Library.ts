@@ -3,9 +3,7 @@ import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
 import { makeUniqueId } from "./MakeUniqueId";
-import {ITowerType, t, NUM, STR, BOOL, LIST, UNION, FUNC} from "./ITowerType";
-
-
+import { ITowerType, t, NUM, STR, BOOL, LIST, UNION, FUNC } from "./ITowerType";
 
 interface IGeneratingLibraryEntry {
   invocationGenerator: any;
@@ -14,7 +12,8 @@ interface IGeneratingLibraryEntry {
 
 interface IImplementedLibraryEntry {
   name: string;
-  implementation: any;
+  implementation?: any;
+  lazyImplementation?: any;
   performsIO?: boolean;
   returnType: ITowerType;
   inputs: Array<{ key: string; displayName: string; type: ITowerType }>;
@@ -24,8 +23,8 @@ type LibraryEntry = IGeneratingLibraryEntry | IImplementedLibraryEntry;
 
 const Library: { [name: string]: LibraryEntry } = {
   add: {
-    implementation: (a: LazyValue, b: LazyValue) => {
-      return a.get() + b.get();
+    implementation: async (a: any, b: any) => {
+      return a + b;
     },
     name: "add",
     returnType: t(NUM),
@@ -43,7 +42,7 @@ const Library: { [name: string]: LibraryEntry } = {
     ]
   },
   and: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() && b.get(),
+    implementation: (a: any, b: any) => a + b,
     name: "and",
     returnType: t(BOOL),
     inputs: [
@@ -64,11 +63,11 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "input"
   },
   capitalize: {
-    implementation: (a: LazyValue) => {
-      if (a.get().length === 0) {
-        return a.get();
+    implementation: (a: any) => {
+      if (a.length === 0) {
+        return a;
       } else {
-        return a.get()[0].toUpperCase() + a.get().slice(1);
+        return a[0].toUpperCase() + a.slice(1);
       }
     },
     returnType: t(STR),
@@ -82,7 +81,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "capitalize"
   },
   concat: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() + b.get(),
+    implementation: (a: any, b: any) => a + b,
     returnType: t(STR),
     inputs: [
       {
@@ -103,16 +102,15 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "cork"
   },
   divide: {
-    implementation: (a: LazyValue, b: LazyValue) => {
-      return a.get() / b.get();
-    },
+    implementation: (a: any, b: any) => a / b,
     returnType: t(NUM),
     inputs: [
       {
         key: "a",
         displayName: "dividend",
-        type: t(NUM),
-      }, {
+        type: t(NUM)
+      },
+      {
         key: "b",
         displayName: "divisor",
         type: t(NUM)
@@ -121,9 +119,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "divide"
   },
   equals: {
-    implementation: (a: LazyValue, b: LazyValue) => {
-      return a.get() === b.get();
-    },
+    implementation: (a: any, b: any) => a === b,
     returnType: t(BOOL),
     inputs: [
       {
@@ -140,29 +136,27 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "equals?"
   },
   floor: {
-    implementation: (a: LazyValue) => {
-      return Math.floor(a.get());
-    },
+    implementation: (a: any) => Math.floor(a),
     returnType: t(NUM),
     inputs: [
       {
         key: "a",
         displayName: "Number",
         type: t(NUM)
-      },
+      }
     ],
     name: "floor"
   },
   ifThenElse: {
-    implementation: (
+    lazyImplementation: async (
       cond: LazyValue,
       ifTrue: LazyValue,
       ifFalse: LazyValue
     ) => {
       if (cond.get()) {
-        return ifTrue.get();
+        return await ifTrue.get();
       } else {
-        return ifFalse.get();
+        return await ifFalse.get();
       }
     },
     returnType: t(UNION, [1, 2]),
@@ -186,9 +180,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "if"
   },
   join: {
-    implementation: (a: LazyValue, b: LazyValue) => {
-      return a.get().join(b.get());
-    },
+    implementation: (a: any, b: any) => a.join(b),
     returnType: t(STR),
     inputs: [
       {
@@ -205,9 +197,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "join"
   },
   lessOrEquals: {
-    implementation: (a: LazyValue, b: LazyValue) => {
-      return a.get() <= b.get();
-    },
+    implementation: (a: any, b: any) => a <= b,
     returnType: t(BOOL),
     inputs: [
       {
@@ -224,8 +214,14 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "less than or equal?"
   },
   map: {
-    implementation: (a: LazyValue, func: LazyValue) => {
-      return a.get().map(func.get());
+    lazyImplementation: async (lazyList: LazyValue, lazyFunc: LazyValue) => {
+      const list = await lazyList.get();
+      const func = await lazyFunc.get();
+      const outList = [];
+      for (const item of list) {
+        outList.push(await func(item));
+      }
+      return outList;
     },
     returnType: t(LIST, [2]),
     inputs: [
@@ -243,7 +239,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "map"
   },
   mod: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() % b.get(),
+    implementation: (a: any, b: any) => a % b,
     returnType: t(NUM),
     inputs: [
       {
@@ -260,7 +256,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "modulo"
   },
   multiply: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() * b.get(),
+    implementation: (a: any, b: any) => a * b,
     returnType: t(NUM),
     inputs: [
       {
@@ -295,10 +291,10 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "number"
   },
   range: {
-    implementation: (a: LazyValue) => {
+    implementation: (a: any) => {
       const outArray = [];
       // Purposefully starting from 1.
-      for (let i = 1; i <= a.get(); i++) {
+      for (let i = 1; i <= a; i++) {
         outArray.push(i);
       }
       return outArray;
@@ -314,7 +310,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "range"
   },
   split: {
-    implementation: (a: LazyValue) => a.get().split(" "),
+    implementation: (a: any) => a.split(" "),
     returnType: t(LIST, [STR]),
     inputs: [
       {
@@ -331,7 +327,7 @@ const Library: { [name: string]: LibraryEntry } = {
     name: "string"
   },
   subtract: {
-    implementation: (a: LazyValue, b: LazyValue) => a.get() - b.get(),
+    implementation: (a: any, b: any) => a - b,
     returnType: t(NUM),
     inputs: [
       {

@@ -106,7 +106,24 @@ export class Invocation extends Brick {
         );
       };
     } else {
-      return libraryFunction.implementation;
+      if (libraryFunction.implementation) {
+        return this.makeImplementationLazy(libraryFunction.implementation);
+      } else if (libraryFunction.lazyImplementation) {
+        return libraryFunction.lazyImplementation;
+      } else {
+        throw new Error("No implementation found.");
+      }
+    }
+  }
+
+  public makeImplementationLazy(func: any) {
+    return async (...args: any[]) => {
+      const retrievedArgs = [];
+      for (const arg of args) {
+        retrievedArgs.push(await arg.get());
+      }
+      console.log("Resolved input promises:", retrievedArgs, await retrievedArgs[0]);
+      return func(...retrievedArgs);
     }
   }
 

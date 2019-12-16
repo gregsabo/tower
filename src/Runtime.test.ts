@@ -61,7 +61,7 @@ it("maps corked bricks", async () => {
         addsTwo: {
           towerKey: "addsTwo",
           moduleKey: "basic",
-          name: "Doubles everything",
+          name: "Adds 5 to 100, 200, and 300.",
           inputs: [],
           rootBrick: invocation,
           tests: []
