@@ -200,33 +200,40 @@ export default class TestGrid extends React.Component<IProps, IState> {
       }
     }
 
+    this.runTest(num);
+  }
+
+  public runTest(num: number) : void {
+    // Only need to execute the test when:
+    // 1. First mounting the components
+    // 2. On input change (as user types)
+    // 3. On execute/record execution command
+
     if (!this.props.brick.rootBrick) {
-      return "Empty tower.";
-    } else {
-      try {
-        result = Runtime.evaluate(
-          this.props.brick.rootBrick,
-          this.makeOrderedValues(test),
-          this.makeInputNumMap(),
-          this.props.library,
-          this.props.modules,
-          {},
-          test.mocks
-        );
-        this.state.testRuns[num] = result;
-        this.setState({ testRuns: this.state.testRuns });
-        result.then(value => {
-          if (num === 0) {
-            console.log("Resolving test 0", value);
-          }
-          this.state.testRuns[num] = value;
-          this.setState({ testRuns: this.state.testRuns });
-        });
-      } catch (e) {
-        return "ERROR: " + e.message;
-      }
+      return;
     }
-    return "Calculating..";
+    try {
+      const test = this.props.brick.tests[num];
+      let result = null;
+      result = Runtime.evaluate(
+        this.props.brick.rootBrick,
+        this.makeOrderedValues(test),
+        this.makeInputNumMap(),
+        this.props.library,
+        this.props.modules,
+        {},
+        test.mocks
+      );
+      this.state.testRuns[num] = result;
+      this.setState({ testRuns: this.state.testRuns });
+      result.then(value => {
+        this.state.testRuns[num] = value;
+        this.setState({ testRuns: this.state.testRuns });
+      });
+    } catch (e) {
+      this.state.testRuns[num] = "Error: " + e.message;
+      this.setState({});
+    }
   }
 
   public makeOrderedValues(test: ITest): TowerPrimitive[] {
