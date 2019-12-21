@@ -35,15 +35,13 @@ export default class TestGrid extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { testRuns: [] };
+    this.instantiateTestCases();
+    for (let i = 0; i < this.props.brick.tests.length; i++) {
+      this.runTest(i);
+    }
   }
 
   public componentDidMount() {
-    if (this.props.brick.tests.length === 0) {
-      for (let i = 0; i < 10; i++) {
-        this.props.brick.tests.push(this.newTest());
-      }
-      this.props.onTestsChanged(this.props.brick.tests);
-    }
     if (this.firstCell) {
       this.firstCell.focus();
       this.firstCell.select();
@@ -77,13 +75,23 @@ export default class TestGrid extends React.Component<IProps, IState> {
     );
   }
 
+  private instantiateTestCases() {
+    if (this.props.brick.tests.length === 0) {
+      for (let i = 0; i < 10; i++) {
+        this.props.brick.tests.push(this.newTest());
+      }
+      this.props.onTestsChanged(this.props.brick.tests);
+    }
+  }
+
+
   @autobind
-  public renderInputHeader(inputConfig: IInputConfiguration, i: number) {
+  private renderInputHeader(inputConfig: IInputConfiguration, i: number) {
     return <td key={i}>{inputConfig.displayName}</td>;
   }
 
   @autobind
-  public renderMockOutputHeader(mockSignature: IMockSignature, i: number) {
+  private renderMockOutputHeader(mockSignature: IMockSignature, i: number) {
     return (
       <td key={"mockoutput" + mockSignature.uniqueId}>
         {mockSignature.displayName} (simulated output)
@@ -92,7 +100,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   @autobind
-  public renderTest(test: ITest, mocks: IMockSignature[], num: number) {
+  private renderTest(test: ITest, mocks: IMockSignature[], num: number) {
     test = test || this.newTest();
     const result = this.renderResult(test, num);
     const passed = this.testPassed(test, result);
@@ -133,7 +141,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     );
   }
 
-  public renderMockOutput(output: any, uniqueId: UniqueId, num: number) {
+  private renderMockOutput(output: any, uniqueId: UniqueId, num: number) {
     return (
       <td>
         <input
@@ -148,7 +156,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   @autobind
-  public onMockOutputChanged(
+  private onMockOutputChanged(
     testNum: number,
     mockedInvocationId: UniqueId,
     e: React.ChangeEvent<HTMLInputElement>
@@ -162,7 +170,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     this.props.onTestsChanged(this.props.brick.tests);
   }
 
-  public renderInputValue(
+  private renderInputValue(
     inputConfig: IInputConfiguration,
     test: ITest,
     i: number
@@ -180,7 +188,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     );
   }
 
-  public renderResult(test: ITest, num: number) {
+  private renderResult(test: ITest, num: number) {
     let result = null;
 
     let parsedExpected;
@@ -198,12 +206,12 @@ export default class TestGrid extends React.Component<IProps, IState> {
       } else {
         return result;
       }
+    } else {
+      return "Test was not run";
     }
-
-    this.runTest(num);
   }
 
-  public runTest(num: number) : void {
+  private runTest(num: number) : void {
     // Only need to execute the test when:
     // 1. First mounting the components
     // 2. On input change (as user types)
@@ -236,13 +244,13 @@ export default class TestGrid extends React.Component<IProps, IState> {
     }
   }
 
-  public makeOrderedValues(test: ITest): TowerPrimitive[] {
+  private makeOrderedValues(test: ITest): TowerPrimitive[] {
     return this.props.brick.inputs.map((inputConfig: IInputConfiguration) => {
       return parseLiteral(test.inputs[inputConfig.key] || "");
     });
   }
 
-  public makeInputNumMap(): { [key: string]: number } {
+  private makeInputNumMap(): { [key: string]: number } {
     const map = {};
     this.props.brick.inputs.map(
       (inputConfig: IInputConfiguration, i: number) => {
@@ -252,7 +260,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     return map;
   }
 
-  public testPassed(test: ITest, result: string) {
+  private testPassed(test: ITest, result: string) {
     if (test.expected === null) {
       return true;
     }
@@ -273,7 +281,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   @autobind
-  public onArgChanged(
+  private onArgChanged(
     testCase: ITest,
     inputKey: string,
     e: React.ChangeEvent<HTMLInputElement>
@@ -284,7 +292,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   @autobind
-  public onExpectationChanged(
+  private onExpectationChanged(
     row: number,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -293,7 +301,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     this.props.onTestsChanged(this.props.brick.tests);
   }
 
-  public getTestNum(num: number) {
+  private getTestNum(num: number) {
     if (this.props.brick.tests === undefined) {
       this.props.brick.tests = [];
     }
@@ -303,14 +311,14 @@ export default class TestGrid extends React.Component<IProps, IState> {
     return this.props.brick.tests[num];
   }
 
-  public newMock() {
+  private newMock() {
     return {
       inputs: {},
       output: null
     };
   }
 
-  public newTest() {
+  private newTest() {
     return {
       inputs: {},
       mocks: {},
