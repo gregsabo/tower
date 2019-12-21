@@ -15,6 +15,7 @@ import {
 } from "./Types";
 import { isEqual } from "lodash";
 import mocksForTower, { IMockSignature } from "./mocksForTower";
+import { forEach } from "lodash";
 
 interface IProps {
   brick: ITower;
@@ -36,9 +37,9 @@ export default class TestGrid extends React.Component<IProps, IState> {
     super(props);
     this.state = { testRuns: [] };
     this.instantiateTestCases();
-    for (let i = 0; i < this.props.brick.tests.length; i++) {
-      this.runTest(i);
-    }
+    forEach(this.props.brick.tests, (_: ITest, num: number) => {
+      this.runTest(num);
+    })
   }
 
   public componentDidMount() {
@@ -168,6 +169,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     }
     mocks[mockedInvocationId].output = parseLiteral(e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
+    this.runTest(testNum);
   }
 
   private renderInputValue(
@@ -181,7 +183,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
           className="TestGrid-input"
           type="text"
           contentEditable={true}
-          onChange={this.onArgChanged.bind(this, test, inputConfig.key)}
+          onChange={this.onArgChanged.bind(this, test, i, inputConfig.key)}
           value={test.inputs[inputConfig.key]}
         />
       </td>
@@ -283,12 +285,14 @@ export default class TestGrid extends React.Component<IProps, IState> {
   @autobind
   private onArgChanged(
     testCase: ITest,
+    testNum: number,
     inputKey: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     testCase.inputs[inputKey] = e.target.value;
     console.log("Setting", inputKey, "of", testCase, "to", e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
+    this.runTest(testNum);
   }
 
   @autobind
