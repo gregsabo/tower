@@ -51,6 +51,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   public render() {
+    console.log("Rendering testgrid");
     const mocks = mocksForTower(
       this.props.brick,
       this.props.library,
@@ -213,12 +214,13 @@ export default class TestGrid extends React.Component<IProps, IState> {
           test.mocks
         );
         this.state.testRuns[num] = result;
+        this.setState({ testRuns: this.state.testRuns });
         result.then(value => {
           if (num === 0) {
             console.log("Resolving test 0", value);
           }
           this.state.testRuns[num] = value;
-          this.setState({});
+          this.setState({ testRuns: this.state.testRuns });
         });
       } catch (e) {
         return "ERROR: " + e.message;

@@ -122,9 +122,8 @@ export class Invocation extends Brick {
       for (const arg of args) {
         retrievedArgs.push(await arg.get());
       }
-      console.log("Resolved input promises:", retrievedArgs, await retrievedArgs[0]);
       return func(...retrievedArgs);
-    }
+    };
   }
 
   public maybeLookupModule(item: any, modules: IModules) {
@@ -143,7 +142,11 @@ export class Invocation extends Brick {
     return this.maybeLookupModule(library[this.implementationKey], modules);
   }
 
-  public typeErrorForExpectedType(type: ITowerType, library: ILibrary, modules: IModules): ITowerTypeError|null {
+  public typeErrorForExpectedType(
+    type: ITowerType,
+    library: ILibrary,
+    modules: IModules
+  ): ITowerTypeError | null {
     // TODO: Look up the module
     // if it's a library function, compare against its hardcoded type.
     // if it's a tower, then delegate to whatever its root brick is.
