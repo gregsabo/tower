@@ -90,7 +90,8 @@ export type EditorMode =
   | "constant"
   | "test"
   | "naming"
-  | "parameter";
+  | "parameter"
+  | "execute";
 
 export interface IParameterEditingState {
   mode: "naming" | "cursor";

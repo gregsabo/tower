@@ -25,7 +25,7 @@ import { Brick } from "./Brick";
 import { deserializeModules } from "./Deserialization";
 import ParameterPane from "./ParameterPane";
 import TowerPath from "./TowerPath";
-
+import ExecuteComponent from "./ExecuteComponent";
 
 const CAPITALIZE_SENTENCE = new Invocation({
   inputs: {
@@ -57,6 +57,7 @@ interface IState {
   currentTowerKey: string;
   sky: Sky;
   parameterEditingState: IParameterEditingState;
+  selectedTestNum: number;
 }
 
 class App extends React.Component<{}, IState> {
@@ -96,7 +97,8 @@ class App extends React.Component<{}, IState> {
       highlightedLibraryItemId: "string",
       library: Library,
       modules,
-      sky: new Sky()
+      sky: new Sky(),
+      selectedTestNum: 0
     });
 
     this.undoManager.remember(modules);
@@ -109,53 +111,65 @@ class App extends React.Component<{}, IState> {
     if (this.state === null) {
       return null;
     }
-    return (
-      <div className="App" style={{ display: "flex" }}>
+    return <div className="App" style={{ display: "flex" }} >
+      {(this.state.editorMode === "execute") ? this.renderExecute() : this.renderApp()}
+    </div>;
+  }
+
+  public renderApp() {
+    return <div>
+      <BrickNamer
+        editorMode={this.state.editorMode}
+        name={this.currentTower().name}
+        onBrickNameChange={this.onBrickNameChange}
+      />
+      {this.state.editorMode === "test" ? (
+        <TestGrid
+          brick={this.currentTower()}
+          modules={this.state.modules}
+          library={this.state.library}
+          onTestsChanged={this.onTestsChanged}
+          onTestSelected={this.onTestSelected}
+        />
+      ) : (
         <div>
-          <BrickNamer
-            editorMode={this.state.editorMode}
-            name={this.currentTower().name}
-            onBrickNameChange={this.onBrickNameChange}
-          />
-          {this.state.editorMode === "test" ? (
-            <TestGrid
-              brick={this.currentTower()}
-              modules={this.state.modules}
-              library={this.state.library}
-              onTestsChanged={this.onTestsChanged}
+          {this.state.editorMode === "parameter" ? (
+            <ParameterPane
+              parameters={this.currentTower().inputs}
+              parameterEditingState={this.state.parameterEditingState}
+              onNameChange={this.onParameterNameChange}
             />
-          ) : (
-            <div>
-              {this.state.editorMode === "parameter" ? (
-                <ParameterPane
-                  parameters={this.currentTower().inputs}
-                  parameterEditingState={this.state.parameterEditingState}
-                  onNameChange={this.onParameterNameChange}
-                />
-              ) : null}
-              <SkyComponent
-                contents={this.state.sky.peek()}
-                editorMode={this.state.editorMode}
-                library={this.state.library}
-                modules={this.state.modules}
-                currentModuleKey={this.state.currentModuleKey}
-                currentTowerKey={this.state.currentTowerKey}
-              />
-              <Program
-                contents={this.currentTower()}
-                editorMode={this.state.editorMode}
-                library={this.state.library}
-                modules={this.state.modules}
-                onCanInserted={this.insertLibraryItemAtPath}
-                cursorPath={this.state.cursorPath}
-                currentModuleKey={this.state.currentModuleKey}
-                currentTowerKey={this.state.currentTowerKey}
-              />
-            </div>
-          )}
+          ) : null}
+          <SkyComponent
+            contents={this.state.sky.peek()}
+            editorMode={this.state.editorMode}
+            library={this.state.library}
+            modules={this.state.modules}
+            currentModuleKey={this.state.currentModuleKey}
+            currentTowerKey={this.state.currentTowerKey}
+          />
+          <Program
+            contents={this.currentTower()}
+            editorMode={this.state.editorMode}
+            library={this.state.library}
+            modules={this.state.modules}
+            onCanInserted={this.insertLibraryItemAtPath}
+            cursorPath={this.state.cursorPath}
+            currentModuleKey={this.state.currentModuleKey}
+            currentTowerKey={this.state.currentTowerKey}
+          />
         </div>
-      </div>
-    );
+      )}
+    </div>;
+  }
+
+  public renderExecute() {
+    return <ExecuteComponent
+      brick={this.currentTower()}
+      library={this.state.library}
+      modules={this.state.modules}
+      testNum={this.state.selectedTestNum}
+    />
   }
 
   public currentTower() {
@@ -177,6 +191,11 @@ class App extends React.Component<{}, IState> {
   public onTestsChanged(tests: ITest[]) {
     this.currentTower().tests = tests;
     this.modulesChanged();
+  }
+
+  @autobind
+  public onTestSelected(num: number) {
+    this.setState({ selectedTestNum: num });
   }
 
   @autobind
