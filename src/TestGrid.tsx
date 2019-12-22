@@ -43,6 +43,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
+    // TODO: Actually set this
     if (this.firstCell) {
       this.firstCell.focus();
       this.firstCell.select();
@@ -50,7 +51,6 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   public render() {
-    console.log("Rendering testgrid");
     const mocks = mocksForTower(
       this.props.brick,
       this.props.library,
@@ -170,6 +170,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
     mocks[mockedInvocationId].output = parseLiteral(e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
     this.runTest(testNum);
+    this.setState({});
   }
 
   private renderInputValue(
@@ -235,14 +236,12 @@ export default class TestGrid extends React.Component<IProps, IState> {
         test.mocks
       );
       this.state.testRuns[num] = result;
-      this.setState({ testRuns: this.state.testRuns });
       result.then(value => {
         this.state.testRuns[num] = value;
         this.setState({ testRuns: this.state.testRuns });
       });
     } catch (e) {
       this.state.testRuns[num] = "Error: " + e.message;
-      this.setState({});
     }
   }
 
@@ -290,9 +289,9 @@ export default class TestGrid extends React.Component<IProps, IState> {
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     testCase.inputs[inputKey] = e.target.value;
-    console.log("Setting", inputKey, "of", testCase, "to", e.target.value);
     this.props.onTestsChanged(this.props.brick.tests);
     this.runTest(testNum);
+    this.setState({});
   }
 
   @autobind
