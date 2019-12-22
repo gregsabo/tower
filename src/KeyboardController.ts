@@ -203,6 +203,13 @@ export default class KeyboardController {
     this.app.setState({});
   }
 
+  public enterExecuteMode() {
+    ParameterKeyboardController.deactivate(this.app);
+    this.app.setState({
+      editorMode: "execute"
+    });
+  }
+
   private onKeyDown(e: KeyboardEvent) {
     if (e.metaKey) {
       // Don't interfere with browser shortcuts
@@ -210,6 +217,9 @@ export default class KeyboardController {
     }
     if (e.code === "Escape") {
       this.enterCursorMode();
+    }
+    if (e.code === "Enter" && e.shiftKey) {
+      this.enterExecuteMode();
     }
     if (ParameterKeyboardController.isActive(this.app)) {
       return ParameterKeyboardController.dispatch(e, this.app);

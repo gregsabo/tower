@@ -10,18 +10,19 @@ import {
   IModules,
   ITower,
   IInputConfiguration,
-  TowerPrimitive,
   UniqueId
 } from "./Types";
 import { isEqual } from "lodash";
 import mocksForTower, { IMockSignature } from "./mocksForTower";
 import { forEach } from "lodash";
+import { makeOrderedValues, makeInputNumMap } from "./TestHelpers";
 
 interface IProps {
   brick: ITower;
   onTestsChanged: any;
   library: ILibrary;
   modules: IModules;
+  onTestSelected: any;
 }
 
 type ITestRun = Promise<any> | any;
@@ -115,7 +116,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
         <td className="TestGrid-digitColumn">{(num + 1) % 10}</td>
         {this.props.brick.inputs.map(
           (inputConfig: IInputConfiguration, i: number) => {
-            return this.renderInputValue(inputConfig, test, i);
+            return this.renderInputValue(inputConfig, test, i, num);
           }
         )}
         {mocks.map((mockSignature: IMockSignature) => {
@@ -132,6 +133,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
             type="text"
             contentEditable={true}
             onChange={this.onExpectationChanged.bind(this, num)}
+            onFocus={this.props.onTestSelected.bind(this, num)}
             value={test.expected}
           />
         </td>
@@ -150,6 +152,7 @@ export default class TestGrid extends React.Component<IProps, IState> {
           type="text"
           contentEditable={true}
           onChange={this.onMockOutputChanged.bind(this, num, uniqueId)}
+          onFocus={this.props.onTestSelected.bind(this, num)}
           value={output}
         />
       </td>
@@ -176,15 +179,17 @@ export default class TestGrid extends React.Component<IProps, IState> {
   private renderInputValue(
     inputConfig: IInputConfiguration,
     test: ITest,
-    i: number
+    inputNum: number,
+    testNum: number
   ) {
     return (
-      <td key={i}>
+      <td key={inputNum}>
         <input
           className="TestGrid-input"
           type="text"
           contentEditable={true}
-          onChange={this.onArgChanged.bind(this, test, i, inputConfig.key)}
+          onChange={this.onArgChanged.bind(this, test, inputNum, inputConfig.key)}
+          onFocus={this.props.onTestSelected.bind(this, testNum)}
           value={test.inputs[inputConfig.key]}
         />
       </td>
@@ -215,11 +220,6 @@ export default class TestGrid extends React.Component<IProps, IState> {
   }
 
   private runTest(num: number) : void {
-    // Only need to execute the test when:
-    // 1. First mounting the components
-    // 2. On input change (as user types)
-    // 3. On execute/record execution command
-
     if (!this.props.brick.rootBrick) {
       return;
     }
@@ -228,8 +228,8 @@ export default class TestGrid extends React.Component<IProps, IState> {
       let result = null;
       result = Runtime.evaluate(
         this.props.brick.rootBrick,
-        this.makeOrderedValues(test),
-        this.makeInputNumMap(),
+        makeOrderedValues(this.props.brick, test),
+        makeInputNumMap(this.props.brick),
         this.props.library,
         this.props.modules,
         {},
@@ -243,22 +243,6 @@ export default class TestGrid extends React.Component<IProps, IState> {
     } catch (e) {
       this.state.testRuns[num] = "Error: " + e.message;
     }
-  }
-
-  private makeOrderedValues(test: ITest): TowerPrimitive[] {
-    return this.props.brick.inputs.map((inputConfig: IInputConfiguration) => {
-      return parseLiteral(test.inputs[inputConfig.key] || "");
-    });
-  }
-
-  private makeInputNumMap(): { [key: string]: number } {
-    const map = {};
-    this.props.brick.inputs.map(
-      (inputConfig: IInputConfiguration, i: number) => {
-        map[inputConfig.key] = i;
-      }
-    );
-    return map;
   }
 
   private testPassed(test: ITest, result: string) {
