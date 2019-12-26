@@ -158,6 +158,25 @@ const Library: { [name: string]: LibraryEntry } = {
     ],
     name: "floor"
   },
+  getKeyFromDictionary: {
+    implementation: (dict: any, key: any) => {
+      return dict[key]
+    },
+    returnType: t(STR),
+    inputs: [
+      {
+        key: "dict",
+        displayName: "Dictionary",
+        type: t(DICT)
+      },
+      {
+        key: "key",
+        displayName: "Key",
+        type: t(STR)
+      }
+    ],
+    name: "Get key from dictionary"
+  },
   getRequest: {
     implementation: (url: string) => {
       return new Promise(function (resolve, reject) {
@@ -165,7 +184,7 @@ const Library: { [name: string]: LibraryEntry } = {
         xhr.open("GET", url);
         xhr.onload = function () {
           if (this.status >= 200 && this.status < 300) {
-            resolve(xhr.response);
+            resolve(JSON.parse(xhr.response));
           } else {
             reject({
               status: this.status,

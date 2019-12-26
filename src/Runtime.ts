@@ -17,7 +17,6 @@ export async function evaluate(
   resultMap: object,
   mocks: IMocks = {}
 ): Promise<any> {
-  console.log("Evaluating with mocks", mocks);
   if (!(brick instanceof Invocation)) {
     return brick;
   }
