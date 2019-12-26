@@ -62,8 +62,8 @@ export default class TestGrid extends React.Component<IProps, IState> {
         <thead>
           <tr>
             <td />
-            {mocks.map(this.renderMockOutputHeader)}
             {this.props.brick.inputs.map(this.renderInputHeader)}
+            {mocks.map(this.renderMockOutputHeader)}
             <td>Expected Result</td>
             <td>Actual Result</td>
           </tr>

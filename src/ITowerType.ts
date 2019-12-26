@@ -9,6 +9,7 @@ export interface ITowerType {
 export const NUM = "number";
 export const STR = "string";
 export const BOOL = "boolean";
+export const DICT = "dictionary";
 export const LIST = "list";
 export const UNION = "union";
 export const FUNC = "function";

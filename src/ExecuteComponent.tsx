@@ -38,6 +38,7 @@ export default class ExecuteComponent extends React.Component<IProps, IState> {
       result
     });
     result.then(value => {
+      console.log("Setting state to value", value);
       this.setState({ result: value });
     });
   }

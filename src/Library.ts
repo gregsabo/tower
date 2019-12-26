@@ -1,9 +1,20 @@
+// tslint:disable:only-arrow-functions
 import { Input } from "./Input";
 import { Constant } from "./Constant";
 import { Cork } from "./Cork";
 import LazyValue from "./LazyValue";
 import { makeUniqueId } from "./MakeUniqueId";
-import { ITowerType, t, NUM, STR, BOOL, LIST, UNION, FUNC } from "./ITowerType";
+import {
+  ITowerType,
+  t,
+  NUM,
+  STR,
+  BOOL,
+  DICT,
+  LIST,
+  UNION,
+  FUNC
+} from "./ITowerType";
 
 interface IGeneratingLibraryEntry {
   invocationGenerator: any;
@@ -146,6 +157,41 @@ const Library: { [name: string]: LibraryEntry } = {
       }
     ],
     name: "floor"
+  },
+  getRequest: {
+    implementation: (url: string) => {
+      return new Promise(function (resolve, reject) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send();
+      });
+    },
+    performsIO: true,
+    returnType: t(DICT),
+    inputs: [
+      {
+        key: "url",
+        displayName: "URL",
+        type: t(STR)
+      }
+    ],
+    name: "GET request"
   },
   ifThenElse: {
     lazyImplementation: async (
